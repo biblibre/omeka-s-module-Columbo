@@ -1,0 +1,289 @@
+<?php $this->htmlElement('body')->appendAttribute('class', 'columbo show'); ?>
+<?= $this->pageTitle('Columb\'O') ?>
+
+<h2><?= $this->translate('Resources') ?></h2>
+
+<table class="tablesaw tablesaw-stack">
+    <thead>
+        <tr>
+            <th></th>
+            <th><?= $this->translate('Public'); ?></th>
+            <th><?= $this->translate('Private'); ?></th>
+            <th><?= $this->translate('Without resource template'); ?></th>
+            <th><?= $this->translate('Without class'); ?></th>
+            <th><?= $this->translate('Total'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><?= $this->translate('Item sets') ?></td>
+            <td><?= $publicItemSetsCount ?></td>
+            <td><?= $privateItemSetsCount ?></td>
+            <td><?= $itemSetsWithoutTemplateCount ?></td>
+            <td><?= $itemSetsWithoutClassCount ?></td>
+            <td><?= $itemSetsCount ?></td>
+        </tr>
+        <tr>
+            <td><?= $this->translate('Items') ?></td>
+            <td><?= $publicItemsCount ?></td>
+            <td><?= $privateItemsCount ?></td>
+            <td><?= $itemsWithoutTemplateCount ?></td>
+            <td><?= $itemsWithoutClassCount ?></td>
+            <td><?= $itemsCount ?></td>
+        </tr>
+        <tr>
+            <td><?= $this->translate('Media') ?></td>
+            <td><?= $publicMediaCount ?></td>
+            <td><?= $privateMediaCount ?></td>
+            <td><?= $mediaWithoutTemplateCount ?></td>
+            <td><?= $mediaWithoutClassCount ?></td>
+            <td><?= $mediaCount ?></td>
+        </tr>
+    </tbody>
+</table>
+
+<h2><?= $this->translate('Items') ?></h2>
+
+<table class="tablesaw tablesaw-stack">
+    <tbody>
+        <tr>
+            <td><?= $this->translate('Number of items with media') ?></td>
+            <td><?= $itemsWithMediaCount ?></td>
+        </tr>
+        <tr>
+            <td><?= $this->translate('Number of items without media') ?></td>
+            <td><?= $itemsWithoutMediaCount ?></td>
+        </tr>
+        <tr>
+            <td><?= $this->translate('Number of items without item sets') ?></td>
+            <td><?= $itemsWithoutItemSetCount ?></td>
+        </tr>
+        <tr>
+            <td><?= $this->translate('Number of items with an item set') ?></td>
+            <td><?= $itemsWithItemSetCount ?></td>
+        </tr>
+        <tr>
+            <td><?= $this->translate('Number of media per item, excluding items without media (min / max / average)') ?></td>
+            <td><?= sprintf('%d / %d / %.3f', $mediaCountByItemMin, $mediaCountByItemMax, $mediaCountByItemAvg) ?></td>
+        </tr>
+    </tbody>
+</table>
+
+<h2><?= $this->translate('Media') ?></h2>
+
+<table class="tablesaw tablesaw-stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('File type'); ?></th>
+            <th><?= $this->translate('Total'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($perFileTypeMediaCounts as $fileType => $count): ?>
+            <tr>
+                <td><?= $this->escapeHtml($fileType) ?></td>
+                <td><?= $count ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<h2><?= $this->translate('Sites') ?></h2>
+
+<table class="tablesaw tablesaw-stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Site'); ?></th>
+            <th><?= $this->translate('Number of items'); ?></th>
+            <th><?= $this->translate('Number of item sets'); ?></th>
+            <th><?= $this->translate('Number of pages'); ?></th>
+            <th><?= $this->translate('Number of viewers'); ?></th>
+            <th><?= $this->translate('Number of editors'); ?></th>
+            <th><?= $this->translate('Number of admins'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($sitesCounts as $site): ?>
+            <tr>
+                <td><?= $this->escapeHtml($site['title']) ?></td>
+                <td><?= $this->escapeHtml($site['itemCount']) ?></td>
+                <td><?= $this->escapeHtml($site['itemSetCount']) ?></td>
+                <td><?= $this->escapeHtml($site['pageCount']) ?></td>
+                <td><?= $this->escapeHtml($site['viewerCount']) ?></td>
+                <td><?= $this->escapeHtml($site['editorCount']) ?></td>
+                <td><?= $this->escapeHtml($site['adminCount']) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<h2><?= $this->translate('Themes') ?></h2>
+
+<table class="tablesaw tablesaw-stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Theme'); ?></th>
+            <th><?= $this->translate('Version'); ?></th>
+            <th><?= $this->translate('Number of sites using it'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($themes as $theme): ?>
+            <tr>
+                <td><?= $this->escapeHtml($theme['name']) ?></td>
+                <td><?= $this->escapeHtml($theme['version']) ?></td>
+                <td><?= $this->escapeHtml($theme['siteCount']) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<h2><?= $this->translate('Properties') ?></h2>
+
+<table class="tablesaw tablesaw-stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Term'); ?></th>
+            <th><?= $this->translate('Number of item sets using it'); ?></th>
+            <th><?= $this->translate('Number of items using it'); ?></th>
+            <th><?= $this->translate('Number of media using it'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($properties as $property): ?>
+            <tr>
+                <td><?= $this->escapeHtml($property['term']) ?></td>
+                <td><?= $this->escapeHtml($property['itemSetCount']) ?></td>
+                <td><?= $this->escapeHtml($property['itemCount']) ?></td>
+                <td><?= $this->escapeHtml($property['mediaCount']) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<h2><?= $this->translate('Classes') ?></h2>
+
+<table class="tablesaw tablesaw-stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Term'); ?></th>
+            <th><?= $this->translate('Number of item sets using it'); ?></th>
+            <th><?= $this->translate('Number of items using it'); ?></th>
+            <th><?= $this->translate('Number of media using it'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($classes as $class): ?>
+            <tr>
+                <td><?= $this->escapeHtml($class['term']) ?></td>
+                <td><?= $this->escapeHtml($class['itemSetCount']) ?></td>
+                <td><?= $this->escapeHtml($class['itemCount']) ?></td>
+                <td><?= $this->escapeHtml($class['mediaCount']) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<h2><?= $this->translate('Resource templates') ?></h2>
+
+<table class="tablesaw tablesaw-stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Label'); ?></th>
+            <th><?= $this->translate('Number of item sets using it'); ?></th>
+            <th><?= $this->translate('Number of items using it'); ?></th>
+            <th><?= $this->translate('Number of media using it'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($resourceTemplates as $resourceTemplate): ?>
+            <tr>
+                <td><?= $this->escapeHtml($resourceTemplate['label']) ?></td>
+                <td><?= $this->escapeHtml($resourceTemplate['itemSetCount']) ?></td>
+                <td><?= $this->escapeHtml($resourceTemplate['itemCount']) ?></td>
+                <td><?= $this->escapeHtml($resourceTemplate['mediaCount']) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<h2><?= $this->translate('Vocabularies') ?></h2>
+
+<table class="tablesaw tablesaw-stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Prefix'); ?></th>
+            <th><?= $this->translate('Number of classes'); ?></th>
+            <th><?= $this->translate('Number of properties'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($vocabularies as $vocabulary): ?>
+            <tr>
+                <td><?= $this->escapeHtml($vocabulary['prefix']) ?></td>
+                <td><?= $this->escapeHtml($vocabulary['classCount']) ?></td>
+                <td><?= $this->escapeHtml($vocabulary['propertyCount']) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<h2><?= $this->translate('Value resource types') ?></h2>
+
+<table class="tablesaw tablesaw-stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Resource type'); ?></th>
+            <th><?= $this->translate('Number of values linking to it'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($valueResourceTypes as $valueResourceType): ?>
+            <?php
+            $resource_type = $valueResourceType['resource_type'];
+            $type = match($resource_type) {
+                'Omeka\Entity\ItemSet' => $this->translate('Item set'),
+                'Omeka\Entity\Item' => $this->translate('Item'),
+                'Omeka\Entity\Media' => $this->translate('Media'),
+                default => $resource_type,
+            };
+            ?>
+            <tr>
+                <td><?= $this->escapeHtml($type) ?></td>
+                <td><?= $this->escapeHtml($valueResourceType['count']) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<h2><?= $this->translate('Value annotations') ?></h2>
+
+<table class="tablesaw tablesaw-stack">
+    <tbody>
+        <tr>
+            <td><?= $this->escapeHtml($this->translate('Number of value annotations')) ?></td>
+            <td><?= $this->escapeHtml($valueAnnotationCount) ?></td>
+        </tr>
+    </tbody>
+</table>
+
+<h2><?= $this->translate('Roles') ?></h2>
+
+<table class="tablesaw tablesaw-stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Role'); ?></th>
+            <th><?= $this->translate('Number of inactive users'); ?></th>
+            <th><?= $this->translate('Number of active users'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($roles as $role): ?>
+            <tr>
+                <td><?= $this->escapeHtml($role['role']) ?></td>
+                <td><?= $this->escapeHtml($role['inactiveCount']) ?></td>
+                <td><?= $this->escapeHtml($role['activeCount']) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

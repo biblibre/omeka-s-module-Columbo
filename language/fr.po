@@ -1,0 +1,142 @@
+# French translations for PACKAGE package.
+# Copyright (C) 2025 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-04-10 15:20+0200\n"
+"PO-Revision-Date: 2025-04-10 15:26+0200\n"
+"Last-Translator: Julian Maurice <julian.maurice@biblibre.com>\n"
+"Language-Team: none\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.5\n"
+
+#: view/columbo/admin/index/index.phtml:12
+msgid "Without resource template"
+msgstr "Sans modèle de ressource"
+
+#: view/columbo/admin/index/index.phtml:13
+msgid "Without class"
+msgstr "Sans classe"
+
+#: view/columbo/admin/index/index.phtml:14
+#: view/columbo/admin/index/index.phtml:78
+msgid "Total"
+msgstr "Total"
+
+#: view/columbo/admin/index/index.phtml:50
+msgid "Number of items with media"
+msgstr "Numbre de contenus avec média"
+
+#: view/columbo/admin/index/index.phtml:54
+msgid "Number of items without media"
+msgstr "Nombre de contenus sans média"
+
+#: view/columbo/admin/index/index.phtml:58
+msgid "Number of items without item sets"
+msgstr "Nombre de contenus sans collection"
+
+#: view/columbo/admin/index/index.phtml:62
+msgid "Number of items with an item set"
+msgstr "Nombre de contenus avec collection"
+
+#: view/columbo/admin/index/index.phtml:66
+msgid "Number of media per item, excluding items without media (min / max / average)"
+msgstr "Nombre de médias par contenu, en excluant les contenus sans média (min / max / moyenne)"
+
+#: view/columbo/admin/index/index.phtml:77
+msgid "File type"
+msgstr "Type de fichier"
+
+#: view/columbo/admin/index/index.phtml:97
+msgid "Number of items"
+msgstr "Nombre de contenus"
+
+#: view/columbo/admin/index/index.phtml:98
+msgid "Number of item sets"
+msgstr "Nombre de collections"
+
+#: view/columbo/admin/index/index.phtml:99
+msgid "Number of pages"
+msgstr "Nombre de pages"
+
+#: view/columbo/admin/index/index.phtml:100
+msgid "Number of viewers"
+msgstr "Nombre d'observateurs"
+
+#: view/columbo/admin/index/index.phtml:101
+msgid "Number of editors"
+msgstr "Nombre de créateurs"
+
+#: view/columbo/admin/index/index.phtml:102
+msgid "Number of admins"
+msgstr "Nombre de responsables"
+
+#: view/columbo/admin/index/index.phtml:120
+msgid "Themes"
+msgstr "Thèmes"
+
+#: view/columbo/admin/index/index.phtml:126
+msgid "Version"
+msgstr "Version"
+
+#: view/columbo/admin/index/index.phtml:127
+msgid "Number of sites using it"
+msgstr "Nombre de sites l'utilisant"
+
+#: view/columbo/admin/index/index.phtml:147
+#: view/columbo/admin/index/index.phtml:170
+#: view/columbo/admin/index/index.phtml:193
+msgid "Number of item sets using it"
+msgstr "Nombre de collections l'utilisant"
+
+#: view/columbo/admin/index/index.phtml:148
+#: view/columbo/admin/index/index.phtml:171
+#: view/columbo/admin/index/index.phtml:194
+msgid "Number of items using it"
+msgstr "Nombre de contenus l'utilisant"
+
+#: view/columbo/admin/index/index.phtml:149
+#: view/columbo/admin/index/index.phtml:172
+#: view/columbo/admin/index/index.phtml:195
+msgid "Number of media using it"
+msgstr "Nombre de médias l'utilisant"
+
+#: view/columbo/admin/index/index.phtml:216
+msgid "Number of classes"
+msgstr "Nombre de classes"
+
+#: view/columbo/admin/index/index.phtml:217
+msgid "Number of properties"
+msgstr "Nombre de propriétés"
+
+#: view/columbo/admin/index/index.phtml:231
+msgid "Value resource types"
+msgstr "Types des ressources des valeurs"
+
+#: view/columbo/admin/index/index.phtml:237
+msgid "Number of values linking to it"
+msgstr "Nombre de valeurs pointant vers ce type"
+
+#: view/columbo/admin/index/index.phtml:264
+msgid "Number of value annotations"
+msgstr "Nombre d'annotations de valeur"
+
+#: view/columbo/admin/index/index.phtml:270
+msgid "Roles"
+msgstr "Rôles"
+
+#: view/columbo/admin/index/index.phtml:276
+msgid "Number of inactive users"
+msgstr "Nombre d'utilisateurs inactifs"
+
+#: view/columbo/admin/index/index.phtml:277
+msgid "Number of active users"
+msgstr "Nombre d'utilisateurs actifs"

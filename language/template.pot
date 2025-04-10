@@ -1,0 +1,142 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-04-10 15:20+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: view/columbo/admin/index/index.phtml:12
+msgid "Without resource template"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:13
+msgid "Without class"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:14
+#: view/columbo/admin/index/index.phtml:78
+msgid "Total"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:50
+msgid "Number of items with media"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:54
+msgid "Number of items without media"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:58
+msgid "Number of items without item sets"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:62
+msgid "Number of items with an item set"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:66
+msgid ""
+"Number of media per item, excluding items without media (min / max / average)"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:77
+msgid "File type"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:97
+msgid "Number of items"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:98
+msgid "Number of item sets"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:99
+msgid "Number of pages"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:100
+msgid "Number of viewers"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:101
+msgid "Number of editors"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:102
+msgid "Number of admins"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:120
+msgid "Themes"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:126
+msgid "Version"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:127
+msgid "Number of sites using it"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:147
+#: view/columbo/admin/index/index.phtml:170
+#: view/columbo/admin/index/index.phtml:193
+msgid "Number of item sets using it"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:148
+#: view/columbo/admin/index/index.phtml:171
+#: view/columbo/admin/index/index.phtml:194
+msgid "Number of items using it"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:149
+#: view/columbo/admin/index/index.phtml:172
+#: view/columbo/admin/index/index.phtml:195
+msgid "Number of media using it"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:216
+msgid "Number of classes"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:217
+msgid "Number of properties"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:231
+msgid "Value resource types"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:237
+msgid "Number of values linking to it"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:264
+msgid "Number of value annotations"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:270
+msgid "Roles"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:276
+msgid "Number of inactive users"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:277
+msgid "Number of active users"
+msgstr ""
