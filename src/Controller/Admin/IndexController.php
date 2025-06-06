@@ -214,11 +214,10 @@ class IndexController extends AbstractActionController
         $roles = $conn->fetchAllAssociative(<<<SQL
             select
                 role.role,
-                count(distinct inactive_user.id) inactiveCount,
-                count(distinct active_user.id) activeCount
+                sum(if(user.is_active, 0, 1)) inactiveCount,
+                sum(if(user.is_active, 1, 0)) activeCount
             from (select distinct role from user) role
-                left join user inactive_user on (inactive_user.role = role.role and inactive_user.is_active = 0)
-                left join user active_user on (active_user.role = role.role and active_user.is_active = 1)
+                left join user on (user.role = role.role)
             group by role.role
             order by role.role
         SQL);
