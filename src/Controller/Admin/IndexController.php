@@ -142,15 +142,13 @@ class IndexController extends AbstractActionController
         $properties = $conn->fetchAllAssociative(<<<SQL
             select
                 concat(vocabulary.prefix, ':', property.local_name) term,
-                count(distinct item_set_resource.id) itemSetCount,
-                count(distinct item_resource.id) itemCount,
-                count(distinct media_resource.id) mediaCount
+                sum(if(resource.resource_type = ?, 1, 0)) itemSetCount,
+                sum(if(resource.resource_type = ?, 1, 0)) itemCount,
+                sum(if(resource.resource_type = ?, 1, 0)) mediaCount
             from property
                 inner join vocabulary on (vocabulary.id = property.vocabulary_id)
                 inner join value on (value.property_id = property.id)
-                left join resource item_set_resource on (item_set_resource.id = value.resource_id and item_set_resource.resource_type = ?)
-                left join resource item_resource on (item_resource.id = value.resource_id and item_resource.resource_type = ?)
-                left join resource media_resource on (media_resource.id = value.resource_id and media_resource.resource_type = ?)
+                inner join resource on (resource.id = value.resource_id)
             group by term
             order by term
         SQL, [ItemSet::class, Item::class, Media::class]);
@@ -159,14 +157,12 @@ class IndexController extends AbstractActionController
         $classes = $conn->fetchAllAssociative(<<<SQL
             select
                 concat(vocabulary.prefix, ':', resource_class.local_name) term,
-                count(distinct item_set_resource.id) itemSetCount,
-                count(distinct item_resource.id) itemCount,
-                count(distinct media_resource.id) mediaCount
+                sum(if(resource.resource_type = ?, 1, 0)) itemSetCount,
+                sum(if(resource.resource_type = ?, 1, 0)) itemCount,
+                sum(if(resource.resource_type = ?, 1, 0)) mediaCount
             from resource_class
                 inner join vocabulary on (vocabulary.id = resource_class.vocabulary_id)
-                left join resource item_set_resource on (item_set_resource.resource_class_id = resource_class.id and item_set_resource.resource_type = ?)
-                left join resource item_resource on (item_resource.resource_class_id = resource_class.id and item_resource.resource_type = ?)
-                left join resource media_resource on (media_resource.resource_class_id = resource_class.id and media_resource.resource_type = ?)
+                inner join resource on (resource.resource_class_id = resource_class.id)
             group by term
             having itemSetCount + itemCount + mediaCount > 0
             order by term
