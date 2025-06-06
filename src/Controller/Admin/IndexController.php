@@ -176,13 +176,11 @@ class IndexController extends AbstractActionController
         $resourceTemplates = $conn->fetchAllAssociative(<<<SQL
             select
                 resource_template.label,
-                count(distinct item_set_resource.id) itemSetCount,
-                count(distinct item_resource.id) itemCount,
-                count(distinct media_resource.id) mediaCount
+                sum(if(resource.resource_type = ?, 1, 0)) itemSetCount,
+                sum(if(resource.resource_type = ?, 1, 0)) itemCount,
+                sum(if(resource.resource_type = ?, 1, 0)) mediaCount
             from resource_template
-                left join resource item_set_resource on (item_set_resource.resource_template_id = resource_template.id and item_set_resource.resource_type = ?)
-                left join resource item_resource on (item_resource.resource_template_id = resource_template.id and item_resource.resource_type = ?)
-                left join resource media_resource on (media_resource.resource_template_id = resource_template.id and media_resource.resource_type = ?)
+                left join resource on (resource.resource_template_id = resource_template.id)
             group by label
             order by label
         SQL, [ItemSet::class, Item::class, Media::class]);
