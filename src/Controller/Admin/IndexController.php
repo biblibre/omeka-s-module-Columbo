@@ -67,7 +67,7 @@ class IndexController extends AbstractActionController
             'mediaCount' => $mediaCount,
         ]);
 
-        $itemsWithMediaCount = $this->api()->search('items', ['has_media' => false, 'limit' => 0])->getTotalResults();
+        $itemsWithMediaCount = $this->api()->search('items', ['has_media' => true, 'limit' => 0])->getTotalResults();
         $itemsWithoutMediaCount = $itemsCount - $itemsWithMediaCount;
         $view->setVariables([
             'itemsWithMediaCount' => $itemsWithMediaCount,
