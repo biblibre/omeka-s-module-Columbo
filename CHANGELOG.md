@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 - Fix "Items with(out) media" counts
+- Fix french translation
 
 ## [0.1.3] - 2025-06-06
 

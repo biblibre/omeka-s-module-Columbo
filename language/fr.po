@@ -33,7 +33,7 @@ msgstr "Total"
 
 #: view/columbo/admin/index/index.phtml:50
 msgid "Number of items with media"
-msgstr "Numbre de contenus avec média"
+msgstr "Nombre de contenus avec média"
 
 #: view/columbo/admin/index/index.phtml:54
 msgid "Number of items without media"
