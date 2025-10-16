@@ -1,6 +1,27 @@
 <?php $this->htmlElement('body')->appendAttribute('class', 'columbo show'); ?>
 <?= $this->pageTitle('Columb\'O') ?>
 
+<?php
+$sectionNavs = [
+    'columbo-resources' => $this->translate('Resources'),
+    'columbo-items' => $this->translate('Items'),
+    'columbo-media' => $this->translate('Media'),
+    'columbo-sites' => $this->translate('Sites'),
+    'columbo-disk' => $this->translate('Disk usage'),
+    'columbo-themes' => $this->translate('Themes'),
+    'columbo-properties' => $this->translate('Properties'),
+    'columbo-classes' => $this->translate('Classes'),
+    'columbo-templates' => $this->translate('Resource templates'),
+    'columbo-vocabularies' => $this->translate('Vocabularies'),
+    'columbo-types' => $this->translate('Value resource types'),
+    'columbo-types' => $this->translate('Value annotations'),
+    'columbo-roles' => $this->translate('Roles')
+];
+
+echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
+?>
+
+<div id="columbo-resources" class="active section">
 <h2><?= $this->translate('Resources') ?></h2>
 
 <table class="tablesaw tablesaw-stack">
@@ -41,7 +62,9 @@
         </tr>
     </tbody>
 </table>
+</div>
 
+<div id="columbo-items" class="section">
 <h2><?= $this->translate('Items') ?></h2>
 
 <table class="tablesaw tablesaw-stack">
@@ -68,7 +91,9 @@
         </tr>
     </tbody>
 </table>
+</div>
 
+<div id="columbo-media" class="section">
 <h2><?= $this->translate('Media') ?></h2>
 
 <table class="tablesaw tablesaw-stack">
@@ -87,7 +112,9 @@
         <?php endforeach; ?>
     </tbody>
 </table>
+</div>
 
+<div id="columbo-sites" class="section">
 <h2><?= $this->translate('Sites') ?></h2>
 
 <table class="tablesaw tablesaw-stack">
@@ -118,7 +145,9 @@
         <?php endforeach; ?>
     </tbody>
 </table>
+</div>
 
+<div id="columbo-disk" class="section">
 <h2><?= $this->translate('Disk usage') ?></h2>
 
 <table class="tablesaw tablesaw-stack">
@@ -139,7 +168,9 @@
             <td><?= $this->escapeHtml($installSize['omeka']) ?></td>
     </tbody>
 </table>
+</div>
 
+<div id="columbo-themes" class="section">
 <h2><?= $this->translate('Themes') ?></h2>
 
 <table class="tablesaw tablesaw-stack">
@@ -160,7 +191,9 @@
         <?php endforeach; ?>
     </tbody>
 </table>
+</div>
 
+<div id="columbo-properties" class="section">
 <h2><?= $this->translate('Properties') ?></h2>
 
 <table class="tablesaw tablesaw-stack">
@@ -183,7 +216,9 @@
         <?php endforeach; ?>
     </tbody>
 </table>
+</div>
 
+<div id="columbo-classes" class="section">
 <h2><?= $this->translate('Classes') ?></h2>
 
 <table class="tablesaw tablesaw-stack">
@@ -206,7 +241,9 @@
         <?php endforeach; ?>
     </tbody>
 </table>
+</div>
 
+<div id="columbo-templates" class="section">
 <h2><?= $this->translate('Resource templates') ?></h2>
 
 <table class="tablesaw tablesaw-stack">
@@ -229,7 +266,9 @@
         <?php endforeach; ?>
     </tbody>
 </table>
+</div>
 
+<div id="columbo-vocabularies" class="section">
 <h2><?= $this->translate('Vocabularies') ?></h2>
 
 <table class="tablesaw tablesaw-stack">
@@ -250,7 +289,9 @@
         <?php endforeach; ?>
     </tbody>
 </table>
+</div>
 
+<div id="columbo-types" class="section">
 <h2><?= $this->translate('Value resource types') ?></h2>
 
 <table class="tablesaw tablesaw-stack">
@@ -278,7 +319,9 @@
         <?php endforeach; ?>
     </tbody>
 </table>
+</div>
 
+<div id="columbo-annotations" class="section">
 <h2><?= $this->translate('Value annotations') ?></h2>
 
 <table class="tablesaw tablesaw-stack">
@@ -289,7 +332,9 @@
         </tr>
     </tbody>
 </table>
+</div>
 
+<div id="columbo-roles" class="section">
 <h2><?= $this->translate('Roles') ?></h2>
 
 <table class="tablesaw tablesaw-stack">
@@ -310,3 +355,4 @@
         <?php endforeach; ?>
     </tbody>
 </table>
+</div>
