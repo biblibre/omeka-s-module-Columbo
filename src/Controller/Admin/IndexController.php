@@ -22,6 +22,60 @@ class IndexController extends AbstractActionController
         $this->themeManager = $themeManager;
     }
 
+    // from https://stackoverflow.com/questions/478121/how-to-get-directory-size-in-php
+    private function getDirectorySize($path) {
+        $bytestotal = 0;
+        $path = realpath($path);
+        if($path!==false && $path!='' && file_exists($path)){
+            foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS)) as $object){
+                $bytestotal += $object->getSize();
+            }
+        }
+        return $bytestotal;
+    }
+
+    private function bytesToReadable($nBytes) {
+        $i = 0;
+        for (; $i < 5 && $nBytes > 1000.0; $i++)
+        {
+            $nBytes = $nBytes / 1000.0;
+        }
+        $sign = "B"; // @translate
+        switch ($i)
+        {
+        case 0:
+            {
+                break;
+            }
+        case 1:
+            {
+                $sign = "KB"; // @translate
+                break;
+            }
+        case 2:
+            {
+                $sign = "MB"; // @translate
+                break;
+            }
+        case 3:
+            {
+                $sign = "GB"; // @translate
+                break;
+            }
+        case 4:
+            {
+                $sign = "TB"; // @translate
+                break;
+            }
+        default:
+            {
+                $sign = "";
+            }
+        }
+
+        return strval(round($nBytes, 1)) . ' ' . $sign;
+    }
+
     public function indexAction()
     {
         $conn = $this->connection;
@@ -114,7 +168,8 @@ class IndexController extends AbstractActionController
                 count(distinct site_page.id) pageCount,
                 count(distinct site_viewer.id) viewerCount,
                 count(distinct site_editor.id) editorCount,
-                count(distinct site_admin.id) adminCount
+                count(distinct site_admin.id) adminCount,
+                mediaSize
             from site
             left join item_site on (site.id = item_site.site_id)
             left join site_item_set on (site.id = site_item_set.site_id)
@@ -122,10 +177,49 @@ class IndexController extends AbstractActionController
             left join site_permission site_viewer on (site.id = site_viewer.site_id and site_viewer.role = 'viewer')
             left join site_permission site_editor on (site.id = site_editor.site_id and site_editor.role = 'editor')
             left join site_permission site_admin on (site.id = site_admin.site_id and site_admin.role = 'admin')
-            group by site.id
+            left join (
+                select
+                    t1.site_id as site_id,
+                    COALESCE(sum(t1.media_size), 0) as mediaSize
+                from (
+                    select
+                        site.id as site_id,
+                        media.size as media_size
+                    from site
+                    left join item_site on (site.id = item_site.site_id)
+                    left join media on (media.item_id = item_site.item_id)
+                    group by media.id
+                ) as t1 group by t1.site_id
+            ) as t on t.site_id = site.id
+            group by site.id      
         SQL);
 
+        $mediaSizeRequest = $conn->fetchAllAssociative(<<<SQL
+            select
+                coalesce(sum(media.size), 0) as mediaSize
+            from
+                media
+        SQL);
+
+        $totalMediaInstallSize = 0;
+        foreach ($sitesCounts as $index => $site)
+        {
+            $sitesCounts[$index]['mediaSize'] = $this->bytesToReadable($site['mediaSize']);
+        }
+        
         $view->setVariable('sitesCounts', $sitesCounts);
+
+        $totalMediaInstallSize = intval($mediaSizeRequest[0]['mediaSize']);
+        $installSize = [];
+        $installSize['totalMedia'] = $this->bytesToReadable($totalMediaInstallSize);
+        $totalAssetsSize = $this->getDirectorySize(OMEKA_PATH . '/files/asset');
+        $installSize['totalAssets'] = $this->bytesToReadable($totalAssetsSize);
+        $totalFileSize = $this->getDirectorySize(OMEKA_PATH . '/files');
+        $installSize['totalFiles'] = $this->bytesToReadable($totalFileSize);
+        $installSize['total'] = $this->bytesToReadable($totalMediaInstallSize + $totalFileSize);
+        $installSize['omeka'] = $this->bytesToReadable($this->getDirectorySize(OMEKA_PATH));
+
+        $view->setVariable('installSize', $installSize);
 
         $themes = $this->themeManager->getThemes();
         $themesData = [];

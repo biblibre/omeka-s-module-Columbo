@@ -100,6 +100,7 @@
             <th><?= $this->translate('Number of viewers'); ?></th>
             <th><?= $this->translate('Number of editors'); ?></th>
             <th><?= $this->translate('Number of admins'); ?></th>
+            <th><?= $this->translate('Size of medias'); ?></th>
         </tr>
     </thead>
     <tbody>
@@ -112,8 +113,30 @@
                 <td><?= $this->escapeHtml($site['viewerCount']) ?></td>
                 <td><?= $this->escapeHtml($site['editorCount']) ?></td>
                 <td><?= $this->escapeHtml($site['adminCount']) ?></td>
+                <td><?= $this->escapeHtml($site['mediaSize']) ?></td>
             </tr>
         <?php endforeach; ?>
+    </tbody>
+</table>
+
+<h2><?= $this->translate('Disk usage') ?></h2>
+
+<table class="tablesaw tablesaw-stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Total media size'); ?></th>
+            <th><?= $this->translate('Total assets size'); ?></th>
+            <th><?= $this->translate('Total /files size'); ?></th>
+            <th><?= $this->translate('Total /files + media'); ?></th>
+            <th><?= $this->translate('Total omeka install size'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+            <td><?= $this->escapeHtml($installSize['totalMedia']) ?></td>
+            <td><?= $this->escapeHtml($installSize['totalAssets']) ?></td>
+            <td><?= $this->escapeHtml($installSize['totalFiles']) ?></td>
+            <td><?= $this->escapeHtml($installSize['total']) ?></td>
+            <td><?= $this->escapeHtml($installSize['omeka']) ?></td>
     </tbody>
 </table>
 
