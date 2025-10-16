@@ -23,28 +23,29 @@ class IndexController extends AbstractActionController
     }
 
     // from https://stackoverflow.com/questions/478121/how-to-get-directory-size-in-php
-    private function getDirectorySize($path) {
+    private function getDirectorySize($path)
+    {
         $bytestotal = 0;
         $path = realpath($path);
-        if($path!==false && $path!='' && file_exists($path)){
-            foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS)) as $object){
+        if ($path !== false && $path != '' && file_exists($path)) {
+            foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS)) as $object) {
                 $objectSize = $object->getSize();
-                if (is_numeric($objectSize))
+                if (is_numeric($objectSize)) {
                     $bytestotal += $objectSize;
+                }
             }
         }
         return $bytestotal;
     }
 
-    private function bytesToReadable($nBytes) {
+    private function bytesToReadable($nBytes)
+    {
         $i = 0;
-        for (; $i < 5 && $nBytes > 1000.0; $i++)
-        {
+        for (; $i < 5 && $nBytes > 1000.0; $i++) {
             $nBytes = $nBytes / 1000.0;
         }
         $sign = "B"; // @translate
-        switch ($i)
-        {
+        switch ($i) {
         case 0:
             {
                 break;
@@ -204,11 +205,10 @@ class IndexController extends AbstractActionController
         SQL);
 
         $totalMediaInstallSize = 0;
-        foreach ($sitesCounts as $index => $site)
-        {
+        foreach ($sitesCounts as $index => $site) {
             $sitesCounts[$index]['mediaSize'] = $this->bytesToReadable($site['mediaSize']);
         }
-        
+
         $view->setVariable('sitesCounts', $sitesCounts);
 
         $totalMediaInstallSize = intval($mediaSizeRequest[0]['mediaSize']);
