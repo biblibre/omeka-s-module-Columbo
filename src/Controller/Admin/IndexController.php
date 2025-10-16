@@ -191,7 +191,7 @@ class IndexController extends AbstractActionController
                     from site
                     left join item_site on (site.id = item_site.site_id)
                     left join media on (media.item_id = item_site.item_id)
-                    group by media.id
+                    group by media.id, site.id
                 ) as t1 group by t1.site_id
             ) as t on t.site_id = site.id
             group by site.id      
