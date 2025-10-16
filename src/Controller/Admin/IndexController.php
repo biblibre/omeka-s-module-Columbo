@@ -172,7 +172,7 @@ class IndexController extends AbstractActionController
                 count(distinct site_viewer.id) viewerCount,
                 count(distinct site_editor.id) editorCount,
                 count(distinct site_admin.id) adminCount,
-                mediaSize
+                coalesce(mediaSize, 0)
             from site
             left join item_site on (site.id = item_site.site_id)
             left join site_item_set on (site.id = site_item_set.site_id)
@@ -183,7 +183,7 @@ class IndexController extends AbstractActionController
             left join (
                 select
                     t1.site_id as site_id,
-                    COALESCE(sum(t1.media_size), 0) as mediaSize
+                    coalesce(sum(t1.media_size), 0) as mediaSize
                 from (
                     select
                         site.id as site_id,
