@@ -172,7 +172,7 @@ class IndexController extends AbstractActionController
                 count(distinct site_viewer.id) viewerCount,
                 count(distinct site_editor.id) editorCount,
                 count(distinct site_admin.id) adminCount,
-                coalesce(mediaSize, 0)
+                coalesce(mediaSize, 0) mediaSize
             from site
             left join item_site on (site.id = item_site.site_id)
             left join site_item_set on (site.id = site_item_set.site_id)
