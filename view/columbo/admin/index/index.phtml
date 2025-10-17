@@ -14,7 +14,7 @@ $sectionNavs = [
     'columbo-templates' => $this->translate('Resource templates'),
     'columbo-vocabularies' => $this->translate('Vocabularies'),
     'columbo-types' => $this->translate('Value resource types'),
-    'columbo-types' => $this->translate('Value annotations'),
+    'columbo-annotations' => $this->translate('Value annotations'),
     'columbo-roles' => $this->translate('Roles')
 ];
 
@@ -96,6 +96,9 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
 <div id="columbo-media" class="section">
 <h2><?= $this->translate('Media') ?></h2>
 
+<?php echo $this->partial('common/sort-button.phtml', ['tableContainerId' => 'columbo-media',
+                                                        'sortOptions' => [$this->translate('Total')]]) ?>
+
 <table class="tablesaw tablesaw-stack">
     <thead>
         <tr>
@@ -173,6 +176,9 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
 <div id="columbo-themes" class="section">
 <h2><?= $this->translate('Themes') ?></h2>
 
+<?php echo $this->partial('common/sort-button.phtml', ['tableContainerId' => 'columbo-themes',
+                                                        'sortOptions' => [$this->translate('Number of sites using it')]]) ?>
+
 <table class="tablesaw tablesaw-stack">
     <thead>
         <tr>
@@ -194,7 +200,15 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
 </div>
 
 <div id="columbo-properties" class="section">
+
 <h2><?= $this->translate('Properties') ?></h2>
+
+<?php echo $this->partial('common/sort-button.phtml', ['tableContainerId' => 'columbo-properties',
+                                                    'sortOptions' => [
+                                                        $this->translate('Number of item sets using it'),
+                                                        $this->translate('Number of items using it'),
+                                                        $this->translate('Number of media using it')
+                                                    ]]); ?>
 
 <table class="tablesaw tablesaw-stack">
     <thead>
@@ -221,6 +235,13 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
 <div id="columbo-classes" class="section">
 <h2><?= $this->translate('Classes') ?></h2>
 
+<?php echo $this->partial('common/sort-button.phtml', ['tableContainerId' => 'columbo-classes',
+                                                    'sortOptions' => [
+                                                        $this->translate('Number of item sets using it'),
+                                                        $this->translate('Number of items using it'),
+                                                        $this->translate('Number of media using it')
+                                                    ]]); ?>
+
 <table class="tablesaw tablesaw-stack">
     <thead>
         <tr>
@@ -245,6 +266,13 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
 
 <div id="columbo-templates" class="section">
 <h2><?= $this->translate('Resource templates') ?></h2>
+
+<?php echo $this->partial('common/sort-button.phtml', ['tableContainerId' => 'columbo-templates',
+                                                    'sortOptions' => [
+                                                        $this->translate('Number of item sets using it'),
+                                                        $this->translate('Number of items using it'),
+                                                        $this->translate('Number of media using it')
+                                                    ]]); ?>
 
 <table class="tablesaw tablesaw-stack">
     <thead>
@@ -271,6 +299,12 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
 <div id="columbo-vocabularies" class="section">
 <h2><?= $this->translate('Vocabularies') ?></h2>
 
+<?php echo $this->partial('common/sort-button.phtml', ['tableContainerId' => 'columbo-vocabularies',
+                                                    'sortOptions' => [
+                                                        $this->translate('Number of classes'),
+                                                        $this->translate('Number of properties')
+                                                    ]]); ?>
+
 <table class="tablesaw tablesaw-stack">
     <thead>
         <tr>
@@ -293,6 +327,11 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
 
 <div id="columbo-types" class="section">
 <h2><?= $this->translate('Value resource types') ?></h2>
+
+<?php echo $this->partial('common/sort-button.phtml', ['tableContainerId' => 'columbo-types',
+                                                    'sortOptions' => [
+                                                        $this->translate('Number of values linking to it')
+                                                    ]]); ?>
 
 <table class="tablesaw tablesaw-stack">
     <thead>
@@ -325,9 +364,13 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
 <h2><?= $this->translate('Value annotations') ?></h2>
 
 <table class="tablesaw tablesaw-stack">
+    <thead>
+        <tr>
+            <th><?= $this->escapeHtml($this->translate('Number of value annotations')) ?></th>
+        </tr>
+    </thead>
     <tbody>
         <tr>
-            <td><?= $this->escapeHtml($this->translate('Number of value annotations')) ?></td>
             <td><?= $this->escapeHtml($valueAnnotationCount) ?></td>
         </tr>
     </tbody>
@@ -336,6 +379,12 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
 
 <div id="columbo-roles" class="section">
 <h2><?= $this->translate('Roles') ?></h2>
+
+<?php echo $this->partial('common/sort-button.phtml', ['tableContainerId' => 'columbo-roles',
+                                                    'sortOptions' => [
+                                                        $this->translate('Number of inactive users'),
+                                                        $this->translate('Number of active users')
+                                                    ]]); ?>
 
 <table class="tablesaw tablesaw-stack">
     <thead>
