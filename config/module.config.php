@@ -33,6 +33,20 @@ return [
                                 'action' => 'index',
                             ],
                         ],
+                        'may_terminate' => true,
+                        'child_routes' => [
+                            'download' => [
+                                'type' => \Laminas\Router\Http\Segment::class,
+                                'options' => [
+                                    'route' => '/download',
+                                    'defaults' => [
+                                        '__NAMESPACE__' => 'Columbo\Controller\Admin',
+                                        'controller' => 'index',
+                                        'action' => 'download',
+                                    ],
+                                ],
+                            ],
+                        ],
                     ],
                 ],
             ],

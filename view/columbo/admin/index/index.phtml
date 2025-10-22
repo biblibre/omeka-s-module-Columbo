@@ -405,3 +405,7 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
     </tbody>
 </table>
 </div>
+
+<form id='page-actions' method="POST" action="<?php echo $this->url('admin/columbo/download', [], []); ?>">
+    <button type="submit"><?php echo $this->translate('Download'); ?></button>
+</form>
