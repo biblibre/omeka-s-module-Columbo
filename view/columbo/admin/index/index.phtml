@@ -1,4 +1,6 @@
-<?php $this->htmlElement('body')->appendAttribute('class', 'columbo show'); ?>
+<?php $this->htmlElement('body')->appendAttribute('class', 'columbo show');
+$this->headScript()->appendFile($this->assetUrl('js/download-button.js', 'Columbo'));
+?>
 <?= $this->pageTitle('Columb\'O') ?>
 
 <?php
@@ -62,6 +64,17 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
         </tr>
     </tbody>
 </table>
+
+<?php
+$this->headScript()->captureStart();
+?>
+  document.addEventListener('DOMContentLoaded', function() {
+    addCsvDownloadButton('columbo-resources');
+  });
+<?php
+$this->headScript()->captureEnd();
+?>
+
 </div>
 
 <div id="columbo-items" class="section">
@@ -91,6 +104,16 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
         </tr>
     </tbody>
 </table>
+<?php
+$this->headScript()->captureStart();
+?>
+  document.addEventListener('DOMContentLoaded', function() {
+    addCsvDownloadButton('columbo-items');
+  });
+<?php
+$this->headScript()->captureEnd();
+?>
+
 </div>
 
 <div id="columbo-media" class="section">
@@ -115,6 +138,17 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
         <?php endforeach; ?>
     </tbody>
 </table>
+
+<?php
+$this->headScript()->captureStart();
+?>
+  document.addEventListener('DOMContentLoaded', function() {
+    addCsvDownloadButton('columbo-media');
+  });
+<?php
+$this->headScript()->captureEnd();
+?>
+
 </div>
 
 <div id="columbo-sites" class="section">
@@ -148,6 +182,17 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
         <?php endforeach; ?>
     </tbody>
 </table>
+
+<?php
+$this->headScript()->captureStart();
+?>
+  document.addEventListener('DOMContentLoaded', function() {
+    addCsvDownloadButton('columbo-sites');
+  });
+<?php
+$this->headScript()->captureEnd();
+?>
+
 </div>
 
 <div id="columbo-disk" class="section">
@@ -171,6 +216,17 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
             <td><?= $this->escapeHtml($installSize['omeka']) ?></td>
     </tbody>
 </table>
+
+<?php
+$this->headScript()->captureStart();
+?>
+  document.addEventListener('DOMContentLoaded', function() {
+    addCsvDownloadButton('columbo-disk');
+  });
+<?php
+$this->headScript()->captureEnd();
+?>
+
 </div>
 
 <div id="columbo-themes" class="section">
@@ -197,6 +253,17 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
         <?php endforeach; ?>
     </tbody>
 </table>
+
+<?php
+$this->headScript()->captureStart();
+?>
+  document.addEventListener('DOMContentLoaded', function() {
+    addCsvDownloadButton('columbo-themes');
+  });
+<?php
+$this->headScript()->captureEnd();
+?>
+
 </div>
 
 <div id="columbo-properties" class="section">
@@ -230,6 +297,17 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
         <?php endforeach; ?>
     </tbody>
 </table>
+
+<?php
+$this->headScript()->captureStart();
+?>
+  document.addEventListener('DOMContentLoaded', function() {
+    addCsvDownloadButton('columbo-properties');
+  });
+<?php
+$this->headScript()->captureEnd();
+?>
+
 </div>
 
 <div id="columbo-classes" class="section">
@@ -262,6 +340,17 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
         <?php endforeach; ?>
     </tbody>
 </table>
+
+<?php
+$this->headScript()->captureStart();
+?>
+  document.addEventListener('DOMContentLoaded', function() {
+    addCsvDownloadButton('columbo-classes');
+  });
+<?php
+$this->headScript()->captureEnd();
+?>
+
 </div>
 
 <div id="columbo-templates" class="section">
@@ -294,6 +383,17 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
         <?php endforeach; ?>
     </tbody>
 </table>
+
+<?php
+$this->headScript()->captureStart();
+?>
+  document.addEventListener('DOMContentLoaded', function() {
+    addCsvDownloadButton('columbo-templates');
+  });
+<?php
+$this->headScript()->captureEnd();
+?>
+
 </div>
 
 <div id="columbo-vocabularies" class="section">
@@ -323,6 +423,17 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
         <?php endforeach; ?>
     </tbody>
 </table>
+
+<?php
+$this->headScript()->captureStart();
+?>
+  document.addEventListener('DOMContentLoaded', function() {
+    addCsvDownloadButton('columbo-vocabularies');
+  });
+<?php
+$this->headScript()->captureEnd();
+?>
+
 </div>
 
 <div id="columbo-types" class="section">
@@ -358,6 +469,17 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
         <?php endforeach; ?>
     </tbody>
 </table>
+
+<?php
+$this->headScript()->captureStart();
+?>
+  document.addEventListener('DOMContentLoaded', function() {
+    addCsvDownloadButton('columbo-types');
+  });
+<?php
+$this->headScript()->captureEnd();
+?>
+
 </div>
 
 <div id="columbo-annotations" class="section">
@@ -375,6 +497,17 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
         </tr>
     </tbody>
 </table>
+
+<?php
+$this->headScript()->captureStart();
+?>
+  document.addEventListener('DOMContentLoaded', function() {
+    addCsvDownloadButton('columbo-annotations');
+  });
+<?php
+$this->headScript()->captureEnd();
+?>
+
 </div>
 
 <div id="columbo-roles" class="section">
@@ -404,6 +537,17 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
         <?php endforeach; ?>
     </tbody>
 </table>
+
+<?php
+$this->headScript()->captureStart();
+?>
+  document.addEventListener('DOMContentLoaded', function() {
+    addCsvDownloadButton('columbo-roles');
+  });
+<?php
+$this->headScript()->captureEnd();
+?>
+
 </div>
 
 <form id='page-actions' method="POST" action="<?php echo $this->url('admin/columbo/download', [], []); ?>">
