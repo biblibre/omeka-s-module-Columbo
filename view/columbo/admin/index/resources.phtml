@@ -18,6 +18,14 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
 <div id="columbo-resources" class="active section">
 <h2><?= $this->translate('Resources') ?></h2>
 
+<?php echo $this->partial('common/sort-button.phtml', ['tableContainerId' => 'columbo-properties',
+                                                    'sortOptions' => [
+                                                        $this->translate('Public'),
+                                                        $this->translate('Private'),
+                                                        $this->translate('Without resource template'),
+                                                        $this->translate('Without class'),
+                                                        $this->translate('Total'),
+                                                    ]]); ?>
 <table class="tablesaw tablesaw-stack">
     <thead>
         <tr>

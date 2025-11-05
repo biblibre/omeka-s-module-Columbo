@@ -15,6 +15,17 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
 <div id="columbo-sites" class="active section">
 <h2><?= $this->translate('Sites') ?></h2>
 
+<?php echo $this->partial('common/sort-button.phtml', ['tableContainerId' => 'columbo-properties',
+                                                    'sortOptions' => [
+                                                        $this->translate('Number of items'),
+                                                        $this->translate('Number of item sets'),
+                                                        $this->translate('Number of pages'),
+                                                        $this->translate('Number of viewers'),
+                                                        $this->translate('Number of editors'),
+                                                        $this->translate('Number of admins'),
+                                                        $this->translate('Number of admins'),
+                                                    ]]); ?>
+
 <table class="tablesaw tablesaw-stack">
     <thead>
         <tr>
@@ -25,7 +36,7 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
             <th><?= $this->translate('Number of viewers'); ?></th>
             <th><?= $this->translate('Number of editors'); ?></th>
             <th><?= $this->translate('Number of admins'); ?></th>
-            <th><?= $this->translate('Size of medias'); ?></th>
+            <th><?= $this->translate('Number of admins'); ?></th>
         </tr>
     </thead>
     <tbody>
