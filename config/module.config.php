@@ -12,9 +12,7 @@ return [
         'AdminModule' => [
             [
                 'label' => 'Columb\'O',
-                'route' => 'admin/columbo',
-                'resource' => 'Columbo\Controller\Admin\Index',
-                'privilege' => 'index',
+                'route' => 'admin/columbo/sites',
                 'class' => 'o-icon- fa-user-secret',
                 'pages' => [
                     [
@@ -53,13 +51,8 @@ return [
                         'type' => \Laminas\Router\Http\Segment::class,
                         'options' => [
                             'route' => '/columbo',
-                            'defaults' => [
-                                '__NAMESPACE__' => 'Columbo\Controller\Admin',
-                                'controller' => 'index',
-                                'action' => 'index',
-                            ],
                         ],
-                        'may_terminate' => true,
+                        'may_terminate' => false,
                         'child_routes' => [
                             'download' => [
                                 'type' => \Laminas\Router\Http\Segment::class,

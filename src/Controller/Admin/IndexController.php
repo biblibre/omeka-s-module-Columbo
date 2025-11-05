@@ -489,7 +489,7 @@ class IndexController extends AbstractActionController
         return $view;
     }
 
-    public function modulesActions() {
+    public function modulesAction() {
         $conn = $this->connection;
 
         $view = new ViewModel;
