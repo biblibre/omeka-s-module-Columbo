@@ -1,0 +1,176 @@
+<?php $this->htmlElement('body')->appendAttribute('class', 'columbo show');
+$this->headScript()->appendFile($this->assetUrl('js/download-button.js', 'Columbo'));
+?>
+<?= $this->pageTitle('Columb\'O') ?>
+
+<?php
+$sectionNavs = [
+    'columbo-properties' => $this->translate('Properties'),
+    'columbo-classes' => $this->translate('Classes'),
+    'columbo-types' => $this->translate('Value resource types'),
+    'columbo-annotations' => $this->translate('Value annotations'),
+];
+
+echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
+?>
+
+<div id="columbo-properties" class="active section">
+
+<h2><?= $this->translate('Properties') ?></h2>
+
+<?php echo $this->partial('common/sort-button.phtml', ['tableContainerId' => 'columbo-properties',
+                                                    'sortOptions' => [
+                                                        $this->translate('Number of item sets using it'),
+                                                        $this->translate('Number of items using it'),
+                                                        $this->translate('Number of media using it')
+                                                    ]]); ?>
+
+<table class="tablesaw tablesaw-stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Term'); ?></th>
+            <th><?= $this->translate('Number of item sets using it'); ?></th>
+            <th><?= $this->translate('Number of items using it'); ?></th>
+            <th><?= $this->translate('Number of media using it'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($properties as $property): ?>
+            <tr>
+                <td><?= $this->escapeHtml($property['term']) ?></td>
+                <td><?= $this->escapeHtml($property['itemSetCount']) ?></td>
+                <td><?= $this->escapeHtml($property['itemCount']) ?></td>
+                <td><?= $this->escapeHtml($property['mediaCount']) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<?php
+$this->headScript()->captureStart();
+?>
+  document.addEventListener('DOMContentLoaded', function() {
+    addCsvDownloadButton('columbo-properties');
+  });
+<?php
+$this->headScript()->captureEnd();
+?>
+
+</div>
+
+<div id="columbo-classes" class="section">
+<h2><?= $this->translate('Classes') ?></h2>
+
+<?php echo $this->partial('common/sort-button.phtml', ['tableContainerId' => 'columbo-classes',
+                                                    'sortOptions' => [
+                                                        $this->translate('Number of item sets using it'),
+                                                        $this->translate('Number of items using it'),
+                                                        $this->translate('Number of media using it')
+                                                    ]]); ?>
+
+<table class="tablesaw tablesaw-stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Term'); ?></th>
+            <th><?= $this->translate('Number of item sets using it'); ?></th>
+            <th><?= $this->translate('Number of items using it'); ?></th>
+            <th><?= $this->translate('Number of media using it'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($classes as $class): ?>
+            <tr>
+                <td><?= $this->escapeHtml($class['term']) ?></td>
+                <td><?= $this->escapeHtml($class['itemSetCount']) ?></td>
+                <td><?= $this->escapeHtml($class['itemCount']) ?></td>
+                <td><?= $this->escapeHtml($class['mediaCount']) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<?php
+$this->headScript()->captureStart();
+?>
+  document.addEventListener('DOMContentLoaded', function() {
+    addCsvDownloadButton('columbo-classes');
+  });
+<?php
+$this->headScript()->captureEnd();
+?>
+
+</div>
+
+<div id="columbo-types" class="section">
+<h2><?= $this->translate('Value resource types') ?></h2>
+
+<?php echo $this->partial('common/sort-button.phtml', ['tableContainerId' => 'columbo-types',
+                                                    'sortOptions' => [
+                                                        $this->translate('Number of values linking to it')
+                                                    ]]); ?>
+
+<table class="tablesaw tablesaw-stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Resource type'); ?></th>
+            <th><?= $this->translate('Number of values linking to it'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($valueResourceTypes as $valueResourceType): ?>
+            <?php
+            $resource_type = $valueResourceType['resource_type'];
+            $type = match($resource_type) {
+                'Omeka\Entity\ItemSet' => $this->translate('Item set'),
+                'Omeka\Entity\Item' => $this->translate('Item'),
+                'Omeka\Entity\Media' => $this->translate('Media'),
+                default => $resource_type,
+            };
+            ?>
+            <tr>
+                <td><?= $this->escapeHtml($type) ?></td>
+                <td><?= $this->escapeHtml($valueResourceType['count']) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<?php
+$this->headScript()->captureStart();
+?>
+  document.addEventListener('DOMContentLoaded', function() {
+    addCsvDownloadButton('columbo-types');
+  });
+<?php
+$this->headScript()->captureEnd();
+?>
+
+</div>
+
+<div id="columbo-annotations" class="section">
+<h2><?= $this->translate('Value annotations') ?></h2>
+
+<table class="tablesaw tablesaw-stack">
+    <thead>
+        <tr>
+            <th><?= $this->escapeHtml($this->translate('Number of value annotations')) ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><?= $this->escapeHtml($valueAnnotationCount) ?></td>
+        </tr>
+    </tbody>
+</table>
+
+<?php
+$this->headScript()->captureStart();
+?>
+  document.addEventListener('DOMContentLoaded', function() {
+    addCsvDownloadButton('columbo-annotations');
+  });
+<?php
+$this->headScript()->captureEnd();
+?>
+
+</div>
