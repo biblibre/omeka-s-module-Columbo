@@ -15,14 +15,23 @@ This includes (non-exhaustive list):
 * Number of media per media type
 * Number of item sets, items, pages per site
 * List of themes and how many sites use them
+* List of total media size per site
 * List of properties used and how many resources use them
 * List of classes and resource templates and how many resources use them
 * Number of users per role
 
+## Disk usage calculations
+
+* Total media size is the sum of the registered media sizes in the database. Could slightly differ than the one on disk.
+* Total /files size is the size of the /file directory of Omeka
+* Total asset size is the is the size of the /file/asset directory of Omeka
+* Total Omeka install size is the size of the Omeka directory where it is installed. It may be not exactly accurate due to permission issues.
+
 ## Quick start
 
 * Install the module
-* Click on "Columb'O" in the administration navigation menu
+* Browse the "Columb'O" navigation menu
+* The module does NOT need to be configured at all
 
 ## License
 
