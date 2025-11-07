@@ -23,27 +23,43 @@ class IndexController extends AbstractActionController
     }
 
     // from https://stackoverflow.com/questions/478121/how-to-get-directory-size-in-php
-    private function getDirectorySize($path)
+    function getDirectorySize($dir)
     {
-        $bytestotal = 0;
-        $path = realpath($path);
-        if ($path !== false && $path != '' && file_exists($path)) {
-            foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS)) as $object) {
-                try {
-                    $objectSize = $object->getSize();
-                    if (is_numeric($objectSize)) {
-                        $bytestotal += $objectSize;
-                    }
-                }
+        $dir = rtrim(str_replace('\\', '/', $dir), '/');
 
-                // most likely a permission error
-                catch (\UnexpectedValueException $e)
-                {
-                    continue;
+        if (is_dir($dir) === true) {
+            $totalSize = 0;
+            $os        = strtoupper(substr(PHP_OS, 0, 3));
+            // If on a Unix Host (Linux, Mac OS)
+            if ($os !== 'WIN') {
+                $io = popen('/usr/bin/du -sb ' . $dir, 'r');
+                if ($io !== false) {
+                    $a = fgets($io, 80);
+                    $totalSize = intval($a);
+                    pclose($io);
+                    return $totalSize;
                 }
             }
+            // If on a Windows Host (WIN32, WINNT, Windows)
+            if ($os === 'WIN' && extension_loaded('com_dotnet')) {
+                $obj = new \COM('scripting.filesystemobject');
+                if (is_object($obj)) {
+                    $ref       = $obj->getfolder($dir);
+                    $totalSize = $ref->size;
+                    $obj       = null;
+                    return $totalSize;
+                }
+            }
+            // If System calls did't work, use slower PHP 5
+            $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir));
+            foreach ($files as $file) {
+                $totalSize += $file->getSize();
+            }
+            return $totalSize;
+        } else if (is_file($dir) === true) {
+            return filesize($dir);
         }
-        return $bytestotal;
+        return 0;
     }
 
     private function bytesToReadable($nBytes)
