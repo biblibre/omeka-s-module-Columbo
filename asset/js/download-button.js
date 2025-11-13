@@ -12,7 +12,7 @@ function addCsvDownloadButton(divId) {
 
   // Create button
   const btn = document.createElement('button');
-  btn.textContent = 'Download CSV';
+  btn.textContent = Omeka.jsTranslate('Download CSV');
   btn.classList.add('download-csv-btn'); // style via CSS if desired
   btn.addEventListener('click', () => {
     let csv = [];

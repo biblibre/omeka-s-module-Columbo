@@ -152,4 +152,7 @@ return [
             dirname(__DIR__) . '/view',
         ],
     ],
+    'js_translate_strings' => [
+        'Download CSV', // @translate
+    ],
 ];
