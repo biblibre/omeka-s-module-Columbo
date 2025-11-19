@@ -18,7 +18,8 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
                                                     'sortOptions' => [
                                                         $this->translate('Number of inactive users'),
                                                         $this->translate('Number of active users')
-                                                    ]]); ?>
+                                                    ],
+                                                    'searchOption' => $this->translate('Role'),]); ?>
 
 <table class="tablesaw tablesaw-stack">
     <thead>

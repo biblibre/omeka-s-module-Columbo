@@ -7,19 +7,18 @@ function addCsvDownloadButton(divId) {
   const container = document.getElementById(divId);
   if (!container) return;
 
-  const table = container.querySelector('table');
+  const table = container.querySelector('table').cloneNode(true);
   if (!table) return;
 
   // Create button
   const btn = document.createElement('button');
   btn.textContent = Omeka.jsTranslate('Download CSV');
-  btn.classList.add('download-csv-btn'); // style via CSS if desired
+  btn.classList.add('download-csv-btn');
   btn.addEventListener('click', () => {
     let csv = [];
     for (const row of table.querySelectorAll('tr')) {
       const cols = Array.from(row.querySelectorAll('th, td')).map(col => {
-        let text = col.innerText.replace(/"/g, '""');
-        if (text.search(/("|,|\n)/g) >= 0) text = `"${text}"`;
+        let text = col.innerText;
         return text;
       });
       csv.push(cols.join(','));

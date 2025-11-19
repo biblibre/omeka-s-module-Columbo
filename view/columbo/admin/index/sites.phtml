@@ -24,7 +24,9 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
                                                         $this->translate('Number of editors'),
                                                         $this->translate('Number of admins'),
                                                         $this->translate('Size of media'),
-                                                    ]]); ?>
+                                                    ],
+                                                    'searchOption' => $this->translate('Site'),
+                                                    ]); ?>
 
 <table class="tablesaw tablesaw-stack">
     <thead>
@@ -71,7 +73,9 @@ $this->headScript()->captureEnd();
 <h2><?= $this->translate('Themes') ?></h2>
 
 <?php echo $this->partial('common/sort-button.phtml', ['tableContainerId' => 'columbo-themes',
-                                                        'sortOptions' => [$this->translate('Number of sites using it')]]) ?>
+                                                        'sortOptions' => [$this->translate('Number of sites using it')],
+                                                        'searchOption' => $this->translate('Theme'),
+                                                        ]) ?>
 
 <table class="tablesaw tablesaw-stack">
     <thead>

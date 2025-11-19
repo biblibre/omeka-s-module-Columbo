@@ -120,7 +120,9 @@ $this->headScript()->captureEnd();
 <h2><?= $this->translate('Media') ?></h2>
 
 <?php echo $this->partial('common/sort-button.phtml', ['tableContainerId' => 'columbo-media',
-                                                        'sortOptions' => [$this->translate('Total')]]) ?>
+                                                        'sortOptions' => [$this->translate('Total')], 
+                                                        'searchOption' => $this->translate('File type'),
+                                                        ]) ?>
 
 <table class="tablesaw tablesaw-stack">
     <thead>
@@ -159,7 +161,9 @@ $this->headScript()->captureEnd();
                                                         $this->translate('Number of item sets using it'),
                                                         $this->translate('Number of items using it'),
                                                         $this->translate('Number of media using it')
-                                                    ]]); ?>
+                                                    ],
+                                                    'searchOption' => $this->translate('Label'),
+                                                    ]); ?>
 
 <table class="tablesaw tablesaw-stack">
     <thead>
@@ -201,7 +205,9 @@ $this->headScript()->captureEnd();
                                                     'sortOptions' => [
                                                         $this->translate('Number of classes'),
                                                         $this->translate('Number of properties')
-                                                    ]]); ?>
+                                                    ],
+                                                    'searchOption' => $this->translate('Prefix'),
+                                                    ]); ?>
 
 <table class="tablesaw tablesaw-stack">
     <thead>

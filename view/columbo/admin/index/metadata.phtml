@@ -23,7 +23,9 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
                                                         $this->translate('Number of item sets using it'),
                                                         $this->translate('Number of items using it'),
                                                         $this->translate('Number of media using it')
-                                                    ]]); ?>
+                                                    ],
+                                                    'searchOption' => $this->translate('Term'),
+                                                    ]); ?>
 
 <table class="tablesaw tablesaw-stack">
     <thead>
@@ -66,7 +68,9 @@ $this->headScript()->captureEnd();
                                                         $this->translate('Number of item sets using it'),
                                                         $this->translate('Number of items using it'),
                                                         $this->translate('Number of media using it')
-                                                    ]]); ?>
+                                                    ],
+                                                    'searchOption' => $this->translate('Term'),
+                                                    ]); ?>
 
 <table class="tablesaw tablesaw-stack">
     <thead>
@@ -107,7 +111,9 @@ $this->headScript()->captureEnd();
 <?php echo $this->partial('common/sort-button.phtml', ['tableContainerId' => 'columbo-types',
                                                     'sortOptions' => [
                                                         $this->translate('Number of values linking to it')
-                                                    ]]); ?>
+                                                    ],
+                                                    'searchOption' => $this->translate('Resource type'),
+                                                    ]); ?>
 
 <table class="tablesaw tablesaw-stack">
     <thead>
