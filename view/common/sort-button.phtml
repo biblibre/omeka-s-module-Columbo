@@ -1,8 +1,8 @@
-<div class="browse-controls">
+<div class="browse-controls flex">
     <?php if (isset($searchOption)) { ?>
-        <nav class="pagination" role="navigation">
+        <nav role="navigation">
             <label for="columbo-navigation-search">Search</label>
-            <input type="text" name="columbo-navigation-search" id="columbo-search-<?php echo $tableContainerId ?>">
+            <input type="text" id="columbo-search-<?php echo $tableContainerId ?>">
         </nav>
     <?php } ?>
     <form class="sorting" action="">
