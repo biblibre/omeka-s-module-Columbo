@@ -17,6 +17,7 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
 
 <?php echo $this->partial('common/sort-button.phtml', ['tableContainerId' => 'columbo-sites',
                                                     'sortOptions' => [
+                                                        $this->translate('Site'),
                                                         $this->translate('Number of items'),
                                                         $this->translate('Number of item sets'),
                                                         $this->translate('Number of pages'),
@@ -73,7 +74,10 @@ $this->headScript()->captureEnd();
 <h2><?= $this->translate('Themes') ?></h2>
 
 <?php echo $this->partial('common/sort-button.phtml', ['tableContainerId' => 'columbo-themes',
-                                                        'sortOptions' => [$this->translate('Number of sites using it')],
+                                                        'sortOptions' => [
+                                                            $this->translate('Theme'),
+                                                            $this->translate('Number of sites using it'),
+                                                        ],
                                                         'searchOption' => $this->translate('Theme'),
                                                         ]) ?>
 
