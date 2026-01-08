@@ -19,7 +19,10 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
         <tr>
             <th><?= $this->translate('Total media size'); ?></th>
             <th><?= $this->translate('Total assets size'); ?></th>
-            <th><?= $this->translate('Total /files size'); ?></th>
+            <th><?= $this->translate('Total ingested files'); ?></th>
+            <?php if (isset($installSize['totalBucket'])): ?>
+              <th><?= $this->translate('Total remote ingested files'); ?></th>
+            <?php endif; ?>
             <th><?= $this->translate('Total omeka install size'); ?></th>
         </tr>
     </thead>
@@ -27,6 +30,9 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
             <td><?= $this->escapeHtml($installSize['totalMedia']) ?></td>
             <td><?= $this->escapeHtml($installSize['totalAssets']) ?></td>
             <td><?= $this->escapeHtml($installSize['totalFiles']) ?></td>
+            <?php if (isset($installSize['totalBucket'])): ?>
+              <td><?= $this->escapeHtml($installSize['totalBucket']) ?></td>
+            <?php endif; ?>
             <td><?= $this->escapeHtml($installSize['omeka']) ?></td>
     </tbody>
 </table>

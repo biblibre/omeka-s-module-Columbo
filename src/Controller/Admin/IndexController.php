@@ -111,7 +111,7 @@ class IndexController extends AbstractActionController
         $sum = 0;
         // from https://flysystem.thephpleague.com/docs/usage/filesystem-api/
         try {
-            $listing = $filesystem->listContents('', /* recursive = */ true);
+            $listing = $filesystem->listContents('/', /* recursive = */ true);
 
             /** @var \League\Flysystem\StorageAttributes $item */
             foreach ($listing as $item) {
@@ -128,7 +128,8 @@ class IndexController extends AbstractActionController
             }
         } catch (\League\Flysystem\FilesystemException $exception) {
             return 0;
-        }   
+        }
+        return $sum; 
     }
 
     public function indexAction()
@@ -477,8 +478,7 @@ class IndexController extends AbstractActionController
         $installSize['totalFiles'] = $this->bytesToReadable($totalFileSize);
 
         if (!empty($this->fileSystem)) {
-            $installSize['bucket'] = $this->bytesToReadable($this->getBucketSize($this->fileSystem));
-            var_dump($installSize['bucket']);
+            $installSize['totalBucket'] = $this->bytesToReadable($this->getBucketSize($this->fileSystem));
         }
 
         $installSize['total'] = $this->bytesToReadable($totalMediaInstallSize + $totalFileSize);
