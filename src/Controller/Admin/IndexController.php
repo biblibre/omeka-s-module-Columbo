@@ -15,11 +15,13 @@ class IndexController extends AbstractActionController
 {
     protected Connection $connection;
     protected ThemeManager $themeManager;
+    protected ?\League\Flysystem\FileSystem $fileSystem;
 
-    public function __construct(Connection $connection, ThemeManager $themeManager)
+    public function __construct(Connection $connection, ThemeManager $themeManager, ?\League\Flysystem\FileSystem $fileSystem = null)
     {
         $this->connection = $connection;
         $this->themeManager = $themeManager;
+        $this->fileSystem = $fileSystem;
     }
 
     // from https://stackoverflow.com/questions/478121/how-to-get-directory-size-in-php
@@ -101,6 +103,32 @@ class IndexController extends AbstractActionController
         }
 
         return strval(round($nBytes, 1)) . ' ' . $sign;
+    }
+
+
+    private function getBucketSize($filesystem): int
+    {
+        $sum = 0;
+        // from https://flysystem.thephpleague.com/docs/usage/filesystem-api/
+        try {
+            $listing = $filesystem->listContents('', /* recursive = */ true);
+
+            /** @var \League\Flysystem\StorageAttributes $item */
+            foreach ($listing as $item) {
+                $path = $item->path();
+
+                if ($item instanceof \League\Flysystem\FileAttributes) {
+                    try {
+                        $fileSize = $filesystem->fileSize($path);
+                        $sum += $fileSize;
+                    } catch (\League\Flysystem\FilesystemException | \League\Flysystem\UnableToRetrieveMetadata $exception) {
+                        // do nothing, skip this file
+                    }
+                } // else it's a directory we don't care
+            }
+        } catch (\League\Flysystem\FilesystemException $exception) {
+            return 0;
+        }   
     }
 
     public function indexAction()
@@ -447,6 +475,12 @@ class IndexController extends AbstractActionController
         $installSize['totalAssets'] = $this->bytesToReadable($totalAssetsSize);
         $totalFileSize = $this->getDirectorySize(OMEKA_PATH . '/files');
         $installSize['totalFiles'] = $this->bytesToReadable($totalFileSize);
+
+        if (!empty($this->fileSystem)) {
+            $installSize['bucket'] = $this->bytesToReadable($this->getBucketSize($this->fileSystem));
+            var_dump($installSize['bucket']);
+        }
+
         $installSize['total'] = $this->bytesToReadable($totalMediaInstallSize + $totalFileSize);
         $installSize['omeka'] = $this->bytesToReadable($this->getDirectorySize(OMEKA_PATH));
 
