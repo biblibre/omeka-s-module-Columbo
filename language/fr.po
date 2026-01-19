@@ -4,16 +4,16 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Abel Boilevin, 2025
+# Abel Boilevin, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-13 09:58+0100\n"
+"POT-Creation-Date: 2026-01-19 14:10+0100\n"
 "PO-Revision-Date: 2025-10-16 12:26+0000\n"
-"Last-Translator: Abel Boilevin, 2025\n"
+"Last-Translator: Abel Boilevin, 2026\n"
 "Language-Team: French (https://app.transifex.com/biblibre-/teams/298658/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,65 +21,73 @@ msgstr ""
 "Language: fr\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
-#: view/columbo/admin/index/disk.phtml:8
-#: view/columbo/admin/index/disk.phtml:15
+#: view/columbo/admin/index/disk.phtml:12
+#: view/columbo/admin/index/disk.phtml:19
 msgid "Disk usage"
 msgstr "Usage du disque"
 
-#: view/columbo/admin/index/disk.phtml:20
+#: view/columbo/admin/index/disk.phtml:24
 msgid "Total media size"
 msgstr "Taille totale des médias"
 
-#: view/columbo/admin/index/disk.phtml:21
+#: view/columbo/admin/index/disk.phtml:25
 msgid "Total assets size"
 msgstr "Taille totale des assets"
 
-#: view/columbo/admin/index/disk.phtml:22
-msgid "Total /files size"
-msgstr "Taille totale de /files"
+#: view/columbo/admin/index/disk.phtml:26
+msgid "Total ingested files"
+msgstr "Taille totale des fichiers ingérés"
 
-#: view/columbo/admin/index/disk.phtml:23
+#: view/columbo/admin/index/disk.phtml:28
+msgid "Total remote ingested files"
+msgstr "Taille totale des fichiers ingérés à distance"
+
+#: view/columbo/admin/index/disk.phtml:30
 msgid "Total omeka install size"
 msgstr "Taille totale de l'installation Omeka"
 
+#: view/columbo/admin/index/disk.phtml:38
+msgid "Calculating..."
+msgstr "Calcul en cours..."
+
 #: view/columbo/admin/index/metadata.phtml:10
-#: view/columbo/admin/index/metadata.phtml:105
+#: view/columbo/admin/index/metadata.phtml:111
 msgid "Value resource types"
 msgstr "Types des ressources des valeurs"
 
-#: view/columbo/admin/index/metadata.phtml:23
-#: view/columbo/admin/index/metadata.phtml:32
-#: view/columbo/admin/index/metadata.phtml:66
-#: view/columbo/admin/index/metadata.phtml:75
-#: view/columbo/admin/index/resources.phtml:159
-#: view/columbo/admin/index/resources.phtml:168
+#: view/columbo/admin/index/metadata.phtml:24
+#: view/columbo/admin/index/metadata.phtml:35
+#: view/columbo/admin/index/metadata.phtml:70
+#: view/columbo/admin/index/metadata.phtml:81
+#: view/columbo/admin/index/resources.phtml:165
+#: view/columbo/admin/index/resources.phtml:176
 msgid "Number of item sets using it"
 msgstr "Nombre de collections l'utilisant"
 
-#: view/columbo/admin/index/metadata.phtml:24
-#: view/columbo/admin/index/metadata.phtml:33
-#: view/columbo/admin/index/metadata.phtml:67
-#: view/columbo/admin/index/metadata.phtml:76
-#: view/columbo/admin/index/resources.phtml:160
-#: view/columbo/admin/index/resources.phtml:169
+#: view/columbo/admin/index/metadata.phtml:25
+#: view/columbo/admin/index/metadata.phtml:36
+#: view/columbo/admin/index/metadata.phtml:71
+#: view/columbo/admin/index/metadata.phtml:82
+#: view/columbo/admin/index/resources.phtml:166
+#: view/columbo/admin/index/resources.phtml:177
 msgid "Number of items using it"
 msgstr "Nombre de contenus l'utilisant"
 
-#: view/columbo/admin/index/metadata.phtml:25
-#: view/columbo/admin/index/metadata.phtml:34
-#: view/columbo/admin/index/metadata.phtml:68
-#: view/columbo/admin/index/metadata.phtml:77
-#: view/columbo/admin/index/resources.phtml:161
-#: view/columbo/admin/index/resources.phtml:170
+#: view/columbo/admin/index/metadata.phtml:26
+#: view/columbo/admin/index/metadata.phtml:37
+#: view/columbo/admin/index/metadata.phtml:72
+#: view/columbo/admin/index/metadata.phtml:83
+#: view/columbo/admin/index/resources.phtml:167
+#: view/columbo/admin/index/resources.phtml:178
 msgid "Number of media using it"
 msgstr "Nombre de médias l'utilisant"
 
-#: view/columbo/admin/index/metadata.phtml:109
 #: view/columbo/admin/index/metadata.phtml:116
+#: view/columbo/admin/index/metadata.phtml:125
 msgid "Number of values linking to it"
 msgstr "Nombre de valeurs pointant vers ce type"
 
-#: view/columbo/admin/index/metadata.phtml:156
+#: view/columbo/admin/index/metadata.phtml:165
 msgid "Number of value annotations"
 msgstr "Nombre d'annotations de valeur"
 
@@ -95,8 +103,8 @@ msgstr "Sans classe"
 
 #: view/columbo/admin/index/resources.phtml:27
 #: view/columbo/admin/index/resources.phtml:37
-#: view/columbo/admin/index/resources.phtml:123
-#: view/columbo/admin/index/resources.phtml:129
+#: view/columbo/admin/index/resources.phtml:125
+#: view/columbo/admin/index/resources.phtml:134
 msgid "Total"
 msgstr "Total"
 
@@ -124,66 +132,68 @@ msgstr ""
 "Nombre de médias par contenu, en excluant les contenus sans média (min / max"
 " / moyenne)"
 
-#: view/columbo/admin/index/resources.phtml:128
+#: view/columbo/admin/index/resources.phtml:124
+#: view/columbo/admin/index/resources.phtml:127
+#: view/columbo/admin/index/resources.phtml:133
 msgid "File type"
 msgstr "Type de fichier"
 
-#: view/columbo/admin/index/resources.phtml:202
-#: view/columbo/admin/index/resources.phtml:210
+#: view/columbo/admin/index/resources.phtml:211
+#: view/columbo/admin/index/resources.phtml:221
 msgid "Number of classes"
 msgstr "Nombre de classes"
 
-#: view/columbo/admin/index/resources.phtml:203
-#: view/columbo/admin/index/resources.phtml:211
+#: view/columbo/admin/index/resources.phtml:212
+#: view/columbo/admin/index/resources.phtml:222
 msgid "Number of properties"
 msgstr "Nombre de propriétés"
 
 #: view/columbo/admin/index/sites.phtml:9
-#: view/columbo/admin/index/sites.phtml:71
+#: view/columbo/admin/index/sites.phtml:74
 msgid "Themes"
 msgstr "Thèmes"
 
-#: view/columbo/admin/index/sites.phtml:20
-#: view/columbo/admin/index/sites.phtml:33
+#: view/columbo/admin/index/sites.phtml:21
+#: view/columbo/admin/index/sites.phtml:36
 msgid "Number of items"
 msgstr "Nombre de contenus"
 
-#: view/columbo/admin/index/sites.phtml:21
-#: view/columbo/admin/index/sites.phtml:34
+#: view/columbo/admin/index/sites.phtml:22
+#: view/columbo/admin/index/sites.phtml:37
 msgid "Number of item sets"
 msgstr "Nombre de collections"
 
-#: view/columbo/admin/index/sites.phtml:22
-#: view/columbo/admin/index/sites.phtml:35
+#: view/columbo/admin/index/sites.phtml:23
+#: view/columbo/admin/index/sites.phtml:38
 msgid "Number of pages"
 msgstr "Nombre de pages"
 
-#: view/columbo/admin/index/sites.phtml:23
-#: view/columbo/admin/index/sites.phtml:36
+#: view/columbo/admin/index/sites.phtml:24
+#: view/columbo/admin/index/sites.phtml:39
 msgid "Number of viewers"
 msgstr "Nombre d'observateurs"
 
-#: view/columbo/admin/index/sites.phtml:24
-#: view/columbo/admin/index/sites.phtml:37
+#: view/columbo/admin/index/sites.phtml:25
+#: view/columbo/admin/index/sites.phtml:40
 msgid "Number of editors"
 msgstr "Nombre de créateurs"
 
-#: view/columbo/admin/index/sites.phtml:25
-#: view/columbo/admin/index/sites.phtml:38
+#: view/columbo/admin/index/sites.phtml:26
+#: view/columbo/admin/index/sites.phtml:41
 msgid "Number of admins"
 msgstr "Nombre de responsables"
 
-#: view/columbo/admin/index/sites.phtml:26
-#: view/columbo/admin/index/sites.phtml:39
+#: view/columbo/admin/index/sites.phtml:27
+#: view/columbo/admin/index/sites.phtml:42
 msgid "Size of media"
 msgstr "Taille des médias"
 
-#: view/columbo/admin/index/sites.phtml:74
-#: view/columbo/admin/index/sites.phtml:81
+#: view/columbo/admin/index/sites.phtml:79
+#: view/columbo/admin/index/sites.phtml:89
 msgid "Number of sites using it"
 msgstr "Nombre de sites l'utilisant"
 
-#: view/columbo/admin/index/sites.phtml:80
+#: view/columbo/admin/index/sites.phtml:88
 msgid "Version"
 msgstr "Version"
 
@@ -192,13 +202,13 @@ msgstr "Version"
 msgid "Roles"
 msgstr "Rôles"
 
-#: view/columbo/admin/index/users.phtml:19
-#: view/columbo/admin/index/users.phtml:27
+#: view/columbo/admin/index/users.phtml:20
+#: view/columbo/admin/index/users.phtml:29
 msgid "Number of inactive users"
 msgstr "Nombre d'utilisateurs inactifs"
 
-#: view/columbo/admin/index/users.phtml:20
-#: view/columbo/admin/index/users.phtml:28
+#: view/columbo/admin/index/users.phtml:21
+#: view/columbo/admin/index/users.phtml:30
 msgid "Number of active users"
 msgstr "Nombre d'utilisateurs actifs"
 
@@ -206,26 +216,30 @@ msgstr "Nombre d'utilisateurs actifs"
 msgid "Resource metadata"
 msgstr "Métadonnées de ressource"
 
-#: config/module.config.php:156
+#: config/module.config.php:167
 msgid "Download CSV"
 msgstr "Téléchargement CSV"
 
-#: src/Controller/Admin/IndexController.php:71
+#: config/module.config.php:168
+msgid "Could not calculate bucket size."
+msgstr "Impossible de calculer la taille des fichiers distants."
+
+#: src/Controller/Admin/IndexController.php:73
 msgid "B"
 msgstr "O"
 
-#: src/Controller/Admin/IndexController.php:79
+#: src/Controller/Admin/IndexController.php:81
 msgid "KB"
 msgstr "KO"
 
-#: src/Controller/Admin/IndexController.php:84
+#: src/Controller/Admin/IndexController.php:86
 msgid "MB"
 msgstr "MO"
 
-#: src/Controller/Admin/IndexController.php:89
+#: src/Controller/Admin/IndexController.php:91
 msgid "GB"
 msgstr "GO"
 
-#: src/Controller/Admin/IndexController.php:94
+#: src/Controller/Admin/IndexController.php:96
 msgid "TB"
 msgstr "TO"
