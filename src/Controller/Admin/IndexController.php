@@ -25,13 +25,13 @@ class IndexController extends AbstractActionController
     }
 
     // from https://stackoverflow.com/questions/478121/how-to-get-directory-size-in-php
-    function getDirectorySize($dir)
+    public function getDirectorySize($dir)
     {
         $dir = rtrim(str_replace('\\', '/', $dir), '/');
 
         if (is_dir($dir) === true) {
             $totalSize = 0;
-            $os        = strtoupper(substr(PHP_OS, 0, 3));
+            $os = strtoupper(substr(PHP_OS, 0, 3));
             // If on a Unix Host (Linux, Mac OS)
             if ($os !== 'WIN') {
                 $io = popen('/usr/bin/du -sb ' . $dir, 'r');
@@ -46,9 +46,9 @@ class IndexController extends AbstractActionController
             if ($os === 'WIN' && extension_loaded('com_dotnet')) {
                 $obj = new \COM('scripting.filesystemobject');
                 if (is_object($obj)) {
-                    $ref       = $obj->getfolder($dir);
+                    $ref = $obj->getfolder($dir);
                     $totalSize = $ref->size;
-                    $obj       = null;
+                    $obj = null;
                     return $totalSize;
                 }
             }
@@ -58,7 +58,7 @@ class IndexController extends AbstractActionController
                 $totalSize += $file->getSize();
             }
             return $totalSize;
-        } else if (is_file($dir) === true) {
+        } elseif (is_file($dir) === true) {
             return filesize($dir);
         }
         return 0;
@@ -105,7 +105,6 @@ class IndexController extends AbstractActionController
         return strval(round($nBytes, 1)) . ' ' . $sign;
     }
 
-
     private function getBucketSize($filesystem): int
     {
         $sum = 0;
@@ -129,7 +128,7 @@ class IndexController extends AbstractActionController
         } catch (\League\Flysystem\FilesystemException $exception) {
             return 0;
         }
-        return $sum; 
+        return $sum;
     }
 
     public function indexAction()
@@ -226,8 +225,7 @@ class IndexController extends AbstractActionController
 
         {
             $i = 0;
-            foreach($perFileTypeMediaCounts as $name => $perFileTypeMediaCount)
-            {
+            foreach ($perFileTypeMediaCounts as $name => $perFileTypeMediaCount) {
                 $arrayToExport["perFileTypeMediaCount" . $i . "_" . "fileType"] = $name;
                 $arrayToExport["perFileTypeMediaCount" . $i . "_" . "total"] = $perFileTypeMediaCount;
                 $i += 1;
@@ -278,8 +276,7 @@ class IndexController extends AbstractActionController
         $totalMediaInstallSize = 0;
         foreach ($sitesCounts as $index => $site) {
             $sitesCounts[$index]['mediaSize'] = $this->bytesToReadable($site['mediaSize']);
-            foreach ($sitesCounts[$index] as $key => $value)
-            {
+            foreach ($sitesCounts[$index] as $key => $value) {
                 $arrayToExport["site" . $index . "_" . $key] = $value;
             }
         }
@@ -302,14 +299,13 @@ class IndexController extends AbstractActionController
             $i = 0;
             foreach ($themes as $index => $theme) {
                 $siteCount = $conn->fetchOne('select count(*) from site where theme = ?', [$theme->getId()]);
-                $themeData = [                 
+                $themeData = [
                     'themeName' => $theme->getName(),
                     'themeVersion' => $theme->getIni('version'),
                     'themeSiteCount' => $siteCount,
                 ];
                 $themesData[] = $themeData;
-                foreach ($themeData as $key => $value)
-                {
+                foreach ($themeData as $key => $value) {
                     $arrayToExport["theme" . $i . "_" . $key] = $value;
                 }
                 $i += 1;
@@ -330,10 +326,8 @@ class IndexController extends AbstractActionController
             order by term
         SQL, [ItemSet::class, Item::class, Media::class]);
 
-        foreach($properties as $index => $property)
-        {
-            foreach ($property as $key => $value)
-            {
+        foreach ($properties as $index => $property) {
+            foreach ($property as $key => $value) {
                 $arrayToExport["property" . $index . "_" . $key] = $value;
             }
         }
@@ -351,11 +345,9 @@ class IndexController extends AbstractActionController
             having itemSetCount + itemCount + mediaCount > 0
             order by term
         SQL, [ItemSet::class, Item::class, Media::class]);
-        
-        foreach($classes as $index => $class)
-        {
-            foreach ($class as $key => $value)
-            {
+
+        foreach ($classes as $index => $class) {
+            foreach ($class as $key => $value) {
                 $arrayToExport["class" . $index . "_" . $key] = $value;
             }
         }
@@ -371,11 +363,9 @@ class IndexController extends AbstractActionController
             group by label
             order by label
         SQL, [ItemSet::class, Item::class, Media::class]);
-        
-        foreach($resourceTemplates as $index => $resourceTemplate)
-        {
-            foreach ($resourceTemplate as $key => $value)
-            {
+
+        foreach ($resourceTemplates as $index => $resourceTemplate) {
+            foreach ($resourceTemplate as $key => $value) {
                 $arrayToExport["resourceTemplate" . $index . "_" . $key] = $value;
             }
         }
@@ -391,11 +381,9 @@ class IndexController extends AbstractActionController
             group by prefix
             order by prefix
         SQL);
-        
-        foreach($vocabularies as $index => $vocabulary)
-        {
-            foreach ($vocabulary as $key => $value)
-            {
+
+        foreach ($vocabularies as $index => $vocabulary) {
+            foreach ($vocabulary as $key => $value) {
                 $arrayToExport["vocabulary" . $index . "_" . $key] = $value;
             }
         }
@@ -407,17 +395,15 @@ class IndexController extends AbstractActionController
                 group by resource.resource_type
                 order by resource.resource_type
         SQL);
-        
-        foreach($valueResourceTypes as $index => $valueResourceType)
-        {
-            foreach ($valueResourceType as $key => $value)
-            {
+
+        foreach ($valueResourceTypes as $index => $valueResourceType) {
+            foreach ($valueResourceType as $key => $value) {
                 $arrayToExport["valueResourceType" . $index . "_" . $key] = $value;
             }
         }
 
         $valueAnnotationCount = $this->getResourceCount(ValueAnnotation::class);
-        
+
         $arrayToExport["valueAnnotationCount"] = $valueAnnotationCount;
 
         $roles = $conn->fetchAllAssociative(<<<SQL
@@ -431,14 +417,12 @@ class IndexController extends AbstractActionController
             order by role.role
         SQL);
 
-        foreach($roles as $index => $role)
-        {
-            foreach ($role as $key => $value)
-            {
+        foreach ($roles as $index => $role) {
+            foreach ($role as $key => $value) {
                 $arrayToExport["role" . $index . "_" . $key] = $value;
             }
         }
-        
+
         $fp = fopen('php://temp', 'r+');
 
         fputcsv($fp, array_keys($arrayToExport));
@@ -457,7 +441,8 @@ class IndexController extends AbstractActionController
         return $response;
     }
 
-    public function diskAction() {
+    public function diskAction()
+    {
         $conn = $this->connection;
 
         $view = new ViewModel;
@@ -485,7 +470,8 @@ class IndexController extends AbstractActionController
         return $view;
     }
 
-    public function fetchBucketSizeAction() {
+    public function fetchBucketSizeAction()
+    {
         $totalBucket = 0;
         if (!empty($this->fileSystem)) {
             $totalBucket = $this->bytesToReadable($this->getBucketSize($this->fileSystem));
@@ -496,7 +482,8 @@ class IndexController extends AbstractActionController
         return $response;
     }
 
-    public function metadataAction() {
+    public function metadataAction()
+    {
         $conn = $this->connection;
 
         $view = new ViewModel;
@@ -546,7 +533,8 @@ class IndexController extends AbstractActionController
         return $view;
     }
 
-    public function modulesAction() {
+    public function modulesAction()
+    {
         $conn = $this->connection;
 
         $view = new ViewModel;
@@ -554,7 +542,8 @@ class IndexController extends AbstractActionController
         return $view;
     }
 
-    public function resourcesAction() {
+    public function resourcesAction()
+    {
         $conn = $this->connection;
 
         $view = new ViewModel;
@@ -666,7 +655,8 @@ class IndexController extends AbstractActionController
         return $view;
     }
 
-    public function sitesAction() {
+    public function sitesAction()
+    {
         $conn = $this->connection;
 
         $view = new ViewModel;
@@ -727,7 +717,8 @@ class IndexController extends AbstractActionController
         return $view;
     }
 
-    public function usersAction() {
+    public function usersAction()
+    {
         $conn = $this->connection;
 
         $view = new ViewModel;

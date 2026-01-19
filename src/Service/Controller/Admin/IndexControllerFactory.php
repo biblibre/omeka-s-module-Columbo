@@ -15,14 +15,13 @@ class IndexControllerFactory implements FactoryInterface
 
         $fileSystem = null;
 
-        if (class_exists('\AnyCloud\File\Store\Flysystem'))
-        {
+        if (class_exists('\AnyCloud\File\Store\Flysystem')) {
             // hack to access private 'filesystem' attribute of AnyCloud because there is no getter.
 
             $flysystem = $services->get('Omeka\File\Store');
             if (isset($flysystem) && $flysystem instanceof \AnyCloud\File\Store\Flysystem) {
                 $fileSystemGetter = \Closure::bind(
-                    fn() => $this->filesystem,
+                    fn () => $this->filesystem,
                     $flysystem,
                     \AnyCloud\File\Store\Flysystem::class
                 );
