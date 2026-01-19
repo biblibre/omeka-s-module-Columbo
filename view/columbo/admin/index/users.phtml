@@ -1,0 +1,54 @@
+<?php $this->htmlElement('body')->appendAttribute('class', 'columbo show');
+$this->headScript()->appendFile($this->assetUrl('js/download-button.js', 'Columbo'));
+?>
+<?= $this->pageTitle('Columb\'O') ?>
+
+<?php
+$sectionNavs = [
+    'columbo-roles' => $this->translate('Roles')
+];
+
+echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
+?>
+
+<div id="columbo-roles" class="active section">
+<h2><?= $this->translate('Roles') ?></h2>
+
+<?php echo $this->partial('common/sort-button.phtml', ['tableContainerId' => 'columbo-roles',
+                                                    'sortOptions' => [
+                                                        $this->translate('Role'),
+                                                        $this->translate('Number of inactive users'),
+                                                        $this->translate('Number of active users')
+                                                    ],
+                                                    'searchOption' => $this->translate('Role'),]); ?>
+
+<table class="tablesaw tablesaw-stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Role'); ?></th>
+            <th><?= $this->translate('Number of inactive users'); ?></th>
+            <th><?= $this->translate('Number of active users'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($roles as $role): ?>
+            <tr>
+                <td><?= $this->escapeHtml($role['role']) ?></td>
+                <td><?= $this->escapeHtml($role['inactiveCount']) ?></td>
+                <td><?= $this->escapeHtml($role['activeCount']) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<?php
+$this->headScript()->captureStart();
+?>
+  document.addEventListener('DOMContentLoaded', function() {
+    addCsvDownloadButton('columbo-roles');
+  });
+<?php
+$this->headScript()->captureEnd();
+?>
+
+</div>

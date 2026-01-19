@@ -1,0 +1,246 @@
+<?php $this->htmlElement('body')->appendAttribute('class', 'columbo show');
+$this->headScript()->appendFile($this->assetUrl('js/download-button.js', 'Columbo'));
+?>
+<?= $this->pageTitle('Columb\'O') ?>
+
+<?php
+$sectionNavs = [
+    'columbo-resources' => $this->translate('Resources'),
+    'columbo-items' => $this->translate('Items'),
+    'columbo-media' => $this->translate('Media'),
+    'columbo-templates' => $this->translate('Resource templates'),
+    'columbo-vocabularies' => $this->translate('Vocabularies'),
+];
+
+echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
+?>
+
+<div id="columbo-resources" class="active section">
+<h2><?= $this->translate('Resources') ?></h2>
+
+<?php echo $this->partial('common/sort-button.phtml', ['tableContainerId' => 'columbo-resources',
+                                                    'sortOptions' => [
+                                                        $this->translate('Public'),
+                                                        $this->translate('Private'),
+                                                        $this->translate('Without resource template'),
+                                                        $this->translate('Without class'),
+                                                        $this->translate('Total'),
+                                                    ]]); ?>
+<table class="tablesaw tablesaw-stack">
+    <thead>
+        <tr>
+            <th></th>
+            <th><?= $this->translate('Public'); ?></th>
+            <th><?= $this->translate('Private'); ?></th>
+            <th><?= $this->translate('Without resource template'); ?></th>
+            <th><?= $this->translate('Without class'); ?></th>
+            <th><?= $this->translate('Total'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><?= $this->translate('Item sets') ?></td>
+            <td><?= $publicItemSetsCount ?></td>
+            <td><?= $privateItemSetsCount ?></td>
+            <td><?= $itemSetsWithoutTemplateCount ?></td>
+            <td><?= $itemSetsWithoutClassCount ?></td>
+            <td><?= $itemSetsCount ?></td>
+        </tr>
+        <tr>
+            <td><?= $this->translate('Items') ?></td>
+            <td><?= $publicItemsCount ?></td>
+            <td><?= $privateItemsCount ?></td>
+            <td><?= $itemsWithoutTemplateCount ?></td>
+            <td><?= $itemsWithoutClassCount ?></td>
+            <td><?= $itemsCount ?></td>
+        </tr>
+        <tr>
+            <td><?= $this->translate('Media') ?></td>
+            <td><?= $publicMediaCount ?></td>
+            <td><?= $privateMediaCount ?></td>
+            <td><?= $mediaWithoutTemplateCount ?></td>
+            <td><?= $mediaWithoutClassCount ?></td>
+            <td><?= $mediaCount ?></td>
+        </tr>
+    </tbody>
+</table>
+
+<?php
+$this->headScript()->captureStart();
+?>
+  document.addEventListener('DOMContentLoaded', function() {
+    addCsvDownloadButton('columbo-resources');
+  });
+<?php
+$this->headScript()->captureEnd();
+?>
+
+</div>
+
+<div id="columbo-items" class="section">
+<h2><?= $this->translate('Items') ?></h2>
+
+<table class="tablesaw tablesaw-stack">
+    <tbody>
+        <tr>
+            <td><?= $this->translate('Number of items with media') ?></td>
+            <td><?= $itemsWithMediaCount ?></td>
+        </tr>
+        <tr>
+            <td><?= $this->translate('Number of items without media') ?></td>
+            <td><?= $itemsWithoutMediaCount ?></td>
+        </tr>
+        <tr>
+            <td><?= $this->translate('Number of items without item sets') ?></td>
+            <td><?= $itemsWithoutItemSetCount ?></td>
+        </tr>
+        <tr>
+            <td><?= $this->translate('Number of items with an item set') ?></td>
+            <td><?= $itemsWithItemSetCount ?></td>
+        </tr>
+        <tr>
+            <td><?= $this->translate('Number of media per item, excluding items without media (min / max / average)') ?></td>
+            <td><?= sprintf('%d / %d / %.3f', $mediaCountByItemMin, $mediaCountByItemMax, $mediaCountByItemAvg) ?></td>
+        </tr>
+    </tbody>
+</table>
+<?php
+$this->headScript()->captureStart();
+?>
+  document.addEventListener('DOMContentLoaded', function() {
+    addCsvDownloadButton('columbo-items');
+  });
+<?php
+$this->headScript()->captureEnd();
+?>
+
+</div>
+
+<div id="columbo-media" class="section">
+<h2><?= $this->translate('Media') ?></h2>
+
+<?php echo $this->partial('common/sort-button.phtml', ['tableContainerId' => 'columbo-media',
+                                                        'sortOptions' => [
+                                                            $this->translate('File type'),
+                                                            $this->translate('Total'),
+                                                                            ], 
+                                                        'searchOption' => $this->translate('File type'),
+                                                        ]) ?>
+
+<table class="tablesaw tablesaw-stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('File type'); ?></th>
+            <th><?= $this->translate('Total'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($perFileTypeMediaCounts as $fileType => $count): ?>
+            <tr>
+                <td><?= $this->escapeHtml($fileType) ?></td>
+                <td><?= $count ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<?php
+$this->headScript()->captureStart();
+?>
+  document.addEventListener('DOMContentLoaded', function() {
+    addCsvDownloadButton('columbo-media');
+  });
+<?php
+$this->headScript()->captureEnd();
+?>
+
+</div>
+
+<div id="columbo-templates" class="section">
+<h2><?= $this->translate('Resource templates') ?></h2>
+
+<?php echo $this->partial('common/sort-button.phtml', ['tableContainerId' => 'columbo-templates',
+                                                    'sortOptions' => [
+                                                        $this->translate('Label'),
+                                                        $this->translate('Number of item sets using it'),
+                                                        $this->translate('Number of items using it'),
+                                                        $this->translate('Number of media using it'),
+                                                    ],
+                                                    'searchOption' => $this->translate('Label'),
+                                                    ]); ?>
+
+<table class="tablesaw tablesaw-stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Label'); ?></th>
+            <th><?= $this->translate('Number of item sets using it'); ?></th>
+            <th><?= $this->translate('Number of items using it'); ?></th>
+            <th><?= $this->translate('Number of media using it'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($resourceTemplates as $resourceTemplate): ?>
+            <tr>
+                <td><?= $this->escapeHtml($resourceTemplate['label']) ?></td>
+                <td><?= $this->escapeHtml($resourceTemplate['itemSetCount']) ?></td>
+                <td><?= $this->escapeHtml($resourceTemplate['itemCount']) ?></td>
+                <td><?= $this->escapeHtml($resourceTemplate['mediaCount']) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<?php
+$this->headScript()->captureStart();
+?>
+  document.addEventListener('DOMContentLoaded', function() {
+    addCsvDownloadButton('columbo-templates');
+  });
+<?php
+$this->headScript()->captureEnd();
+?>
+
+</div>
+
+<div id="columbo-vocabularies" class="section">
+<h2><?= $this->translate('Vocabularies') ?></h2>
+
+<?php echo $this->partial('common/sort-button.phtml', ['tableContainerId' => 'columbo-vocabularies',
+                                                    'sortOptions' => [
+                                                        $this->translate('Prefix'),
+                                                        $this->translate('Number of classes'),
+                                                        $this->translate('Number of properties')
+                                                    ],
+                                                    'searchOption' => $this->translate('Prefix'),
+                                                    ]); ?>
+
+<table class="tablesaw tablesaw-stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Prefix'); ?></th>
+            <th><?= $this->translate('Number of classes'); ?></th>
+            <th><?= $this->translate('Number of properties'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($vocabularies as $vocabulary): ?>
+            <tr>
+                <td><?= $this->escapeHtml($vocabulary['prefix']) ?></td>
+                <td><?= $this->escapeHtml($vocabulary['classCount']) ?></td>
+                <td><?= $this->escapeHtml($vocabulary['propertyCount']) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<?php
+$this->headScript()->captureStart();
+?>
+  document.addEventListener('DOMContentLoaded', function() {
+    addCsvDownloadButton('columbo-vocabularies');
+  });
+<?php
+$this->headScript()->captureEnd();
+?>
+
+</div>

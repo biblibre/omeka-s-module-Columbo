@@ -1,0 +1,113 @@
+<?php $this->htmlElement('body')->appendAttribute('class', 'columbo show');
+$this->headScript()->appendFile($this->assetUrl('js/download-button.js', 'Columbo'));
+?>
+<?= $this->pageTitle('Columb\'O') ?>
+
+<?php
+$sectionNavs = [
+    'columbo-sites' => $this->translate('Sites'),
+    'columbo-themes' => $this->translate('Themes'),
+];
+
+echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
+?>
+
+<div id="columbo-sites" class="active section">
+<h2><?= $this->translate('Sites') ?></h2>
+
+<?php echo $this->partial('common/sort-button.phtml', ['tableContainerId' => 'columbo-sites',
+                                                    'sortOptions' => [
+                                                        $this->translate('Site'),
+                                                        $this->translate('Number of items'),
+                                                        $this->translate('Number of item sets'),
+                                                        $this->translate('Number of pages'),
+                                                        $this->translate('Number of viewers'),
+                                                        $this->translate('Number of editors'),
+                                                        $this->translate('Number of admins'),
+                                                        $this->translate('Size of media'),
+                                                    ],
+                                                    'searchOption' => $this->translate('Site'),
+                                                    ]); ?>
+
+<table class="tablesaw tablesaw-stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Site'); ?></th>
+            <th><?= $this->translate('Number of items'); ?></th>
+            <th><?= $this->translate('Number of item sets'); ?></th>
+            <th><?= $this->translate('Number of pages'); ?></th>
+            <th><?= $this->translate('Number of viewers'); ?></th>
+            <th><?= $this->translate('Number of editors'); ?></th>
+            <th><?= $this->translate('Number of admins'); ?></th>
+            <th><?= $this->translate('Size of media'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($sitesCounts as $site): ?>
+            <tr>
+                <td><?= $this->escapeHtml($site['title']) ?></td>
+                <td><?= $this->escapeHtml($site['itemCount']) ?></td>
+                <td><?= $this->escapeHtml($site['itemSetCount']) ?></td>
+                <td><?= $this->escapeHtml($site['pageCount']) ?></td>
+                <td><?= $this->escapeHtml($site['viewerCount']) ?></td>
+                <td><?= $this->escapeHtml($site['editorCount']) ?></td>
+                <td><?= $this->escapeHtml($site['adminCount']) ?></td>
+                <td><?= $this->escapeHtml($site['mediaSize']) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<?php
+$this->headScript()->captureStart();
+?>
+  document.addEventListener('DOMContentLoaded', function() {
+    addCsvDownloadButton('columbo-sites');
+  });
+<?php
+$this->headScript()->captureEnd();
+?>
+
+</div>
+
+<div id="columbo-themes" class="section">
+<h2><?= $this->translate('Themes') ?></h2>
+
+<?php echo $this->partial('common/sort-button.phtml', ['tableContainerId' => 'columbo-themes',
+                                                        'sortOptions' => [
+                                                            $this->translate('Theme'),
+                                                            $this->translate('Number of sites using it'),
+                                                        ],
+                                                        'searchOption' => $this->translate('Theme'),
+                                                        ]) ?>
+
+<table class="tablesaw tablesaw-stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Theme'); ?></th>
+            <th><?= $this->translate('Version'); ?></th>
+            <th><?= $this->translate('Number of sites using it'); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($themes as $theme): ?>
+            <tr>
+                <td><?= $this->escapeHtml($theme['name']) ?></td>
+                <td><?= $this->escapeHtml($theme['version']) ?></td>
+                <td><?= $this->escapeHtml($theme['siteCount']) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<?php
+$this->headScript()->captureStart();
+?>
+  document.addEventListener('DOMContentLoaded', function() {
+    addCsvDownloadButton('columbo-themes');
+  });
+<?php
+$this->headScript()->captureEnd();
+?>
+
+</div>
