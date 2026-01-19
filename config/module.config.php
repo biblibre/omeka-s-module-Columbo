@@ -131,6 +131,17 @@ return [
                                     ],
                                 ],
                             ],
+                            'fetch-bucket-size' => [
+                                'type' => \Laminas\Router\Http\Segment::class,
+                                'options' => [
+                                    'route' => '/fetchBucketSize',
+                                    'defaults' => [
+                                        '__NAMESPACE__' => 'Columbo\Controller\Admin',
+                                        'controller' => 'index',
+                                        'action' => 'fetchBucketSize',
+                                    ],
+                                ],
+                            ],
                         ],
                     ],
                 ],
@@ -154,5 +165,6 @@ return [
     ],
     'js_translate_strings' => [
         'Download CSV', // @translate
+        'Could not calculate bucket size.', // @translate
     ],
 ];

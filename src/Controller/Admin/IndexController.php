@@ -476,17 +476,24 @@ class IndexController extends AbstractActionController
         $installSize['totalAssets'] = $this->bytesToReadable($totalAssetsSize);
         $totalFileSize = $this->getDirectorySize(OMEKA_PATH . '/files');
         $installSize['totalFiles'] = $this->bytesToReadable($totalFileSize);
-
-        if (!empty($this->fileSystem)) {
-            $installSize['totalBucket'] = $this->bytesToReadable($this->getBucketSize($this->fileSystem));
-        }
-
+        $installSize['hasBucket'] = !empty($this->fileSystem);
         $installSize['total'] = $this->bytesToReadable($totalMediaInstallSize + $totalFileSize);
         $installSize['omeka'] = $this->bytesToReadable($this->getDirectorySize(OMEKA_PATH));
 
         $view->setVariable('installSize', $installSize);
 
         return $view;
+    }
+
+    public function fetchBucketSizeAction() {
+        $totalBucket = 0;
+        if (!empty($this->fileSystem)) {
+            $totalBucket = $this->bytesToReadable($this->getBucketSize($this->fileSystem));
+        }
+
+        $response = $this->getResponse();
+        $response->setContent(strval($totalBucket));
+        return $response;
     }
 
     public function metadataAction() {

@@ -1,5 +1,9 @@
 <?php $this->htmlElement('body')->appendAttribute('class', 'columbo show');
 $this->headScript()->appendFile($this->assetUrl('js/download-button.js', 'Columbo'));
+if ($installSize['hasBucket'])
+{
+  $this->headScript()->appendFile($this->assetUrl('js/fetch-bucket.js', 'Columbo'));
+}
 ?>
 <?= $this->pageTitle('Columb\'O') ?>
 
@@ -20,7 +24,7 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
             <th><?= $this->translate('Total media size'); ?></th>
             <th><?= $this->translate('Total assets size'); ?></th>
             <th><?= $this->translate('Total ingested files'); ?></th>
-            <?php if (isset($installSize['totalBucket'])): ?>
+            <?php if ($installSize['hasBucket']): ?>
               <th><?= $this->translate('Total remote ingested files'); ?></th>
             <?php endif; ?>
             <th><?= $this->translate('Total omeka install size'); ?></th>
@@ -30,8 +34,8 @@ echo $this->sectionNav($sectionNavs, 'view.show.section_nav');
             <td><?= $this->escapeHtml($installSize['totalMedia']) ?></td>
             <td><?= $this->escapeHtml($installSize['totalAssets']) ?></td>
             <td><?= $this->escapeHtml($installSize['totalFiles']) ?></td>
-            <?php if (isset($installSize['totalBucket'])): ?>
-              <td><?= $this->escapeHtml($installSize['totalBucket']) ?></td>
+            <?php if ($installSize['hasBucket']): ?>
+              <td id='columbo-bucket-size'><?= $this->translate('Calculating...') ?></td>
             <?php endif; ?>
             <td><?= $this->escapeHtml($installSize['omeka']) ?></td>
     </tbody>
