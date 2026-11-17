@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-19 14:10+0100\n"
+"POT-Creation-Date: 2026-11-17 11:38+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,319 +17,474 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: view/columbo/admin/index/disk.phtml:12
-#: view/columbo/admin/index/disk.phtml:19
-msgid "Disk usage"
-msgstr ""
-
-#: view/columbo/admin/index/disk.phtml:24
-msgid "Total media size"
-msgstr ""
-
-#: view/columbo/admin/index/disk.phtml:25
-msgid "Total assets size"
-msgstr ""
-
-#: view/columbo/admin/index/disk.phtml:26
-msgid "Total ingested files"
-msgstr ""
-
-#: view/columbo/admin/index/disk.phtml:28
-msgid "Total remote ingested files"
-msgstr ""
-
-#: view/columbo/admin/index/disk.phtml:30
-msgid "Total omeka install size"
-msgstr ""
-
-#: view/columbo/admin/index/metadata.phtml:10
-#: view/columbo/admin/index/metadata.phtml:111
-msgid "Value resource types"
-msgstr ""
-
-#: view/columbo/admin/index/metadata.phtml:24
-#: view/columbo/admin/index/metadata.phtml:35
-#: view/columbo/admin/index/metadata.phtml:70
-#: view/columbo/admin/index/metadata.phtml:81
-#: view/columbo/admin/index/resources.phtml:165
-#: view/columbo/admin/index/resources.phtml:176
-msgid "Number of item sets using it"
-msgstr ""
-
-#: view/columbo/admin/index/metadata.phtml:25
-#: view/columbo/admin/index/metadata.phtml:36
-#: view/columbo/admin/index/metadata.phtml:71
-#: view/columbo/admin/index/metadata.phtml:82
-#: view/columbo/admin/index/resources.phtml:166
-#: view/columbo/admin/index/resources.phtml:177
-msgid "Number of items using it"
-msgstr ""
-
-#: view/columbo/admin/index/metadata.phtml:26
-#: view/columbo/admin/index/metadata.phtml:37
-#: view/columbo/admin/index/metadata.phtml:72
-#: view/columbo/admin/index/metadata.phtml:83
-#: view/columbo/admin/index/resources.phtml:167
-#: view/columbo/admin/index/resources.phtml:178
-msgid "Number of media using it"
-msgstr ""
-
-#: view/columbo/admin/index/metadata.phtml:116
-#: view/columbo/admin/index/metadata.phtml:125
-msgid "Number of values linking to it"
-msgstr ""
-
-#: view/columbo/admin/index/metadata.phtml:165
-msgid "Number of value annotations"
-msgstr ""
-
-#: view/columbo/admin/index/resources.phtml:25
-#: view/columbo/admin/index/resources.phtml:35
-msgid "Without resource template"
-msgstr ""
-
-#: view/columbo/admin/index/resources.phtml:26
-#: view/columbo/admin/index/resources.phtml:36
-msgid "Without class"
-msgstr ""
-
-#: view/columbo/admin/index/resources.phtml:27
-#: view/columbo/admin/index/resources.phtml:37
-#: view/columbo/admin/index/resources.phtml:125
-#: view/columbo/admin/index/resources.phtml:134
-msgid "Total"
-msgstr ""
-
-#: view/columbo/admin/index/resources.phtml:86
-msgid "Number of items with media"
-msgstr ""
-
-#: view/columbo/admin/index/resources.phtml:90
-msgid "Number of items without media"
-msgstr ""
-
-#: view/columbo/admin/index/resources.phtml:94
-msgid "Number of items without item sets"
-msgstr ""
-
-#: view/columbo/admin/index/resources.phtml:98
-msgid "Number of items with an item set"
-msgstr ""
-
-#: view/columbo/admin/index/resources.phtml:102
-msgid ""
-"Number of media per item, excluding items without media (min / max / average)"
-msgstr ""
-
-#: view/columbo/admin/index/resources.phtml:124
-#: view/columbo/admin/index/resources.phtml:127
-#: view/columbo/admin/index/resources.phtml:133
-msgid "File type"
-msgstr ""
-
-#: view/columbo/admin/index/resources.phtml:211
-#: view/columbo/admin/index/resources.phtml:221
-msgid "Number of classes"
-msgstr ""
-
-#: view/columbo/admin/index/resources.phtml:212
-#: view/columbo/admin/index/resources.phtml:222
-msgid "Number of properties"
-msgstr ""
-
-#: view/columbo/admin/index/sites.phtml:9
-#: view/columbo/admin/index/sites.phtml:74
-msgid "Themes"
-msgstr ""
-
-#: view/columbo/admin/index/sites.phtml:21
-#: view/columbo/admin/index/sites.phtml:36
-msgid "Number of items"
-msgstr ""
-
-#: view/columbo/admin/index/sites.phtml:22
-#: view/columbo/admin/index/sites.phtml:37
-msgid "Number of item sets"
-msgstr ""
-
-#: view/columbo/admin/index/sites.phtml:23
-#: view/columbo/admin/index/sites.phtml:38
-msgid "Number of pages"
-msgstr ""
-
-#: view/columbo/admin/index/sites.phtml:24
-#: view/columbo/admin/index/sites.phtml:39
-msgid "Number of viewers"
-msgstr ""
-
-#: view/columbo/admin/index/sites.phtml:25
-#: view/columbo/admin/index/sites.phtml:40
-msgid "Number of editors"
-msgstr ""
-
-#: view/columbo/admin/index/sites.phtml:26
-#: view/columbo/admin/index/sites.phtml:41
-msgid "Number of admins"
-msgstr ""
-
-#: view/columbo/admin/index/sites.phtml:27
-#: view/columbo/admin/index/sites.phtml:42
-msgid "Size of media"
-msgstr ""
-
-#: view/columbo/admin/index/sites.phtml:79
-#: view/columbo/admin/index/sites.phtml:89
-msgid "Number of sites using it"
-msgstr ""
-
-#: view/columbo/admin/index/sites.phtml:88
-msgid "Version"
-msgstr ""
-
-#: view/columbo/admin/index/users.phtml:8
-#: view/columbo/admin/index/users.phtml:15
-msgid "Roles"
-msgstr ""
-
-#: view/columbo/admin/index/users.phtml:20
-#: view/columbo/admin/index/users.phtml:29
-msgid "Number of inactive users"
-msgstr ""
-
-#: view/columbo/admin/index/users.phtml:21
-#: view/columbo/admin/index/users.phtml:30
-msgid "Number of active users"
-msgstr ""
-
-#: config/module.config.php:27
-msgid "Resource metadata"
-msgstr ""
-
-#: config/module.config.php:167
-msgid "Download CSV"
-msgstr ""
-
-#: src/Controller/Admin/IndexController.php:73
-msgid "B"
-msgstr ""
-
-#: src/Controller/Admin/IndexController.php:81
-msgid "KB"
-msgstr ""
-
-#: src/Controller/Admin/IndexController.php:86
-msgid "MB"
-msgstr ""
-
-#: src/Controller/Admin/IndexController.php:91
-msgid "GB"
-msgstr ""
-
-#: src/Controller/Admin/IndexController.php:96
-msgid "TB"
-msgstr ""
-
-msgid "Storage information"
-msgstr ""
-
-msgid "Export all (CSV)"
-msgstr ""
-
-msgid "JavaScript is required to display statistics."
-msgstr ""
-
+#: config/module.config.php:112
 msgid "Loading…"
 msgstr ""
 
+#: config/module.config.php:113
 msgid "Could not load this tab."
 msgstr ""
 
+#: config/module.config.php:114
 msgid "Retry"
 msgstr ""
 
+#: config/module.config.php:115
 msgid "Refresh"
 msgstr ""
 
+#: config/module.config.php:116
+msgid "Download CSV"
+msgstr ""
+
+#: config/module.config.php:117
 msgid "Could not calculate size."
 msgstr ""
 
-msgid "Calculating…"
+#: config/module.config.php:118
+msgid "Back to top"
 msgstr ""
 
-msgid "Indicator"
+#: src/Controller/Admin/IndexController.php:563
+msgid "B"
 msgstr ""
 
-msgid "Minimum number of media per item"
+#: src/Controller/Admin/IndexController.php:564
+msgid "KB"
 msgstr ""
 
-msgid "Maximum number of media per item"
+#: src/Controller/Admin/IndexController.php:565
+msgid "MB"
 msgstr ""
 
-msgid "Average number of media per item"
+#: src/Controller/Admin/IndexController.php:566
+msgid "GB"
 msgstr ""
 
-msgid "Media per item statistics exclude items without media."
+#: src/Controller/Admin/IndexController.php:567
+msgid "TB"
 msgstr ""
 
-msgid "Number of media"
-msgstr ""
-
-msgid "Number of sites"
-msgstr ""
-
-msgid "Number of values that link to another resource, by type of the linked resource."
-msgstr ""
-
-msgid "Modules by state"
-msgstr ""
-
-msgid "Number of modules"
-msgstr ""
-
-msgid "State"
-msgstr ""
-
-msgid "Installed version"
-msgstr ""
-
-msgid "Invalid ini file"
-msgstr ""
-
-msgid "Size of the files/asset directory."
-msgstr ""
-
-msgid "Size of the files directory (original files, derivatives and assets)."
-msgstr ""
-
-msgid "Size of the remote storage (AnyCloud)."
-msgstr ""
-
-msgid "Size of the whole Omeka S directory. May be inaccurate due to permissions."
-msgstr ""
-
-msgid "Sum of the media sizes registered in the database."
-msgstr ""
-
-msgid "Description"
-msgstr ""
-
-msgid "Module"
-msgstr ""
-
-msgid "Modules"
-msgstr ""
-
-msgid "Classes"
-msgstr ""
-
-msgid "Site"
-msgstr ""
-
+#: view/columbo/admin/index/index.phtml:12 view/columbo/admin/index/section/sites.phtml:11
 msgid "Sites"
 msgstr ""
 
+#: view/columbo/admin/index/index.phtml:13 view/columbo/admin/index/section/resources.phtml:24
+msgid "Resources"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:14
+msgid "Resource metadata"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:15
+msgid "Users"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:16 view/columbo/admin/index/section/modules.phtml:46
+msgid "Modules"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:17
+msgid "Storage information"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:24
+msgid "Export all (CSV)"
+msgstr ""
+
+#: view/columbo/admin/index/index.phtml:54
+msgid "JavaScript is required to display statistics."
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:12
+msgid "Total assets size"
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:12
+msgid "Size of the files/asset directory."
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:13
+msgid "Total ingested files"
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:13
+msgid "Size of the files directory (original files, derivatives and assets)."
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:16
+msgid "Total remote ingested files"
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:16
+msgid "Size of the remote storage (AnyCloud)."
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:18
+msgid "Total omeka install size"
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:18
+msgid "Size of the whole Omeka S directory. May be inaccurate due to permissions."
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:22
+msgid "Disk usage"
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:27 view/columbo/admin/index/section/resources.phtml:61
+msgid "Indicator"
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:28
+msgid "Size"
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:29
+msgid "Description"
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:34
+msgid "Total media size"
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:36
+msgid "Sum of the media sizes registered in the database."
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:44
+msgid "Calculating…"
+msgstr ""
+
+#: view/columbo/admin/index/section/metadata.phtml:10 view/columbo/admin/index/section/resources.phtml:168
+msgid "Number of item sets using it"
+msgstr ""
+
+#: view/columbo/admin/index/section/metadata.phtml:11 view/columbo/admin/index/section/resources.phtml:169
+msgid "Number of items using it"
+msgstr ""
+
+#: view/columbo/admin/index/section/metadata.phtml:12 view/columbo/admin/index/section/resources.phtml:170
+msgid "Number of media using it"
+msgstr ""
+
+#: view/columbo/admin/index/section/metadata.phtml:15
+msgid "Properties"
+msgstr ""
+
+#: view/columbo/admin/index/section/metadata.phtml:16
+msgid "Classes"
+msgstr ""
+
+#: view/columbo/admin/index/section/metadata.phtml:26
+msgid "Term"
+msgstr ""
+
+#: view/columbo/admin/index/section/metadata.phtml:27 view/columbo/admin/index/section/resources.phtml:167 view/columbo/admin/index/section/resources.phtml:195
+msgid "Label"
+msgstr ""
+
+#: view/columbo/admin/index/section/metadata.phtml:48
+msgid "Value resource types"
+msgstr ""
+
+#: view/columbo/admin/index/section/metadata.phtml:50
+msgid "Number of values that link to another resource, by type of the linked resource."
+msgstr ""
+
+#: view/columbo/admin/index/section/metadata.phtml:55 view/columbo/admin/index/section/resources.phtml:29
+msgid "Resource type"
+msgstr ""
+
+#: view/columbo/admin/index/section/metadata.phtml:56
+msgid "Number of values linking to it"
+msgstr ""
+
+#: view/columbo/admin/index/section/metadata.phtml:62
+msgid "Item set"
+msgstr ""
+
+#: view/columbo/admin/index/section/metadata.phtml:63
+msgid "Item"
+msgstr ""
+
+#: view/columbo/admin/index/section/metadata.phtml:64 view/columbo/admin/index/section/resources.phtml:19 view/columbo/admin/index/section/resources.phtml:136
+msgid "Media"
+msgstr ""
+
+#: view/columbo/admin/index/section/metadata.phtml:78
+msgid "Value annotations"
+msgstr ""
+
+#: view/columbo/admin/index/section/metadata.phtml:84
+msgid "Number of value annotations"
+msgstr ""
+
+#: view/columbo/admin/index/section/modules.phtml:10
+msgid "Active"
+msgstr ""
+
+#: view/columbo/admin/index/section/modules.phtml:11
+msgid "Not active"
+msgstr ""
+
+#: view/columbo/admin/index/section/modules.phtml:12
+msgid "Not installed"
+msgstr ""
+
+#: view/columbo/admin/index/section/modules.phtml:13
+msgid "Needs upgrade"
+msgstr ""
+
+#: view/columbo/admin/index/section/modules.phtml:14
+msgid "Not found"
+msgstr ""
+
+#: view/columbo/admin/index/section/modules.phtml:15
+msgid "Invalid module"
+msgstr ""
+
+#: view/columbo/admin/index/section/modules.phtml:16
+msgid "Invalid ini file"
+msgstr ""
+
+#: view/columbo/admin/index/section/modules.phtml:17
+msgid "Invalid Omeka S version"
+msgstr ""
+
+#: view/columbo/admin/index/section/modules.phtml:23
+msgid "Modules by state"
+msgstr ""
+
+#: view/columbo/admin/index/section/modules.phtml:29 view/columbo/admin/index/section/modules.phtml:56
+msgid "State"
+msgstr ""
+
+#: view/columbo/admin/index/section/modules.phtml:30
+msgid "Number of modules"
+msgstr ""
+
+#: view/columbo/admin/index/section/modules.phtml:52
+msgid "Module"
+msgstr ""
+
+#: view/columbo/admin/index/section/modules.phtml:53
+msgid "Identifier"
+msgstr ""
+
+#: view/columbo/admin/index/section/modules.phtml:54 view/columbo/admin/index/section/sites.phtml:53
+msgid "Version"
+msgstr ""
+
+#: view/columbo/admin/index/section/modules.phtml:55
+msgid "Installed version"
+msgstr ""
+
+#: view/columbo/admin/index/section/modules.phtml:57
+msgid "Author"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:17 view/columbo/admin/index/section/resources.phtml:100
+msgid "Item sets"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:18 view/columbo/admin/index/section/resources.phtml:55
+msgid "Items"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:30 view/columbo/admin/index/section/resources.phtml:122
 msgid "Public"
 msgstr ""
 
-msgid "Back to top"
+#: view/columbo/admin/index/section/resources.phtml:31 view/columbo/admin/index/section/resources.phtml:122
+msgid "Private"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:32
+msgid "Without resource template"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:33
+msgid "Without class"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:34 view/columbo/admin/index/section/resources.phtml:143 view/columbo/admin/index/section/users.phtml:19
+msgid "Total"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:56
+msgid "Media per item statistics exclude items without media."
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:62
+msgid "Value"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:67
+msgid "Number of items with media"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:71
+msgid "Number of items without media"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:75
+msgid "Number of items with an item set"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:79
+msgid "Number of items without item sets"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:83
+msgid "Minimum number of media per item"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:87
+msgid "Maximum number of media per item"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:91
+msgid "Average number of media per item"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:106
+msgid "Title"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:107
+msgid "Visibility"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:108
+msgid "Open to additions"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:109 view/columbo/admin/index/section/sites.phtml:18
+msgid "Number of items"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:110
+msgid "Number of media"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:111 view/columbo/admin/index/section/resources.phtml:144 view/columbo/admin/index/section/sites.phtml:24
+msgid "Size of media"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:112
+msgid "Number of sites"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:119
+msgid "[Untitled]"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:123
+msgid "Yes"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:123
+msgid "No"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:142
+msgid "File type"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:161
+msgid "Resource templates"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:188
+msgid "Vocabularies"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:194
+msgid "Prefix"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:196
+msgid "Number of classes"
+msgstr ""
+
+#: view/columbo/admin/index/section/resources.phtml:197
+msgid "Number of properties"
+msgstr ""
+
+#: view/columbo/admin/index/section/sites.phtml:17
+msgid "Site"
+msgstr ""
+
+#: view/columbo/admin/index/section/sites.phtml:19
+msgid "Number of item sets"
+msgstr ""
+
+#: view/columbo/admin/index/section/sites.phtml:20
+msgid "Number of pages"
+msgstr ""
+
+#: view/columbo/admin/index/section/sites.phtml:21
+msgid "Number of viewers"
+msgstr ""
+
+#: view/columbo/admin/index/section/sites.phtml:22
+msgid "Number of editors"
+msgstr ""
+
+#: view/columbo/admin/index/section/sites.phtml:23
+msgid "Number of admins"
+msgstr ""
+
+#: view/columbo/admin/index/section/sites.phtml:46
+msgid "Themes"
+msgstr ""
+
+#: view/columbo/admin/index/section/sites.phtml:52
+msgid "Theme"
+msgstr ""
+
+#: view/columbo/admin/index/section/sites.phtml:54
+msgid "Number of sites using it"
+msgstr ""
+
+#: view/columbo/admin/index/section/users.phtml:10
+msgid "Roles"
+msgstr ""
+
+#: view/columbo/admin/index/section/users.phtml:16
+msgid "Role"
+msgstr ""
+
+#: view/columbo/admin/index/section/users.phtml:17
+msgid "Number of active users"
+msgstr ""
+
+#: view/columbo/admin/index/section/users.phtml:18
+msgid "Number of inactive users"
+msgstr ""
+
+#: view/common/columbo-block-header.phtml:30 view/common/columbo-block-header.phtml:31
+msgid "Filter"
+msgstr ""
+
+#: view/common/columbo-block-header.phtml:32
+msgid "Sort by"
+msgstr ""
+
+#: view/common/columbo-block-header.phtml:33
+msgid "Sort order"
+msgstr ""
+
+#: view/common/columbo-block-header.phtml:34
+msgid "Ascending"
+msgstr ""
+
+#: view/common/columbo-block-header.phtml:35
+msgid "Descending"
+msgstr ""
+
+#: view/common/columbo-block-header.phtml:37
+msgid "Sort"
 msgstr ""
