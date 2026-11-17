@@ -71,7 +71,7 @@ return [
                                 'options' => [
                                     'route' => '/size/:target',
                                     'constraints' => [
-                                        'target' => 'assets|files|omeka|bucket',
+                                        'target' => '[a-z][a-z0-9_-]*',
                                     ],
                                     'defaults' => [
                                         'action' => 'size',
@@ -116,5 +116,11 @@ return [
         'Download CSV', // @translate
         'Could not calculate size.', // @translate
         'Back to top', // @translate
+        'Session expired: reload the page.', // @translate
+        'B', // @translate
+        'KB', // @translate
+        'MB', // @translate
+        'GB', // @translate
+        'TB', // @translate
     ],
 ];

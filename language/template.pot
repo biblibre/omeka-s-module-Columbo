@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-17 11:38+0100\n"
+"POT-Creation-Date: 2026-11-17 13:39+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,23 +45,27 @@ msgstr ""
 msgid "Back to top"
 msgstr ""
 
-#: src/Controller/Admin/IndexController.php:563
+#: config/module.config.php:119
+msgid "Session expired: reload the page."
+msgstr ""
+
+#: config/module.config.php:120 src/Controller/Admin/IndexController.php:608
 msgid "B"
 msgstr ""
 
-#: src/Controller/Admin/IndexController.php:564
+#: config/module.config.php:121 src/Controller/Admin/IndexController.php:609
 msgid "KB"
 msgstr ""
 
-#: src/Controller/Admin/IndexController.php:565
+#: config/module.config.php:122 src/Controller/Admin/IndexController.php:610
 msgid "MB"
 msgstr ""
 
-#: src/Controller/Admin/IndexController.php:566
+#: config/module.config.php:123 src/Controller/Admin/IndexController.php:611
 msgid "GB"
 msgstr ""
 
-#: src/Controller/Admin/IndexController.php:567
+#: config/module.config.php:124 src/Controller/Admin/IndexController.php:612
 msgid "TB"
 msgstr ""
 
@@ -97,64 +101,68 @@ msgstr ""
 msgid "JavaScript is required to display statistics."
 msgstr ""
 
-#: view/columbo/admin/index/section/disk.phtml:12
-msgid "Total assets size"
+#: view/columbo/admin/index/section/disk.phtml:14
+msgid "Original files of the media."
 msgstr ""
 
-#: view/columbo/admin/index/section/disk.phtml:12
-msgid "Size of the files/asset directory."
+#: view/columbo/admin/index/section/disk.phtml:15
+msgid "Assets (thumbnails of resources, logos and images of sites)."
 msgstr ""
 
-#: view/columbo/admin/index/section/disk.phtml:13
-msgid "Total ingested files"
-msgstr ""
-
-#: view/columbo/admin/index/section/disk.phtml:13
-msgid "Size of the files directory (original files, derivatives and assets)."
-msgstr ""
-
-#: view/columbo/admin/index/section/disk.phtml:16
-msgid "Total remote ingested files"
-msgstr ""
-
-#: view/columbo/admin/index/section/disk.phtml:16
-msgid "Size of the remote storage (AnyCloud)."
-msgstr ""
-
-#: view/columbo/admin/index/section/disk.phtml:18
-msgid "Total omeka install size"
-msgstr ""
-
-#: view/columbo/admin/index/section/disk.phtml:18
-msgid "Size of the whole Omeka S directory. May be inaccurate due to permissions."
-msgstr ""
-
-#: view/columbo/admin/index/section/disk.phtml:22
-msgid "Disk usage"
-msgstr ""
-
-#: view/columbo/admin/index/section/disk.phtml:27 view/columbo/admin/index/section/resources.phtml:61
-msgid "Indicator"
+#: view/columbo/admin/index/section/disk.phtml:22 view/columbo/admin/index/section/disk.phtml:59
+msgid "Calculating…"
 msgstr ""
 
 #: view/columbo/admin/index/section/disk.phtml:28
-msgid "Size"
+msgid "Disk usage"
 msgstr ""
 
-#: view/columbo/admin/index/section/disk.phtml:29
-msgid "Description"
+#: view/columbo/admin/index/section/disk.phtml:31
+msgid "File storage:"
 msgstr ""
 
-#: view/columbo/admin/index/section/disk.phtml:34
-msgid "Total media size"
+#: view/columbo/admin/index/section/disk.phtml:38
+msgid "The size of this file storage cannot be calculated."
 msgstr ""
 
-#: view/columbo/admin/index/section/disk.phtml:36
-msgid "Sum of the media sizes registered in the database."
+#: view/columbo/admin/index/section/disk.phtml:43 view/columbo/admin/index/section/resources.phtml:61
+msgid "Indicator"
 msgstr ""
 
 #: view/columbo/admin/index/section/disk.phtml:44
-msgid "Calculating…"
+msgid "Size"
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:45
+msgid "Description"
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:54
+msgid "Thumbnails \"%s\"."
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:58
+msgid "Total file storage"
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:60
+msgid "Sum of the storage directories."
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:64
+msgid "Total media size"
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:66
+msgid "Sum of the media sizes registered in the database. Compare it with the size of the original files."
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:69
+msgid "Total omeka install size"
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:71
+msgid "Size of the whole Omeka S directory. May be inaccurate due to permissions."
 msgstr ""
 
 #: view/columbo/admin/index/section/metadata.phtml:10 view/columbo/admin/index/section/resources.phtml:168

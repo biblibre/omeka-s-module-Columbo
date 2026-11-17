@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add item sets table and modules tab
 - Add "Export all (CSV)" button
 - Make sites and resource count queries faster
+- Measure the file store in use (local base path or AnyCloud), per directory
 - Fix CSV export, bucket size URL and size of a symlinked files directory
 
 ## [0.1.4] - 2025-06-24

@@ -6,21 +6,37 @@
  * @var \Laminas\View\Renderer\PhpRenderer $this
  * @var int $mediaSize
  * @var string $mediaSizeReadable
- * @var bool $hasBucket
+ * @var array $storage
+ * @var string[] $storageDirectories
  */
-$sizes = [
-    'assets' => [$this->translate('Total assets size'), $this->translate('Size of the files/asset directory.')],
-    'files' => [$this->translate('Total ingested files'), $this->translate('Size of the files directory (original files, derivatives and assets).')],
+$supported = $storage['type'] !== 'unsupported';
+$descriptions = [
+    'original' => $this->translate('Original files of the media.'),
+    'asset' => $this->translate('Assets (thumbnails of resources, logos and images of sites).'),
 ];
-if ($hasBucket) {
-    $sizes['bucket'] = [$this->translate('Total remote ingested files'), $this->translate('Size of the remote storage (AnyCloud).')];
-}
-$sizes['omeka'] = [$this->translate('Total omeka install size'), $this->translate('Size of the whole Omeka S directory. May be inaccurate due to permissions.')];
+$sizeCell = function (string $target, bool $inTotal = false) {
+    return sprintf(
+        '<td data-sort-value="-1" data-columbo-size="%s"%s aria-busy="true"><span class="columbo-spinner" aria-hidden="true"></span> %s</td>',
+        $this->escapeHtmlAttr($this->url('admin/columbo/size', ['target' => $target])),
+        $inTotal ? ' data-columbo-in-total' : '',
+        $this->translate('Calculating…')
+    );
+};
 ?>
 <?= $this->partial('common/columbo-block-header', [
     'id' => 'columbo-disk',
     'title' => $this->translate('Disk usage'),
 ]) ?>
+<p class="columbo-help">
+    <?= $this->translate('File storage:') ?>
+    <strong><?= $this->escapeHtml($storage['name']) ?></strong>
+    <?php if ($storage['path']): ?>
+    (<code><?= $this->escapeHtml($storage['path']) ?></code>)
+    <?php endif; ?>
+</p>
+<?php if (!$supported): ?>
+<p class="columbo-help"><?= $this->translate('The size of this file storage cannot be calculated.') ?></p>
+<?php endif; ?>
 <table class="tablesaw tablesaw-stack columbo-table" data-tablesaw-mode="stack">
     <thead>
         <tr>
@@ -30,21 +46,30 @@ $sizes['omeka'] = [$this->translate('Total omeka install size'), $this->translat
         </tr>
     </thead>
     <tbody>
+        <?php if ($supported): ?>
+        <?php foreach ($storageDirectories as $directory): ?>
+        <tr>
+            <td><code><?= $this->escapeHtml($directory) ?>/</code></td>
+            <?= $sizeCell($directory, true) ?>
+            <td><?= $descriptions[$directory] ?? sprintf($this->translate('Thumbnails "%s".'), $this->escapeHtml($directory)) ?></td>
+        </tr>
+        <?php endforeach; ?>
+        <tr>
+            <td><?= $this->translate('Total file storage') ?></td>
+            <td data-sort-value="-1" data-columbo-total aria-busy="true"><span class="columbo-spinner" aria-hidden="true"></span> <?= $this->translate('Calculating…') ?></td>
+            <td><?= $this->translate('Sum of the storage directories.') ?></td>
+        </tr>
+        <?php endif; ?>
         <tr>
             <td><?= $this->translate('Total media size') ?></td>
             <td data-sort-value="<?= (int) $mediaSize ?>"><?= $this->escapeHtml($mediaSizeReadable) ?></td>
-            <td><?= $this->translate('Sum of the media sizes registered in the database.') ?></td>
+            <td><?= $this->translate('Sum of the media sizes registered in the database. Compare it with the size of the original files.') ?></td>
         </tr>
-        <?php foreach ($sizes as $target => [$label, $description]): ?>
         <tr>
-            <td><?= $label ?></td>
-            <td data-sort-value="-1"
-                data-columbo-size="<?= $this->escapeHtmlAttr($this->url('admin/columbo/size', ['target' => $target])) ?>"
-                aria-busy="true"
-            ><span class="columbo-spinner" aria-hidden="true"></span> <?= $this->translate('Calculating…') ?></td>
-            <td><?= $description ?></td>
+            <td><?= $this->translate('Total omeka install size') ?></td>
+            <?= $sizeCell('omeka') ?>
+            <td><?= $this->translate('Size of the whole Omeka S directory. May be inaccurate due to permissions.') ?></td>
         </tr>
-        <?php endforeach; ?>
     </tbody>
 </table>
 </details>

@@ -20,7 +20,7 @@ Statistics are grouped in tabs on a single page:
 | Resource metadata | Properties and classes and how many resources use them, values linking to another resource by type of the linked resource, value annotations |
 | Users | Active and inactive users per role |
 | Modules | Modules with their version, installed version and state |
-| Storage information | Media, assets, files, remote storage and Omeka S directory sizes |
+| Storage information | File store in use and size of each of its directories, media size, Omeka S directory size |
 
 Each tab can be opened directly from its URL, for example
 `/admin/columbo/resources`.
@@ -42,17 +42,28 @@ Each tab can be opened directly from its URL, for example
 
 ## Disk usage calculations
 
-* Total media size is the sum of the media sizes registered in the database.
-  It may slightly differ from the size on disk.
-* Total assets size is the size of the `files/asset` directory of Omeka S.
-* Total ingested files is the size of the `files` directory of Omeka S.
-* Total remote ingested files is the size of the remote storage, when files
-  are stored with the AnyCloud module.
+The "Storage information" tab measures the file store that Omeka S actually
+uses:
+
+* the local `files` directory, or the one set by `file_store.local.base_path`
+  in `config/local.config.php`;
+* the remote storage of the [AnyCloud](https://github.com/HBLL-Collection-Development/omeka-s-any-cloud)
+  module, whether it is selected in the module settings or in
+  `config/local.config.php`.
+
+Each top directory of the store is measured separately: `original`, one per
+thumbnail type (`large`, `medium`, `square` by default) and `asset`, then
+summed. Other file stores are reported as not supported.
+
+* Total media size is the sum of the media sizes registered in the database:
+  compare it with the size of the `original` directory.
 * Total Omeka install size is the size of the directory where Omeka S is
   installed. It may be inaccurate due to permission issues.
 
-Directory sizes are computed with `du` when available, with a slower PHP
-fallback otherwise.
+Local sizes are computed with `du` when available, with a slower PHP fallback
+otherwise. Remote sizes list every file of the directory, which may be slow
+and billed by some providers on large buckets. A directory that cannot be read
+is reported as an error rather than as an empty one.
 
 ## License
 

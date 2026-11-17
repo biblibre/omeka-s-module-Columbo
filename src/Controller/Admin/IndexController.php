@@ -25,20 +25,32 @@ class IndexController extends AbstractActionController
     protected ThemeManager $themeManager;
     protected ModuleManager $moduleManager;
     protected Acl $acl;
-    protected ?\League\Flysystem\Filesystem $fileSystem;
+
+    /**
+     * File store in use: type (local, anycloud or unsupported), name, and
+     * path (local) or fileSystem (anycloud).
+     */
+    protected array $storage;
+
+    /**
+     * Top directories of the file store: originals, thumbnails, assets.
+     */
+    protected array $storageDirectories;
 
     public function __construct(
         Connection $connection,
         ThemeManager $themeManager,
         ModuleManager $moduleManager,
         Acl $acl,
-        ?\League\Flysystem\Filesystem $fileSystem = null
+        array $storage,
+        array $thumbnailTypes
     ) {
         $this->connection = $connection;
         $this->themeManager = $themeManager;
         $this->moduleManager = $moduleManager;
         $this->acl = $acl;
-        $this->fileSystem = $fileSystem;
+        $this->storage = $storage;
+        $this->storageDirectories = array_values(array_unique(array_merge(['original'], $thumbnailTypes, ['asset'])));
     }
 
     /**
@@ -92,18 +104,21 @@ class IndexController extends AbstractActionController
     {
         $target = $this->params()->fromRoute('target');
 
-        $bytes = match ($target) {
-            'assets' => $this->getDirectorySize(OMEKA_PATH . '/files/asset'),
-            'files' => $this->getDirectorySize(OMEKA_PATH . '/files'),
-            'omeka' => $this->getDirectorySize(OMEKA_PATH),
-            'bucket' => $this->fileSystem ? $this->getBucketSize($this->fileSystem) : null,
-            default => null,
-        };
-
         $response = $this->getResponse();
         $response->getHeaders()
             ->addHeaderLine('Content-Type', 'application/json')
             ->addHeaderLine('Cache-Control', 'no-store');
+
+        try {
+            $bytes = $target === 'omeka'
+                ? $this->getDirectorySize(OMEKA_PATH)
+                : (in_array($target, $this->storageDirectories, true) ? $this->getStorageSize($target) : null);
+        } catch (\Throwable $e) {
+            $this->logger()->err(sprintf('Columbo: cannot calculate the size of "%s": %s', $target, $e->getMessage()));
+            $response->setStatusCode(500);
+            $response->setContent(json_encode(['error' => $e->getMessage()]));
+            return $response;
+        }
 
         if ($bytes === null) {
             $response->setStatusCode(404);
@@ -160,9 +175,17 @@ class IndexController extends AbstractActionController
             $export['site' . $index . '_mediaSize'] = $this->bytesToReadable($site['mediaSize']);
         }
 
-        $filesSize = $this->getDirectorySize(OMEKA_PATH . '/files');
+        $filesSize = 0;
+        $assetsSize = 0;
+        foreach ($this->storageDirectories as $directory) {
+            $size = (int) $this->getStorageSize($directory);
+            $filesSize += $size;
+            if ($directory === 'asset') {
+                $assetsSize = $size;
+            }
+        }
         $export['totalMedia'] = $this->bytesToReadable($disk['mediaSize']);
-        $export['totalAssets'] = $this->bytesToReadable($this->getDirectorySize(OMEKA_PATH . '/files/asset'));
+        $export['totalAssets'] = $this->bytesToReadable($assetsSize);
         $export['totalFiles'] = $this->bytesToReadable($filesSize);
         $export['total'] = $this->bytesToReadable($disk['mediaSize'] + $filesSize);
         $export['omeka'] = $this->bytesToReadable($this->getDirectorySize(OMEKA_PATH));
@@ -472,8 +495,26 @@ class IndexController extends AbstractActionController
         return [
             'mediaSize' => $mediaSize,
             'mediaSizeReadable' => $this->bytesToReadable($mediaSize),
-            'hasBucket' => !empty($this->fileSystem),
+            'storage' => [
+                'type' => $this->storage['type'],
+                'name' => $this->storage['name'],
+                'path' => $this->storage['path'] ?? null,
+            ],
+            'storageDirectories' => $this->storageDirectories,
         ];
+    }
+
+    /**
+     * Size of a top directory of the file store, or null when the store is
+     * not supported.
+     */
+    protected function getStorageSize(string $directory): ?int
+    {
+        return match ($this->storage['type']) {
+            'local' => $this->getDirectorySize($this->storage['path'] . '/' . $directory),
+            'anycloud' => $this->getBucketSize($this->storage['fileSystem'], $directory),
+            default => null,
+        };
     }
 
     protected function getResourceCount(string $resourceType): int
@@ -494,6 +535,9 @@ class IndexController extends AbstractActionController
         }
         if (!is_dir($dir)) {
             return 0;
+        }
+        if (!is_readable($dir)) {
+            throw new \RuntimeException(sprintf('Directory "%s" is not readable.', $dir));
         }
 
         $isWindows = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
@@ -534,24 +578,25 @@ class IndexController extends AbstractActionController
         return $totalSize;
     }
 
-    protected function getBucketSize(\League\Flysystem\Filesystem $filesystem): int
+    /**
+     * Sum of the file sizes under a prefix of a remote storage. Errors on the
+     * listing itself are thrown, so that a failure is not displayed as 0.
+     *
+     * @see https://flysystem.thephpleague.com/docs/usage/filesystem-api/
+     */
+    protected function getBucketSize(\League\Flysystem\Filesystem $filesystem, string $prefix): int
     {
         $sum = 0;
-        // from https://flysystem.thephpleague.com/docs/usage/filesystem-api/
-        try {
-            /** @var \League\Flysystem\StorageAttributes $item */
-            foreach ($filesystem->listContents('/', true) as $item) {
-                if (!$item instanceof \League\Flysystem\FileAttributes) {
-                    continue;
-                }
-                try {
-                    $sum += $item->fileSize() ?? $filesystem->fileSize($item->path());
-                } catch (\League\Flysystem\FilesystemException $exception) {
-                    // Skip this file.
-                }
+        /** @var \League\Flysystem\StorageAttributes $item */
+        foreach ($filesystem->listContents($prefix, true) as $item) {
+            if (!$item instanceof \League\Flysystem\FileAttributes) {
+                continue;
             }
-        } catch (\League\Flysystem\FilesystemException $exception) {
-            return 0;
+            try {
+                $sum += $item->fileSize() ?? $filesystem->fileSize($item->path());
+            } catch (\League\Flysystem\FilesystemException $exception) {
+                // Skip this file.
+            }
         }
         return $sum;
     }

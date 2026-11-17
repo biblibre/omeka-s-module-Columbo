@@ -276,22 +276,76 @@
         return button;
     }
 
-    function loadSizes(panel) {
-        // One request at a time, to avoid running several "du" on the server at once.
-        Array.from(panel.querySelectorAll('[data-columbo-size]')).reduce((previous, cell) => previous.then(() => fetch(cell.dataset.columboSize, {
+    /** Same format as IndexController::bytesToReadable(). */
+    function bytesToReadable(bytes) {
+        const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        let i = 0;
+        for (; i < 4 && bytes > 1000; i++) {
+            bytes /= 1000;
+        }
+        return Math.round(bytes * 10) / 10 + ' ' + t(units[i]);
+    }
+
+    function fetchSize(url) {
+        return fetch(url, {
             credentials: 'same-origin',
             headers: { 'X-Requested-With': 'XMLHttpRequest', Accept: 'application/json' },
-        })
-            .then((response) => (response.ok ? response.json() : Promise.reject(new Error(response.statusText))))
+        }).then((response) => {
+            // An expired session redirects to the login form.
+            if (response.redirected || !(response.headers.get('Content-Type') || '').includes('application/json')) {
+                throw Object.assign(new Error('Session expired'), { sessionExpired: true });
+            }
+            return response.json().then((data) => {
+                if (!response.ok) {
+                    throw new Error(data.error || response.statusText);
+                }
+                return data;
+            });
+        });
+    }
+
+    function setSizeError(cell, error) {
+        cell.textContent = t(error && error.sessionExpired ? 'Session expired: reload the page.' : 'Could not calculate size.');
+        if (error && error.message) {
+            cell.title = error.message;
+        }
+    }
+
+    function loadSizes(panel) {
+        const cells = Array.from(panel.querySelectorAll('[data-columbo-size]'));
+        const totalCell = panel.querySelector('[data-columbo-total]');
+        let sum = 0;
+        let totalError = null;
+
+        // One request at a time, to avoid running several "du" or bucket listings at once.
+        cells.reduce((previous, cell) => previous.then(() => fetchSize(cell.dataset.columboSize)
             .then((data) => {
                 cell.textContent = data.readable;
                 cell.dataset.sortValue = data.bytes;
+                if (cell.hasAttribute('data-columbo-in-total')) {
+                    sum += data.bytes;
+                }
             })
             .catch((error) => {
                 console.error('Columbo:', error);
-                cell.textContent = t('Could not calculate size.');
+                setSizeError(cell, error);
+                if (cell.hasAttribute('data-columbo-in-total')) {
+                    totalError = totalError || error;
+                }
             })
-            .finally(() => cell.removeAttribute('aria-busy'))), Promise.resolve());
+            .finally(() => cell.removeAttribute('aria-busy'))), Promise.resolve())
+            .then(() => {
+                if (!totalCell) {
+                    return;
+                }
+                if (totalError) {
+                    setSizeError(totalCell, totalError);
+                } else {
+                    totalCell.textContent = bytesToReadable(sum);
+                    totalCell.dataset.sortValue = sum;
+                }
+                totalCell.removeAttribute('aria-busy');
+            });
     }
 
     function initBackToTop(tablist) {
