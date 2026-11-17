@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+- Merge all pages into a single page with lazy-loaded tabs (fixes overlapping tabs)
+- Allow sorting and filtering on every column of every table
+- Add item sets table and modules tab
+- Add "Export all (CSV)" button
+- Make sites and resource count queries faster
+- Fix CSV export, bucket size URL and size of a symlinked files directory
+
 ## [0.1.4] - 2025-06-24
 
 - Fix "Items with(out) media" counts

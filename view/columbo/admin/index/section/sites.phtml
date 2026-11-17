@@ -1,0 +1,67 @@
+<?php
+/**
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var array $sites
+ * @var array $themes
+ */
+$escape = $this->plugin('escapeHtml');
+?>
+<?= $this->partial('common/columbo-block-header', [
+    'id' => 'columbo-sites',
+    'title' => $this->translate('Sites'),
+    'count' => count($sites),
+]) ?>
+<table class="tablesaw tablesaw-stack columbo-table" data-tablesaw-mode="stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Site') ?></th>
+            <th><?= $this->translate('Number of items') ?></th>
+            <th><?= $this->translate('Number of item sets') ?></th>
+            <th><?= $this->translate('Number of pages') ?></th>
+            <th><?= $this->translate('Number of viewers') ?></th>
+            <th><?= $this->translate('Number of editors') ?></th>
+            <th><?= $this->translate('Number of admins') ?></th>
+            <th><?= $this->translate('Size of media') ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($sites as $site): ?>
+        <tr>
+            <td><?= $this->hyperlink($site['title'], $this->url('admin/site/slug', ['site-slug' => $site['slug']])) ?></td>
+            <td><?= (int) $site['itemCount'] ?></td>
+            <td><?= (int) $site['itemSetCount'] ?></td>
+            <td><?= (int) $site['pageCount'] ?></td>
+            <td><?= (int) $site['viewerCount'] ?></td>
+            <td><?= (int) $site['editorCount'] ?></td>
+            <td><?= (int) $site['adminCount'] ?></td>
+            <td data-sort-value="<?= (int) $site['mediaSize'] ?>"><?= $escape($site['mediaSizeReadable']) ?></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+</details>
+
+<?= $this->partial('common/columbo-block-header', [
+    'id' => 'columbo-themes',
+    'title' => $this->translate('Themes'),
+    'count' => count($themes),
+]) ?>
+<table class="tablesaw tablesaw-stack columbo-table" data-tablesaw-mode="stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Theme') ?></th>
+            <th><?= $this->translate('Version') ?></th>
+            <th><?= $this->translate('Number of sites using it') ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($themes as $theme): ?>
+        <tr>
+            <td><?= $escape($theme['name']) ?></td>
+            <td><?= $escape($theme['version']) ?></td>
+            <td><?= (int) $theme['siteCount'] ?></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+</details>

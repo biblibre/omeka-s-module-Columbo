@@ -1,0 +1,211 @@
+<?php
+/**
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var array $resourceCounts
+ * @var array $itemStats
+ * @var array $itemSets
+ * @var array $fileTypes
+ * @var array $resourceTemplates
+ * @var array $vocabularies
+ */
+use Omeka\Entity\Item;
+use Omeka\Entity\ItemSet;
+use Omeka\Entity\Media;
+
+$escape = $this->plugin('escapeHtml');
+$typeLabels = [
+    ItemSet::class => $this->translate('Item sets'),
+    Item::class => $this->translate('Items'),
+    Media::class => $this->translate('Media'),
+];
+?>
+<?= $this->partial('common/columbo-block-header', [
+    'id' => 'columbo-resources',
+    'title' => $this->translate('Resources'),
+]) ?>
+<table class="tablesaw tablesaw-stack columbo-table" data-tablesaw-mode="stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Resource type') ?></th>
+            <th><?= $this->translate('Public') ?></th>
+            <th><?= $this->translate('Private') ?></th>
+            <th><?= $this->translate('Without resource template') ?></th>
+            <th><?= $this->translate('Without class') ?></th>
+            <th><?= $this->translate('Total') ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($typeLabels as $type => $label):
+            $counts = $resourceCounts[$type]; ?>
+        <tr>
+            <td><?= $escape($label) ?></td>
+            <td><?= $counts['public'] ?></td>
+            <td><?= $counts['private'] ?></td>
+            <td><?= $counts['withoutTemplate'] ?></td>
+            <td><?= $counts['withoutClass'] ?></td>
+            <td><?= $counts['total'] ?></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+</details>
+
+<?= $this->partial('common/columbo-block-header', [
+    'id' => 'columbo-items',
+    'title' => $this->translate('Items'),
+    'help' => $this->translate('Media per item statistics exclude items without media.'),
+]) ?>
+<table class="tablesaw tablesaw-stack columbo-table" data-tablesaw-mode="stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Indicator') ?></th>
+            <th><?= $this->translate('Value') ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><?= $this->translate('Number of items with media') ?></td>
+            <td><?= $itemStats['itemsWithMediaCount'] ?></td>
+        </tr>
+        <tr>
+            <td><?= $this->translate('Number of items without media') ?></td>
+            <td><?= $itemStats['itemsWithoutMediaCount'] ?></td>
+        </tr>
+        <tr>
+            <td><?= $this->translate('Number of items with an item set') ?></td>
+            <td><?= $itemStats['itemsWithItemSetCount'] ?></td>
+        </tr>
+        <tr>
+            <td><?= $this->translate('Number of items without item sets') ?></td>
+            <td><?= $itemStats['itemsWithoutItemSetCount'] ?></td>
+        </tr>
+        <tr>
+            <td><?= $this->translate('Minimum number of media per item') ?></td>
+            <td><?= $itemStats['mediaCountByItemMin'] ?></td>
+        </tr>
+        <tr>
+            <td><?= $this->translate('Maximum number of media per item') ?></td>
+            <td><?= $itemStats['mediaCountByItemMax'] ?></td>
+        </tr>
+        <tr>
+            <td><?= $this->translate('Average number of media per item') ?></td>
+            <td data-sort-value="<?= $itemStats['mediaCountByItemAvg'] ?>"><?= sprintf('%.2f', $itemStats['mediaCountByItemAvg']) ?></td>
+        </tr>
+    </tbody>
+</table>
+</details>
+
+<?= $this->partial('common/columbo-block-header', [
+    'id' => 'columbo-item-sets',
+    'title' => $this->translate('Item sets'),
+    'count' => count($itemSets),
+]) ?>
+<table class="tablesaw tablesaw-stack columbo-table" data-tablesaw-mode="stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Title') ?></th>
+            <th><?= $this->translate('Visibility') ?></th>
+            <th><?= $this->translate('Open to additions') ?></th>
+            <th><?= $this->translate('Number of items') ?></th>
+            <th><?= $this->translate('Number of media') ?></th>
+            <th><?= $this->translate('Size of media') ?></th>
+            <th><?= $this->translate('Number of sites') ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($itemSets as $itemSet): ?>
+        <tr>
+            <td><?= $this->hyperlink(
+                $itemSet['title'] ?? $this->translate('[Untitled]'),
+                $this->url('admin/id', ['controller' => 'item-set', 'action' => 'show', 'id' => $itemSet['id']])
+            ) ?></td>
+            <td><?= $itemSet['is_public'] ? $this->translate('Public') : $this->translate('Private') ?></td>
+            <td><?= $itemSet['is_open'] ? $this->translate('Yes') : $this->translate('No') ?></td>
+            <td><?= (int) $itemSet['itemCount'] ?></td>
+            <td><?= (int) $itemSet['mediaCount'] ?></td>
+            <td data-sort-value="<?= (int) $itemSet['mediaSize'] ?>"><?= $escape($itemSet['mediaSizeReadable']) ?></td>
+            <td><?= (int) $itemSet['siteCount'] ?></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+</details>
+
+<?= $this->partial('common/columbo-block-header', [
+    'id' => 'columbo-media',
+    'title' => $this->translate('Media'),
+    'count' => count($fileTypes),
+]) ?>
+<table class="tablesaw tablesaw-stack columbo-table" data-tablesaw-mode="stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('File type') ?></th>
+            <th><?= $this->translate('Total') ?></th>
+            <th><?= $this->translate('Size of media') ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($fileTypes as $fileType): ?>
+        <tr>
+            <td><?= $escape($fileType['fileType']) ?></td>
+            <td><?= (int) $fileType['total'] ?></td>
+            <td data-sort-value="<?= (int) $fileType['size'] ?>"><?= $escape($fileType['sizeReadable']) ?></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+</details>
+
+<?= $this->partial('common/columbo-block-header', [
+    'id' => 'columbo-templates',
+    'title' => $this->translate('Resource templates'),
+    'count' => count($resourceTemplates),
+]) ?>
+<table class="tablesaw tablesaw-stack columbo-table" data-tablesaw-mode="stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Label') ?></th>
+            <th><?= $this->translate('Number of item sets using it') ?></th>
+            <th><?= $this->translate('Number of items using it') ?></th>
+            <th><?= $this->translate('Number of media using it') ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($resourceTemplates as $resourceTemplate): ?>
+        <tr>
+            <td><?= $escape($resourceTemplate['label']) ?></td>
+            <td><?= (int) $resourceTemplate['itemSetCount'] ?></td>
+            <td><?= (int) $resourceTemplate['itemCount'] ?></td>
+            <td><?= (int) $resourceTemplate['mediaCount'] ?></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+</details>
+
+<?= $this->partial('common/columbo-block-header', [
+    'id' => 'columbo-vocabularies',
+    'title' => $this->translate('Vocabularies'),
+    'count' => count($vocabularies),
+]) ?>
+<table class="tablesaw tablesaw-stack columbo-table" data-tablesaw-mode="stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Prefix') ?></th>
+            <th><?= $this->translate('Label') ?></th>
+            <th><?= $this->translate('Number of classes') ?></th>
+            <th><?= $this->translate('Number of properties') ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($vocabularies as $vocabulary): ?>
+        <tr>
+            <td><?= $escape($vocabulary['prefix']) ?></td>
+            <td><?= $escape($vocabulary['label']) ?></td>
+            <td><?= (int) $vocabulary['classCount'] ?></td>
+            <td><?= (int) $vocabulary['propertyCount'] ?></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+</details>

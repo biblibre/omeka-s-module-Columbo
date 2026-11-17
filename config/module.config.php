@@ -12,32 +12,13 @@ return [
         'AdminModule' => [
             [
                 'label' => 'Columb\'O',
-                'route' => 'admin/columbo/sites',
+                'route' => 'admin/columbo',
                 'class' => 'o-icon- fa-user-secret',
                 'pages' => [
                     [
-                        'label' => 'Sites', // @translate
-                        'route' => 'admin/columbo/sites',
-                    ],
-                    [
-                        'label' => 'Resources', // @translate
-                        'route' => 'admin/columbo/resources',
-                    ],
-                    [
-                        'label' => 'Resource metadata', // @translate
-                        'route' => 'admin/columbo/metadata',
-                    ],
-                    [
-                        'label' => 'Users', // @translate
-                        'route' => 'admin/columbo/users',
-                    ],
-                    [
-                        'label' => 'Modules', // @translate
-                        'route' => 'admin/columbo/modules',
-                    ],
-                    [
-                        'label' => 'Disk usage', // @translate
-                        'route' => 'admin/columbo/disk',
+                        // Keeps the menu entry highlighted on a tab URL.
+                        'route' => 'admin/columbo/tab',
+                        'visible' => false,
                     ],
                 ],
             ],
@@ -48,97 +29,61 @@ return [
             'admin' => [
                 'child_routes' => [
                     'columbo' => [
-                        'type' => \Laminas\Router\Http\Segment::class,
+                        'type' => \Laminas\Router\Http\Literal::class,
                         'options' => [
                             'route' => '/columbo',
+                            'defaults' => [
+                                '__NAMESPACE__' => 'Columbo\Controller\Admin',
+                                'controller' => 'index',
+                                'action' => 'index',
+                            ],
                         ],
-                        'may_terminate' => false,
+                        'may_terminate' => true,
                         'child_routes' => [
-                            'download' => [
+                            // Page opened on a tab; also serves the former
+                            // per-page URLs (/columbo/sites, /columbo/disk…).
+                            'tab' => [
                                 'type' => \Laminas\Router\Http\Segment::class,
+                                'options' => [
+                                    'route' => '/:section',
+                                    'constraints' => [
+                                        'section' => implode('|', Controller\Admin\IndexController::SECTIONS),
+                                    ],
+                                    'defaults' => [
+                                        'action' => 'index',
+                                    ],
+                                ],
+                            ],
+                            'content' => [
+                                'type' => \Laminas\Router\Http\Segment::class,
+                                'options' => [
+                                    'route' => '/content/:section',
+                                    'constraints' => [
+                                        'section' => implode('|', Controller\Admin\IndexController::SECTIONS),
+                                    ],
+                                    'defaults' => [
+                                        'action' => 'content',
+                                    ],
+                                ],
+                            ],
+                            'size' => [
+                                'type' => \Laminas\Router\Http\Segment::class,
+                                'options' => [
+                                    'route' => '/size/:target',
+                                    'constraints' => [
+                                        'target' => 'assets|files|omeka|bucket',
+                                    ],
+                                    'defaults' => [
+                                        'action' => 'size',
+                                    ],
+                                ],
+                            ],
+                            'download' => [
+                                'type' => \Laminas\Router\Http\Literal::class,
                                 'options' => [
                                     'route' => '/download',
                                     'defaults' => [
-                                        '__NAMESPACE__' => 'Columbo\Controller\Admin',
-                                        'controller' => 'index',
                                         'action' => 'download',
-                                    ],
-                                ],
-                            ],
-                            'sites' => [
-                                'type' => \Laminas\Router\Http\Segment::class,
-                                'options' => [
-                                    'route' => '/sites',
-                                    'defaults' => [
-                                        '__NAMESPACE__' => 'Columbo\Controller\Admin',
-                                        'controller' => 'index',
-                                        'action' => 'sites',
-                                    ],
-                                ],
-                            ],
-                            'resources' => [
-                                'type' => \Laminas\Router\Http\Segment::class,
-                                'options' => [
-                                    'route' => '/resources',
-                                    'defaults' => [
-                                        '__NAMESPACE__' => 'Columbo\Controller\Admin',
-                                        'controller' => 'index',
-                                        'action' => 'resources',
-                                    ],
-                                ],
-                            ],
-                            'metadata' => [
-                                'type' => \Laminas\Router\Http\Segment::class,
-                                'options' => [
-                                    'route' => '/metadata',
-                                    'defaults' => [
-                                        '__NAMESPACE__' => 'Columbo\Controller\Admin',
-                                        'controller' => 'index',
-                                        'action' => 'metadata',
-                                    ],
-                                ],
-                            ],
-                            'users' => [
-                                'type' => \Laminas\Router\Http\Segment::class,
-                                'options' => [
-                                    'route' => '/users',
-                                    'defaults' => [
-                                        '__NAMESPACE__' => 'Columbo\Controller\Admin',
-                                        'controller' => 'index',
-                                        'action' => 'users',
-                                    ],
-                                ],
-                            ],
-                            'modules' => [
-                                'type' => \Laminas\Router\Http\Segment::class,
-                                'options' => [
-                                    'route' => '/modules',
-                                    'defaults' => [
-                                        '__NAMESPACE__' => 'Columbo\Controller\Admin',
-                                        'controller' => 'index',
-                                        'action' => 'modules',
-                                    ],
-                                ],
-                            ],
-                            'disk' => [
-                                'type' => \Laminas\Router\Http\Segment::class,
-                                'options' => [
-                                    'route' => '/disk',
-                                    'defaults' => [
-                                        '__NAMESPACE__' => 'Columbo\Controller\Admin',
-                                        'controller' => 'index',
-                                        'action' => 'disk',
-                                    ],
-                                ],
-                            ],
-                            'fetch-bucket-size' => [
-                                'type' => \Laminas\Router\Http\Segment::class,
-                                'options' => [
-                                    'route' => '/fetchBucketSize',
-                                    'defaults' => [
-                                        '__NAMESPACE__' => 'Columbo\Controller\Admin',
-                                        'controller' => 'index',
-                                        'action' => 'fetchBucketSize',
                                     ],
                                 ],
                             ],
@@ -164,7 +109,12 @@ return [
         ],
     ],
     'js_translate_strings' => [
+        'Loading…', // @translate
+        'Could not load this tab.', // @translate
+        'Retry', // @translate
+        'Refresh', // @translate
         'Download CSV', // @translate
-        'Could not calculate bucket size.', // @translate
+        'Could not calculate size.', // @translate
+        'Back to top', // @translate
     ],
 ];

@@ -10,27 +10,27 @@ class IndexControllerFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $services, $requestedName, array $options = null)
     {
-        $connection = $services->get('Omeka\Connection');
-        $themeManager = $services->get('Omeka\Site\ThemeManager');
-
         $fileSystem = null;
 
         if (class_exists('\AnyCloud\File\Store\Flysystem')) {
-            // hack to access private 'filesystem' attribute of AnyCloud because there is no getter.
-
-            $flysystem = $services->get('Omeka\File\Store');
-            if (isset($flysystem) && $flysystem instanceof \AnyCloud\File\Store\Flysystem) {
+            $store = $services->get('Omeka\File\Store');
+            if ($store instanceof \AnyCloud\File\Store\Flysystem) {
+                // AnyCloud has no getter for its private "filesystem" property.
                 $fileSystemGetter = \Closure::bind(
                     fn () => $this->filesystem,
-                    $flysystem,
+                    $store,
                     \AnyCloud\File\Store\Flysystem::class
                 );
                 $fileSystem = $fileSystemGetter();
             }
         }
 
-        $controller = new IndexController($connection, $themeManager, $fileSystem);
-
-        return $controller;
+        return new IndexController(
+            $services->get('Omeka\Connection'),
+            $services->get('Omeka\Site\ThemeManager'),
+            $services->get('Omeka\ModuleManager'),
+            $services->get('Omeka\Acl'),
+            $fileSystem
+        );
     }
 }

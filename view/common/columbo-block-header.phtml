@@ -1,0 +1,40 @@
+<?php
+/**
+ * Opens a collapsible statistics block. Close it with "</details>".
+ *
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var string $id Unique block id (also used as CSV file name)
+ * @var string $title Already translated title
+ * @var int|null $count Number of rows, shown next to the title
+ * @var bool $sortable Shows the sort / filter form (default true)
+ * @var string|null $help Already translated description
+ */
+$sortable ??= true;
+$count ??= null;
+$help ??= null;
+?>
+<details class="columbo-block" id="<?= $this->escapeHtmlAttr($id) ?>" open>
+    <summary>
+        <h3><?= $this->escapeHtml($title) ?></h3>
+        <?php if ($count !== null): ?>
+        <span class="columbo-count"><?= (int) $count ?></span>
+        <?php endif; ?>
+    </summary>
+    <?php if ($help): ?>
+    <p class="columbo-help"><?= $this->escapeHtml($help) ?></p>
+    <?php endif; ?>
+    <div class="browse-controls columbo-controls">
+        <?php if ($sortable): ?>
+        <form class="sorting" action="">
+            <input type="search" name="columbo_filter"
+                placeholder="<?= $this->escapeHtmlAttr($this->translate('Filter')) ?>"
+                aria-label="<?= $this->escapeHtmlAttr($this->translate('Filter')) ?>">
+            <select name="sort_by" aria-label="<?= $this->escapeHtmlAttr($this->translate('Sort by')) ?>"></select>
+            <select name="sort_order" aria-label="<?= $this->escapeHtmlAttr($this->translate('Sort order')) ?>">
+                <option value="asc"><?= $this->translate('Ascending') ?></option>
+                <option value="desc"><?= $this->translate('Descending') ?></option>
+            </select>
+            <button type="submit"><?= $this->translate('Sort') ?></button>
+        </form>
+        <?php endif; ?>
+    </div>

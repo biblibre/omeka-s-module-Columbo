@@ -1,0 +1,55 @@
+<?php
+/**
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var string[] $sections
+ * @var string $activeSection
+ */
+$this->htmlElement('body')->appendAttribute('class', 'columbo');
+$this->headLink()->appendStylesheet($this->assetUrl('css/columbo.css', 'Columbo'));
+$this->headScript()->appendFile($this->assetUrl('js/columbo.js', 'Columbo'), 'text/javascript', ['defer' => 'defer']);
+
+$labels = [
+    'sites' => $this->translate('Sites'),
+    'resources' => $this->translate('Resources'),
+    'metadata' => $this->translate('Resource metadata'),
+    'users' => $this->translate('Users'),
+    'modules' => $this->translate('Modules'),
+    'disk' => $this->translate('Storage information'),
+];
+?>
+<?= $this->pageTitle('Columb\'O') ?>
+
+<div id="page-actions">
+    <a class="button" href="<?= $this->escapeHtmlAttr($this->url('admin/columbo/download')) ?>">
+        <?= $this->translate('Export all (CSV)') ?>
+    </a>
+</div>
+
+<div class="columbo-tabs" role="tablist" aria-label="Columb'O">
+    <?php foreach ($sections as $section):
+        $isActive = $section === $activeSection; ?>
+    <a role="tab"
+        id="columbo-tab-<?= $section ?>"
+        href="<?= $this->escapeHtmlAttr($this->url('admin/columbo/tab', ['section' => $section])) ?>"
+        aria-controls="columbo-panel-<?= $section ?>"
+        aria-selected="<?= $isActive ? 'true' : 'false' ?>"
+        tabindex="<?= $isActive ? '0' : '-1' ?>"
+        data-section="<?= $section ?>"
+        data-content-url="<?= $this->escapeHtmlAttr($this->url('admin/columbo/content', ['section' => $section])) ?>"
+    ><?= $this->escapeHtml($labels[$section]) ?></a>
+    <?php endforeach; ?>
+</div>
+
+<?php foreach ($sections as $section): ?>
+<div class="columbo-panel"
+    id="columbo-panel-<?= $section ?>"
+    role="tabpanel"
+    aria-labelledby="columbo-tab-<?= $section ?>"
+    tabindex="0"
+    <?= $section === $activeSection ? '' : 'hidden' ?>
+></div>
+<?php endforeach; ?>
+
+<noscript>
+    <p class="error"><?= $this->translate('JavaScript is required to display statistics.') ?></p>
+</noscript>

@@ -5,125 +5,550 @@ namespace Columbo\Controller\Admin;
 use Doctrine\DBAL\Connection;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
-use Omeka\Entity\ItemSet;
 use Omeka\Entity\Item;
+use Omeka\Entity\ItemSet;
 use Omeka\Entity\Media;
 use Omeka\Entity\ValueAnnotation;
+use Omeka\Module\Manager as ModuleManager;
+use Omeka\Permissions\Acl;
 use Omeka\Site\Theme\Manager as ThemeManager;
 
 class IndexController extends AbstractActionController
 {
+    /**
+     * Tabs, in display order. "disk" is labelled "Storage information" but
+     * keeps its id so that the URLs of the former pages remain valid.
+     */
+    public const SECTIONS = ['sites', 'resources', 'metadata', 'users', 'modules', 'disk'];
+
     protected Connection $connection;
     protected ThemeManager $themeManager;
-    protected ?\League\Flysystem\FileSystem $fileSystem;
+    protected ModuleManager $moduleManager;
+    protected Acl $acl;
+    protected ?\League\Flysystem\Filesystem $fileSystem;
 
-    public function __construct(Connection $connection, ThemeManager $themeManager, ?\League\Flysystem\FileSystem $fileSystem = null)
-    {
+    public function __construct(
+        Connection $connection,
+        ThemeManager $themeManager,
+        ModuleManager $moduleManager,
+        Acl $acl,
+        ?\League\Flysystem\Filesystem $fileSystem = null
+    ) {
         $this->connection = $connection;
         $this->themeManager = $themeManager;
+        $this->moduleManager = $moduleManager;
+        $this->acl = $acl;
         $this->fileSystem = $fileSystem;
     }
 
+    /**
+     * Tab bar and empty panels, filled by asset/js/columbo.js from contentAction().
+     */
+    public function indexAction()
+    {
+        $section = $this->params()->fromRoute('section', self::SECTIONS[0]);
+        if (!in_array($section, self::SECTIONS, true)) {
+            $section = self::SECTIONS[0];
+        }
+
+        $view = new ViewModel;
+        $view->setVariable('sections', self::SECTIONS);
+        $view->setVariable('activeSection', $section);
+        return $view;
+    }
+
+    /**
+     * HTML fragment of a tab, without layout.
+     */
+    public function contentAction()
+    {
+        $section = $this->params()->fromRoute('section');
+        if (!in_array($section, self::SECTIONS, true)) {
+            return $this->notFoundAction();
+        }
+
+        $data = match ($section) {
+            'sites' => $this->getSitesData(),
+            'resources' => $this->getResourcesData(),
+            'metadata' => $this->getMetadataData(),
+            'users' => $this->getUsersData(),
+            'modules' => $this->getModulesData(),
+            'disk' => $this->getDiskData(),
+        };
+
+        $view = new ViewModel($data);
+        $view->setTemplate('columbo/admin/index/section/' . $section);
+        $view->setTerminal(true);
+
+        $this->getResponse()->getHeaders()->addHeaderLine('Cache-Control', 'no-store');
+
+        return $view;
+    }
+
+    /**
+     * Directory or bucket size as JSON, requested separately because it is slow.
+     */
+    public function sizeAction()
+    {
+        $target = $this->params()->fromRoute('target');
+
+        $bytes = match ($target) {
+            'assets' => $this->getDirectorySize(OMEKA_PATH . '/files/asset'),
+            'files' => $this->getDirectorySize(OMEKA_PATH . '/files'),
+            'omeka' => $this->getDirectorySize(OMEKA_PATH),
+            'bucket' => $this->fileSystem ? $this->getBucketSize($this->fileSystem) : null,
+            default => null,
+        };
+
+        $response = $this->getResponse();
+        $response->getHeaders()
+            ->addHeaderLine('Content-Type', 'application/json')
+            ->addHeaderLine('Cache-Control', 'no-store');
+
+        if ($bytes === null) {
+            $response->setStatusCode(404);
+            $response->setContent(json_encode(['error' => 'Unavailable']));
+            return $response;
+        }
+
+        $response->setContent(json_encode([
+            'bytes' => $bytes,
+            'readable' => $this->bytesToReadable($bytes),
+        ]));
+        return $response;
+    }
+
+    /**
+     * Export of every statistic in a single CSV row (format kept from 0.1.x).
+     */
+    public function downloadAction()
+    {
+        $sites = $this->getSitesData();
+        $resources = $this->getResourcesData();
+        $metadata = $this->getMetadataData();
+        $users = $this->getUsersData();
+        $disk = $this->getDiskData();
+
+        $export = [];
+
+        $labels = [ItemSet::class => 'itemSets', Item::class => 'items', Media::class => 'media'];
+        foreach ($labels as $type => $prefix) {
+            $counts = $resources['resourceCounts'][$type];
+            $export['private' . ucfirst($prefix) . 'Count'] = $counts['private'];
+            $export['public' . ucfirst($prefix) . 'Count'] = $counts['public'];
+            $export[$prefix . 'WithoutTemplateCount'] = $counts['withoutTemplate'];
+            $export[$prefix . 'WithoutClassCount'] = $counts['withoutClass'];
+            $export[$prefix . 'Count'] = $counts['total'];
+        }
+
+        foreach ($resources['itemStats'] as $key => $value) {
+            $export[$key] = $value;
+        }
+
+        $i = 0;
+        foreach ($resources['fileTypes'] as $fileType) {
+            $export['perFileTypeMediaCount' . $i . '_fileType'] = $fileType['fileType'];
+            $export['perFileTypeMediaCount' . $i . '_total'] = $fileType['total'];
+            ++$i;
+        }
+
+        $siteColumns = ['title', 'itemCount', 'itemSetCount', 'pageCount', 'viewerCount', 'editorCount', 'adminCount'];
+        foreach ($sites['sites'] as $index => $site) {
+            foreach ($siteColumns as $column) {
+                $export['site' . $index . '_' . $column] = $site[$column];
+            }
+            $export['site' . $index . '_mediaSize'] = $this->bytesToReadable($site['mediaSize']);
+        }
+
+        $filesSize = $this->getDirectorySize(OMEKA_PATH . '/files');
+        $export['totalMedia'] = $this->bytesToReadable($disk['mediaSize']);
+        $export['totalAssets'] = $this->bytesToReadable($this->getDirectorySize(OMEKA_PATH . '/files/asset'));
+        $export['totalFiles'] = $this->bytesToReadable($filesSize);
+        $export['total'] = $this->bytesToReadable($disk['mediaSize'] + $filesSize);
+        $export['omeka'] = $this->bytesToReadable($this->getDirectorySize(OMEKA_PATH));
+
+        foreach ($sites['themes'] as $index => $theme) {
+            $export['theme' . $index . '_themeName'] = $theme['name'];
+            $export['theme' . $index . '_themeVersion'] = $theme['version'];
+            $export['theme' . $index . '_themeSiteCount'] = $theme['siteCount'];
+        }
+
+        $usageColumns = ['itemSetCount', 'itemCount', 'mediaCount'];
+        foreach (['property' => $metadata['properties'], 'class' => $metadata['classes']] as $prefix => $rows) {
+            foreach ($rows as $index => $row) {
+                $export[$prefix . $index . '_term'] = $row['term'];
+                foreach ($usageColumns as $column) {
+                    $export[$prefix . $index . '_' . $column] = $row[$column];
+                }
+            }
+        }
+
+        foreach ($resources['resourceTemplates'] as $index => $row) {
+            $export['resourceTemplate' . $index . '_label'] = $row['label'];
+            foreach ($usageColumns as $column) {
+                $export['resourceTemplate' . $index . '_' . $column] = $row[$column];
+            }
+        }
+
+        foreach ($resources['vocabularies'] as $index => $row) {
+            $export['vocabulary' . $index . '_prefix'] = $row['prefix'];
+            $export['vocabulary' . $index . '_classCount'] = $row['classCount'];
+            $export['vocabulary' . $index . '_propertyCount'] = $row['propertyCount'];
+        }
+
+        foreach ($metadata['valueResourceTypes'] as $index => $row) {
+            $export['valueResourceType' . $index . '_resource_type'] = $row['resource_type'];
+            $export['valueResourceType' . $index . '_count'] = $row['count'];
+        }
+
+        $export['valueAnnotationCount'] = $metadata['valueAnnotationCount'];
+
+        foreach ($users['roles'] as $index => $row) {
+            $export['role' . $index . '_role'] = $row['role'];
+            $export['role' . $index . '_inactiveCount'] = $row['inactiveCount'];
+            $export['role' . $index . '_activeCount'] = $row['activeCount'];
+        }
+
+        $fp = fopen('php://temp', 'r+');
+        fputcsv($fp, array_keys($export));
+        fputcsv($fp, array_values($export));
+        rewind($fp);
+        $csv = stream_get_contents($fp);
+        fclose($fp);
+
+        $response = $this->getResponse();
+        $response->setContent($csv);
+        $response->getHeaders()
+            ->addHeaderLine('Content-Type', 'text/csv; charset=utf-8')
+            ->addHeaderLine('Content-Disposition', 'attachment; filename="columbo.csv"');
+
+        return $response;
+    }
+
+    protected function getSitesData(): array
+    {
+        $conn = $this->connection;
+
+        // One correlated subquery per counter: avoids the cartesian product
+        // produced by chaining LEFT JOINs + COUNT(DISTINCT).
+        $sites = $conn->fetchAllAssociative(<<<'SQL'
+            SELECT
+                site.id,
+                site.slug,
+                site.title,
+                (SELECT COUNT(*) FROM item_site WHERE item_site.site_id = site.id) itemCount,
+                (SELECT COUNT(*) FROM site_item_set WHERE site_item_set.site_id = site.id) itemSetCount,
+                (SELECT COUNT(*) FROM site_page WHERE site_page.site_id = site.id) pageCount,
+                (SELECT COUNT(*) FROM site_permission sp WHERE sp.site_id = site.id AND sp.role = 'viewer') viewerCount,
+                (SELECT COUNT(*) FROM site_permission sp WHERE sp.site_id = site.id AND sp.role = 'editor') editorCount,
+                (SELECT COUNT(*) FROM site_permission sp WHERE sp.site_id = site.id AND sp.role = 'admin') adminCount,
+                (SELECT COALESCE(SUM(media.size), 0)
+                    FROM item_site INNER JOIN media ON media.item_id = item_site.item_id
+                    WHERE item_site.site_id = site.id) mediaSize
+            FROM site
+            ORDER BY site.title
+            SQL);
+
+        foreach ($sites as &$site) {
+            $site['mediaSizeReadable'] = $this->bytesToReadable($site['mediaSize']);
+        }
+        unset($site);
+
+        $siteCountByTheme = $conn->fetchAllKeyValue('SELECT theme, COUNT(*) FROM site GROUP BY theme');
+        $themes = [];
+        foreach ($this->themeManager->getThemes() as $theme) {
+            $themes[] = [
+                'name' => $theme->getName(),
+                'version' => $theme->getIni('version'),
+                'siteCount' => (int) ($siteCountByTheme[$theme->getId()] ?? 0),
+            ];
+        }
+
+        return [
+            'sites' => $sites,
+            'themes' => $themes,
+        ];
+    }
+
+    protected function getResourcesData(): array
+    {
+        $conn = $this->connection;
+        $types = [ItemSet::class, Item::class, Media::class];
+
+        // All visibility / template / class counters in a single query.
+        $rows = $conn->fetchAllAssociativeIndexed(<<<'SQL'
+            SELECT
+                resource_type,
+                COUNT(*) total,
+                SUM(is_public = 1) public,
+                SUM(is_public = 0) private,
+                SUM(resource_template_id IS NULL) withoutTemplate,
+                SUM(resource_class_id IS NULL) withoutClass
+            FROM resource
+            WHERE resource_type IN (?, ?, ?)
+            GROUP BY resource_type
+            SQL, $types);
+
+        $resourceCounts = [];
+        foreach ($types as $type) {
+            $resourceCounts[$type] = array_map('intval', $rows[$type] ?? [
+                'total' => 0, 'public' => 0, 'private' => 0, 'withoutTemplate' => 0, 'withoutClass' => 0,
+            ]);
+        }
+
+        $itemsCount = $resourceCounts[Item::class]['total'];
+        $itemsWithMediaCount = (int) $conn->fetchOne('SELECT COUNT(DISTINCT item_id) FROM media');
+        $itemsWithItemSetCount = (int) $conn->fetchOne('SELECT COUNT(DISTINCT item_id) FROM item_item_set');
+        [$min, $max, $avg] = $conn->fetchNumeric(<<<'SQL'
+            SELECT MIN(cnt), MAX(cnt), AVG(cnt)
+            FROM (SELECT COUNT(*) cnt FROM media GROUP BY media.item_id) s
+            SQL);
+
+        $itemStats = [
+            'itemsWithMediaCount' => $itemsWithMediaCount,
+            'itemsWithoutMediaCount' => $itemsCount - $itemsWithMediaCount,
+            'itemsWithoutItemSetCount' => $itemsCount - $itemsWithItemSetCount,
+            'itemsWithItemSetCount' => $itemsWithItemSetCount,
+            'mediaCountByItemMin' => (int) $min,
+            'mediaCountByItemMax' => (int) $max,
+            'mediaCountByItemAvg' => (float) $avg,
+        ];
+
+        $itemSets = $conn->fetchAllAssociative(<<<'SQL'
+            SELECT
+                resource.id,
+                resource.title,
+                resource.is_public,
+                item_set.is_open,
+                (SELECT COUNT(*) FROM item_item_set iis WHERE iis.item_set_id = resource.id) itemCount,
+                (SELECT COUNT(*) FROM item_item_set iis INNER JOIN media ON media.item_id = iis.item_id
+                    WHERE iis.item_set_id = resource.id) mediaCount,
+                (SELECT COALESCE(SUM(media.size), 0) FROM item_item_set iis INNER JOIN media ON media.item_id = iis.item_id
+                    WHERE iis.item_set_id = resource.id) mediaSize,
+                (SELECT COUNT(*) FROM site_item_set sis WHERE sis.item_set_id = resource.id) siteCount
+            FROM item_set
+                INNER JOIN resource ON resource.id = item_set.id
+            ORDER BY resource.title
+            SQL);
+        foreach ($itemSets as &$itemSet) {
+            $itemSet['mediaSizeReadable'] = $this->bytesToReadable($itemSet['mediaSize']);
+        }
+        unset($itemSet);
+
+        $fileTypes = $conn->fetchAllAssociative(<<<'SQL'
+            SELECT COALESCE(media_type, ingester) fileType, COUNT(*) total, COALESCE(SUM(size), 0) size
+            FROM media
+            GROUP BY fileType
+            ORDER BY total DESC, fileType
+            SQL);
+        foreach ($fileTypes as &$fileType) {
+            $fileType['sizeReadable'] = $this->bytesToReadable($fileType['size']);
+        }
+        unset($fileType);
+
+        $resourceTemplates = $conn->fetchAllAssociative(<<<'SQL'
+            SELECT
+                resource_template.label,
+                SUM(resource.resource_type = ?) itemSetCount,
+                SUM(resource.resource_type = ?) itemCount,
+                SUM(resource.resource_type = ?) mediaCount
+            FROM resource_template
+                LEFT JOIN resource ON resource.resource_template_id = resource_template.id
+            GROUP BY resource_template.id, resource_template.label
+            ORDER BY resource_template.label
+            SQL, $types);
+
+        $vocabularies = $conn->fetchAllAssociative(<<<'SQL'
+            SELECT
+                vocabulary.prefix,
+                vocabulary.label,
+                (SELECT COUNT(*) FROM resource_class WHERE resource_class.vocabulary_id = vocabulary.id) classCount,
+                (SELECT COUNT(*) FROM property WHERE property.vocabulary_id = vocabulary.id) propertyCount
+            FROM vocabulary
+            ORDER BY vocabulary.prefix
+            SQL);
+
+        return [
+            'resourceCounts' => $resourceCounts,
+            'itemStats' => $itemStats,
+            'itemSets' => $itemSets,
+            'fileTypes' => $fileTypes,
+            'resourceTemplates' => $resourceTemplates,
+            'vocabularies' => $vocabularies,
+        ];
+    }
+
+    protected function getMetadataData(): array
+    {
+        $conn = $this->connection;
+        $types = [ItemSet::class, Item::class, Media::class];
+
+        $properties = $conn->fetchAllAssociative(<<<'SQL'
+            SELECT
+                CONCAT(vocabulary.prefix, ':', property.local_name) term,
+                property.label,
+                SUM(resource.resource_type = ?) itemSetCount,
+                SUM(resource.resource_type = ?) itemCount,
+                SUM(resource.resource_type = ?) mediaCount
+            FROM property
+                INNER JOIN vocabulary ON vocabulary.id = property.vocabulary_id
+                INNER JOIN value ON value.property_id = property.id
+                INNER JOIN resource ON resource.id = value.resource_id
+            GROUP BY property.id, vocabulary.prefix, property.local_name, property.label
+            ORDER BY term
+            SQL, $types);
+
+        $classes = $conn->fetchAllAssociative(<<<'SQL'
+            SELECT
+                CONCAT(vocabulary.prefix, ':', resource_class.local_name) term,
+                resource_class.label,
+                SUM(resource.resource_type = ?) itemSetCount,
+                SUM(resource.resource_type = ?) itemCount,
+                SUM(resource.resource_type = ?) mediaCount
+            FROM resource_class
+                INNER JOIN vocabulary ON vocabulary.id = resource_class.vocabulary_id
+                INNER JOIN resource ON resource.resource_class_id = resource_class.id
+            GROUP BY resource_class.id, vocabulary.prefix, resource_class.local_name, resource_class.label
+            ORDER BY term
+            SQL, $types);
+
+        $valueResourceTypes = $conn->fetchAllAssociative(<<<'SQL'
+            SELECT resource.resource_type, COUNT(*) `count`
+            FROM value
+                INNER JOIN resource ON resource.id = value.value_resource_id
+            GROUP BY resource.resource_type
+            ORDER BY resource.resource_type
+            SQL);
+
+        return [
+            'properties' => $properties,
+            'classes' => $classes,
+            'valueResourceTypes' => $valueResourceTypes,
+            'valueAnnotationCount' => $this->getResourceCount(ValueAnnotation::class),
+        ];
+    }
+
+    protected function getUsersData(): array
+    {
+        $roles = $this->connection->fetchAllAssociative(<<<'SQL'
+            SELECT
+                role,
+                SUM(is_active = 0) inactiveCount,
+                SUM(is_active = 1) activeCount,
+                COUNT(*) total
+            FROM user
+            GROUP BY role
+            ORDER BY role
+            SQL);
+
+        return [
+            'roles' => $roles,
+            'roleLabels' => $this->acl->getRoleLabels(),
+        ];
+    }
+
+    protected function getModulesData(): array
+    {
+        $modules = [];
+        foreach ($this->moduleManager->getModules() as $module) {
+            $modules[] = [
+                'id' => $module->getId(),
+                'name' => $module->getName() ?: $module->getId(),
+                'version' => $module->getIni('version'),
+                'dbVersion' => $module->getDb('version'),
+                'state' => $module->getState(),
+                'author' => $module->getIni('author'),
+                'link' => $module->getIni('module_link'),
+            ];
+        }
+        usort($modules, fn ($a, $b) => strnatcasecmp($a['name'], $b['name']));
+
+        return ['modules' => $modules];
+    }
+
+    protected function getDiskData(): array
+    {
+        $mediaSize = (int) $this->connection->fetchOne('SELECT COALESCE(SUM(size), 0) FROM media');
+        return [
+            'mediaSize' => $mediaSize,
+            'mediaSizeReadable' => $this->bytesToReadable($mediaSize),
+            'hasBucket' => !empty($this->fileSystem),
+        ];
+    }
+
+    protected function getResourceCount(string $resourceType): int
+    {
+        return (int) $this->connection->fetchOne(
+            'SELECT COUNT(*) FROM resource WHERE resource_type = ?',
+            [$resourceType]
+        );
+    }
+
     // from https://stackoverflow.com/questions/478121/how-to-get-directory-size-in-php
-    public function getDirectorySize($dir)
+    protected function getDirectorySize(string $dir): int
     {
         $dir = rtrim(str_replace('\\', '/', $dir), '/');
 
-        if (is_dir($dir) === true) {
-            $totalSize = 0;
-            $os = strtoupper(substr(PHP_OS, 0, 3));
-            // If on a Unix Host (Linux, Mac OS)
-            if ($os !== 'WIN') {
-                $io = popen('/usr/bin/du -sb ' . $dir, 'r');
-                if ($io !== false) {
-                    $a = fgets($io, 80);
-                    $totalSize = intval($a);
-                    pclose($io);
-                    return $totalSize;
+        if (is_file($dir)) {
+            return (int) filesize($dir);
+        }
+        if (!is_dir($dir)) {
+            return 0;
+        }
+
+        $isWindows = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+
+        if (!$isWindows && function_exists('popen')) {
+            // -H: follow the directory itself when it is a symlink (docker
+            // volumes, shared "files" directory…), not the links inside it.
+            $io = popen('/usr/bin/du -sbH ' . escapeshellarg($dir) . ' 2>/dev/null', 'r');
+            if ($io !== false) {
+                $size = intval(fgets($io, 80));
+                pclose($io);
+                if ($size > 0) {
+                    return $size;
                 }
             }
-            // If on a Windows Host (WIN32, WINNT, Windows)
-            if ($os === 'WIN' && extension_loaded('com_dotnet')) {
-                $obj = new \COM('scripting.filesystemobject');
-                if (is_object($obj)) {
-                    $ref = $obj->getfolder($dir);
-                    $totalSize = $ref->size;
-                    $obj = null;
-                    return $totalSize;
-                }
+        }
+
+        if ($isWindows && extension_loaded('com_dotnet')) {
+            $obj = new \COM('scripting.filesystemobject');
+            if (is_object($obj)) {
+                return (int) $obj->getfolder($dir)->size;
             }
-            // If System calls did't work, use slower PHP 5
-            $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir));
-            foreach ($files as $file) {
+        }
+
+        $totalSize = 0;
+        $files = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::LEAVES_ONLY,
+            \RecursiveIteratorIterator::CATCH_GET_CHILD
+        );
+        foreach ($files as $file) {
+            try {
                 $totalSize += $file->getSize();
+            } catch (\RuntimeException $e) {
+                // Skip unreadable file.
             }
-            return $totalSize;
-        } elseif (is_file($dir) === true) {
-            return filesize($dir);
         }
-        return 0;
+        return $totalSize;
     }
 
-    private function bytesToReadable($nBytes)
-    {
-        $i = 0;
-        for (; $i < 5 && $nBytes > 1000.0; $i++) {
-            $nBytes = $nBytes / 1000.0;
-        }
-        $sign = "B"; // @translate
-        switch ($i) {
-        case 0:
-            {
-                break;
-            }
-        case 1:
-            {
-                $sign = "KB"; // @translate
-                break;
-            }
-        case 2:
-            {
-                $sign = "MB"; // @translate
-                break;
-            }
-        case 3:
-            {
-                $sign = "GB"; // @translate
-                break;
-            }
-        case 4:
-            {
-                $sign = "TB"; // @translate
-                break;
-            }
-        default:
-            {
-                $sign = "";
-            }
-        }
-
-        return strval(round($nBytes, 1)) . ' ' . $sign;
-    }
-
-    private function getBucketSize($filesystem): int
+    protected function getBucketSize(\League\Flysystem\Filesystem $filesystem): int
     {
         $sum = 0;
         // from https://flysystem.thephpleague.com/docs/usage/filesystem-api/
         try {
-            $listing = $filesystem->listContents('/', /* recursive = */ true);
-
             /** @var \League\Flysystem\StorageAttributes $item */
-            foreach ($listing as $item) {
-                $path = $item->path();
-
-                if ($item instanceof \League\Flysystem\FileAttributes) {
-                    try {
-                        $fileSize = $filesystem->fileSize($path);
-                        $sum += $fileSize;
-                    } catch (\League\Flysystem\FilesystemException | \League\Flysystem\UnableToRetrieveMetadata $exception) {
-                        // do nothing, skip this file
-                    }
-                } // else it's a directory we don't care
+            foreach ($filesystem->listContents('/', true) as $item) {
+                if (!$item instanceof \League\Flysystem\FileAttributes) {
+                    continue;
+                }
+                try {
+                    $sum += $item->fileSize() ?? $filesystem->fileSize($item->path());
+                } catch (\League\Flysystem\FilesystemException $exception) {
+                    // Skip this file.
+                }
             }
         } catch (\League\Flysystem\FilesystemException $exception) {
             return 0;
@@ -131,640 +556,20 @@ class IndexController extends AbstractActionController
         return $sum;
     }
 
-    public function indexAction()
+    protected function bytesToReadable($nBytes): string
     {
-        $conn = $this->connection;
-
-        $view = new ViewModel;
-
-        return $view;
-    }
-
-    public function downloadAction()
-    {
-        $conn = $this->connection;
-
-        $arrayToExport = [];
-
-        $privateItemSetsCount = $this->getPrivateResourceCount(ItemSet::class);
-        $publicItemSetsCount = $this->getPublicResourceCount(ItemSet::class);
-        $itemSetsWithoutTemplateCount = $this->getWithoutTemplateResourceCount(ItemSet::class);
-        $itemSetsWithoutClassCount = $this->getWithoutClassResourceCount(ItemSet::class);
-        $itemSetsCount = $this->getResourceCount(ItemSet::class);
-        $arrayToExport = array_merge($arrayToExport, [
-            'privateItemSetsCount' => $privateItemSetsCount,
-            'publicItemSetsCount' => $publicItemSetsCount,
-            'itemSetsWithoutTemplateCount' => $itemSetsWithoutTemplateCount,
-            'itemSetsWithoutClassCount' => $itemSetsWithoutClassCount,
-            'itemSetsCount' => $itemSetsCount,
-        ]);
-
-        $privateItemsCount = $this->getPrivateResourceCount(Item::class);
-        $publicItemsCount = $this->getPublicResourceCount(Item::class);
-        $itemsWithoutTemplateCount = $this->getWithoutTemplateResourceCount(Item::class);
-        $itemsWithoutClassCount = $this->getWithoutClassResourceCount(Item::class);
-        $itemsCount = $this->getResourceCount(Item::class);
-        $arrayToExport = array_merge($arrayToExport, [
-            'privateItemsCount' => $privateItemsCount,
-            'publicItemsCount' => $publicItemsCount,
-            'itemsWithoutTemplateCount' => $itemsWithoutTemplateCount,
-            'itemsWithoutClassCount' => $itemsWithoutClassCount,
-            'itemsCount' => $itemsCount,
-        ]);
-
-        $privateMediaCount = $this->getPrivateResourceCount(Media::class);
-        $publicMediaCount = $this->getPublicResourceCount(Media::class);
-        $mediaWithoutTemplateCount = $this->getWithoutTemplateResourceCount(Media::class);
-        $mediaWithoutClassCount = $this->getWithoutClassResourceCount(Media::class);
-        $mediaCount = $this->getResourceCount(Media::class);
-        $arrayToExport = array_merge($arrayToExport, [
-            'privateMediaCount' => $privateMediaCount,
-            'publicMediaCount' => $publicMediaCount,
-            'mediaWithoutTemplateCount' => $mediaWithoutTemplateCount,
-            'mediaWithoutClassCount' => $mediaWithoutClassCount,
-            'mediaCount' => $mediaCount,
-        ]);
-
-        $itemsWithMediaCount = $this->api()->search('items', ['has_media' => true, 'limit' => 0])->getTotalResults();
-        $itemsWithoutMediaCount = $itemsCount - $itemsWithMediaCount;
-        $arrayToExport = array_merge($arrayToExport, [
-            'itemsWithMediaCount' => $itemsWithMediaCount,
-            'itemsWithoutMediaCount' => $itemsWithoutMediaCount,
-        ]);
-
-        $itemsWithoutItemSetCount = $conn->fetchOne(<<<SQL
-            select count(distinct item.id) from item left join item_item_set ON (item.id = item_item_set.item_id)
-            where item_item_set.item_set_id is null
-        SQL);
-        $itemsWithItemSetCount = $conn->fetchOne(<<<SQL
-            select count(distinct item.id) from item left join item_item_set ON (item.id = item_item_set.item_id)
-            where item_item_set.item_set_id is not null
-        SQL);
-        $arrayToExport = array_merge($arrayToExport, [
-            'itemsWithoutItemSetCount' => $itemsWithoutItemSetCount,
-            'itemsWithItemSetCount' => $itemsWithItemSetCount,
-        ]);
-
-        [$mediaCountByItemMin, $mediaCountByItemMax, $mediaCountByItemAvg] = $conn->fetchNumeric(<<<SQL
-            select min(cnt), max(cnt), avg(cnt) from (
-                select media.item_id, count(*) cnt from media
-                group by media.item_id
-            ) s
-        SQL);
-        $arrayToExport = array_merge($arrayToExport, [
-            'mediaCountByItemMin' => $mediaCountByItemMin,
-            'mediaCountByItemMax' => $mediaCountByItemMax,
-            'mediaCountByItemAvg' => $mediaCountByItemAvg,
-        ]);
-
-        $perFileTypeMediaCounts = $conn->fetchAllKeyValue(<<<SQL
-            select coalesce(media_type, ingester) file_type, count(*) cnt from media
-            group by media_type
-            order by cnt desc, file_type
-        SQL);
-
-        {
-            $i = 0;
-            foreach ($perFileTypeMediaCounts as $name => $perFileTypeMediaCount) {
-                $arrayToExport["perFileTypeMediaCount" . $i . "_" . "fileType"] = $name;
-                $arrayToExport["perFileTypeMediaCount" . $i . "_" . "total"] = $perFileTypeMediaCount;
-                $i += 1;
-            }
+        $nBytes = (float) $nBytes;
+        $units = [
+            'B', // @translate
+            'KB', // @translate
+            'MB', // @translate
+            'GB', // @translate
+            'TB', // @translate
+        ];
+        $i = 0;
+        for (; $i < 4 && $nBytes > 1000.0; $i++) {
+            $nBytes /= 1000.0;
         }
-
-        $sitesCounts = $conn->fetchAllAssociative(<<<SQL
-            select
-                site.title,
-                count(distinct item_site.item_id) itemCount,
-                count(distinct site_item_set.item_set_id) itemSetCount,
-                count(distinct site_page.id) pageCount,
-                count(distinct site_viewer.id) viewerCount,
-                count(distinct site_editor.id) editorCount,
-                count(distinct site_admin.id) adminCount,
-                coalesce(mediaSize, 0) mediaSize
-            from site
-            left join item_site on (site.id = item_site.site_id)
-            left join site_item_set on (site.id = site_item_set.site_id)
-            left join site_page on (site.id = site_page.site_id)
-            left join site_permission site_viewer on (site.id = site_viewer.site_id and site_viewer.role = 'viewer')
-            left join site_permission site_editor on (site.id = site_editor.site_id and site_editor.role = 'editor')
-            left join site_permission site_admin on (site.id = site_admin.site_id and site_admin.role = 'admin')
-            left join (
-                select
-                    t1.site_id as site_id,
-                    coalesce(sum(t1.media_size), 0) as mediaSize
-                from (
-                    select
-                        site.id as site_id,
-                        media.size as media_size
-                    from site
-                    left join item_site on (site.id = item_site.site_id)
-                    left join media on (media.item_id = item_site.item_id)
-                    group by media.id, site.id
-                ) as t1 group by t1.site_id
-            ) as t on t.site_id = site.id
-            group by site.id      
-        SQL);
-
-        $mediaSizeRequest = $conn->fetchAllAssociative(<<<SQL
-            select
-                coalesce(sum(media.size), 0) as mediaSize
-            from
-                media
-        SQL);
-
-        $totalMediaInstallSize = 0;
-        foreach ($sitesCounts as $index => $site) {
-            $sitesCounts[$index]['mediaSize'] = $this->bytesToReadable($site['mediaSize']);
-            foreach ($sitesCounts[$index] as $key => $value) {
-                $arrayToExport["site" . $index . "_" . $key] = $value;
-            }
-        }
-
-        $totalMediaInstallSize = intval($mediaSizeRequest[0]['mediaSize']);
-        $installSize = [];
-        $installSize['totalMedia'] = $this->bytesToReadable($totalMediaInstallSize);
-        $totalAssetsSize = $this->getDirectorySize(OMEKA_PATH . '/files/asset');
-        $installSize['totalAssets'] = $this->bytesToReadable($totalAssetsSize);
-        $totalFileSize = $this->getDirectorySize(OMEKA_PATH . '/files');
-        $installSize['totalFiles'] = $this->bytesToReadable($totalFileSize);
-        $installSize['total'] = $this->bytesToReadable($totalMediaInstallSize + $totalFileSize);
-        $installSize['omeka'] = $this->bytesToReadable($this->getDirectorySize(OMEKA_PATH));
-
-        $arrayToExport = array_merge($arrayToExport, $installSize);
-
-        $themes = $this->themeManager->getThemes();
-        $themesData = [];
-        {
-            $i = 0;
-            foreach ($themes as $index => $theme) {
-                $siteCount = $conn->fetchOne('select count(*) from site where theme = ?', [$theme->getId()]);
-                $themeData = [
-                    'themeName' => $theme->getName(),
-                    'themeVersion' => $theme->getIni('version'),
-                    'themeSiteCount' => $siteCount,
-                ];
-                $themesData[] = $themeData;
-                foreach ($themeData as $key => $value) {
-                    $arrayToExport["theme" . $i . "_" . $key] = $value;
-                }
-                $i += 1;
-            }
-        }
-
-        $properties = $conn->fetchAllAssociative(<<<SQL
-            select
-                concat(vocabulary.prefix, ':', property.local_name) term,
-                sum(if(resource.resource_type = ?, 1, 0)) itemSetCount,
-                sum(if(resource.resource_type = ?, 1, 0)) itemCount,
-                sum(if(resource.resource_type = ?, 1, 0)) mediaCount
-            from property
-                inner join vocabulary on (vocabulary.id = property.vocabulary_id)
-                inner join value on (value.property_id = property.id)
-                inner join resource on (resource.id = value.resource_id)
-            group by term
-            order by term
-        SQL, [ItemSet::class, Item::class, Media::class]);
-
-        foreach ($properties as $index => $property) {
-            foreach ($property as $key => $value) {
-                $arrayToExport["property" . $index . "_" . $key] = $value;
-            }
-        }
-
-        $classes = $conn->fetchAllAssociative(<<<SQL
-            select
-                concat(vocabulary.prefix, ':', resource_class.local_name) term,
-                sum(if(resource.resource_type = ?, 1, 0)) itemSetCount,
-                sum(if(resource.resource_type = ?, 1, 0)) itemCount,
-                sum(if(resource.resource_type = ?, 1, 0)) mediaCount
-            from resource_class
-                inner join vocabulary on (vocabulary.id = resource_class.vocabulary_id)
-                inner join resource on (resource.resource_class_id = resource_class.id)
-            group by term
-            having itemSetCount + itemCount + mediaCount > 0
-            order by term
-        SQL, [ItemSet::class, Item::class, Media::class]);
-
-        foreach ($classes as $index => $class) {
-            foreach ($class as $key => $value) {
-                $arrayToExport["class" . $index . "_" . $key] = $value;
-            }
-        }
-
-        $resourceTemplates = $conn->fetchAllAssociative(<<<SQL
-            select
-                resource_template.label,
-                sum(if(resource.resource_type = ?, 1, 0)) itemSetCount,
-                sum(if(resource.resource_type = ?, 1, 0)) itemCount,
-                sum(if(resource.resource_type = ?, 1, 0)) mediaCount
-            from resource_template
-                left join resource on (resource.resource_template_id = resource_template.id)
-            group by label
-            order by label
-        SQL, [ItemSet::class, Item::class, Media::class]);
-
-        foreach ($resourceTemplates as $index => $resourceTemplate) {
-            foreach ($resourceTemplate as $key => $value) {
-                $arrayToExport["resourceTemplate" . $index . "_" . $key] = $value;
-            }
-        }
-
-        $vocabularies = $conn->fetchAllAssociative(<<<SQL
-            select
-                vocabulary.prefix,
-                count(distinct resource_class.id) classCount,
-                count(distinct property.id) propertyCount
-            from vocabulary
-                left join resource_class on (resource_class.vocabulary_id = vocabulary.id)
-                left join property on (property.vocabulary_id = vocabulary.id)
-            group by prefix
-            order by prefix
-        SQL);
-
-        foreach ($vocabularies as $index => $vocabulary) {
-            foreach ($vocabulary as $key => $value) {
-                $arrayToExport["vocabulary" . $index . "_" . $key] = $value;
-            }
-        }
-
-        $valueResourceTypes = $conn->fetchAllAssociative(<<<SQL
-            select resource.resource_type, count(*) `count`
-                from value
-                    inner join resource on (value.value_resource_id = resource.id)
-                group by resource.resource_type
-                order by resource.resource_type
-        SQL);
-
-        foreach ($valueResourceTypes as $index => $valueResourceType) {
-            foreach ($valueResourceType as $key => $value) {
-                $arrayToExport["valueResourceType" . $index . "_" . $key] = $value;
-            }
-        }
-
-        $valueAnnotationCount = $this->getResourceCount(ValueAnnotation::class);
-
-        $arrayToExport["valueAnnotationCount"] = $valueAnnotationCount;
-
-        $roles = $conn->fetchAllAssociative(<<<SQL
-            select
-                role.role,
-                sum(if(user.is_active, 0, 1)) inactiveCount,
-                sum(if(user.is_active, 1, 0)) activeCount
-            from (select distinct role from user) role
-                left join user on (user.role = role.role)
-            group by role.role
-            order by role.role
-        SQL);
-
-        foreach ($roles as $index => $role) {
-            foreach ($role as $key => $value) {
-                $arrayToExport["role" . $index . "_" . $key] = $value;
-            }
-        }
-
-        $fp = fopen('php://temp', 'r+');
-
-        fputcsv($fp, array_keys($arrayToExport));
-        fputcsv($fp, array_values($arrayToExport));
-
-        // Rewind and capture contents
-        rewind($fp);
-        $rows = stream_get_contents($fp);
-        fclose($fp);
-
-        $response = $this->getResponse();
-        $response->setContent($rows);
-        $response->getHeaders()->addHeaderLine('Content-type', 'text/csv');
-        $response->getHeaders()->addHeaderLine('Content-Disposition', 'attachment; filename="columbo.csv"');
-
-        return $response;
-    }
-
-    public function diskAction()
-    {
-        $conn = $this->connection;
-
-        $view = new ViewModel;
-
-        $mediaSizeRequest = $conn->fetchAllAssociative(<<<SQL
-            select
-                coalesce(sum(media.size), 0) as mediaSize
-            from
-                media
-        SQL);
-
-        $totalMediaInstallSize = intval($mediaSizeRequest[0]['mediaSize']);
-        $installSize = [];
-        $installSize['totalMedia'] = $this->bytesToReadable($totalMediaInstallSize);
-        $totalAssetsSize = $this->getDirectorySize(OMEKA_PATH . '/files/asset');
-        $installSize['totalAssets'] = $this->bytesToReadable($totalAssetsSize);
-        $totalFileSize = $this->getDirectorySize(OMEKA_PATH . '/files');
-        $installSize['totalFiles'] = $this->bytesToReadable($totalFileSize);
-        $installSize['hasBucket'] = !empty($this->fileSystem);
-        $installSize['total'] = $this->bytesToReadable($totalMediaInstallSize + $totalFileSize);
-        $installSize['omeka'] = $this->bytesToReadable($this->getDirectorySize(OMEKA_PATH));
-
-        $view->setVariable('installSize', $installSize);
-
-        return $view;
-    }
-
-    public function fetchBucketSizeAction()
-    {
-        $totalBucket = 0;
-        if (!empty($this->fileSystem)) {
-            $totalBucket = $this->bytesToReadable($this->getBucketSize($this->fileSystem));
-        }
-
-        $response = $this->getResponse();
-        $response->setContent(strval($totalBucket));
-        return $response;
-    }
-
-    public function metadataAction()
-    {
-        $conn = $this->connection;
-
-        $view = new ViewModel;
-
-        $properties = $conn->fetchAllAssociative(<<<SQL
-            select
-                concat(vocabulary.prefix, ':', property.local_name) term,
-                sum(if(resource.resource_type = ?, 1, 0)) itemSetCount,
-                sum(if(resource.resource_type = ?, 1, 0)) itemCount,
-                sum(if(resource.resource_type = ?, 1, 0)) mediaCount
-            from property
-                inner join vocabulary on (vocabulary.id = property.vocabulary_id)
-                inner join value on (value.property_id = property.id)
-                inner join resource on (resource.id = value.resource_id)
-            group by term
-            order by term
-        SQL, [ItemSet::class, Item::class, Media::class]);
-        $view->setVariable('properties', $properties);
-
-        $classes = $conn->fetchAllAssociative(<<<SQL
-            select
-                concat(vocabulary.prefix, ':', resource_class.local_name) term,
-                sum(if(resource.resource_type = ?, 1, 0)) itemSetCount,
-                sum(if(resource.resource_type = ?, 1, 0)) itemCount,
-                sum(if(resource.resource_type = ?, 1, 0)) mediaCount
-            from resource_class
-                inner join vocabulary on (vocabulary.id = resource_class.vocabulary_id)
-                inner join resource on (resource.resource_class_id = resource_class.id)
-            group by term
-            having itemSetCount + itemCount + mediaCount > 0
-            order by term
-        SQL, [ItemSet::class, Item::class, Media::class]);
-        $view->setVariable('classes', $classes);
-
-        $valueResourceTypes = $conn->fetchAllAssociative(<<<SQL
-            select resource.resource_type, count(*) `count`
-                from value
-                    inner join resource on (value.value_resource_id = resource.id)
-                group by resource.resource_type
-                order by resource.resource_type
-        SQL);
-        $view->setVariable('valueResourceTypes', $valueResourceTypes);
-
-        $valueAnnotationCount = $this->getResourceCount(ValueAnnotation::class);
-        $view->setVariable('valueAnnotationCount', $valueAnnotationCount);
-
-        return $view;
-    }
-
-    public function modulesAction()
-    {
-        $conn = $this->connection;
-
-        $view = new ViewModel;
-
-        return $view;
-    }
-
-    public function resourcesAction()
-    {
-        $conn = $this->connection;
-
-        $view = new ViewModel;
-
-        $privateItemSetsCount = $this->getPrivateResourceCount(ItemSet::class);
-        $publicItemSetsCount = $this->getPublicResourceCount(ItemSet::class);
-        $itemSetsWithoutTemplateCount = $this->getWithoutTemplateResourceCount(ItemSet::class);
-        $itemSetsWithoutClassCount = $this->getWithoutClassResourceCount(ItemSet::class);
-        $itemSetsCount = $this->getResourceCount(ItemSet::class);
-        $view->setVariables([
-            'privateItemSetsCount' => $privateItemSetsCount,
-            'publicItemSetsCount' => $publicItemSetsCount,
-            'itemSetsWithoutTemplateCount' => $itemSetsWithoutTemplateCount,
-            'itemSetsWithoutClassCount' => $itemSetsWithoutClassCount,
-            'itemSetsCount' => $itemSetsCount,
-        ]);
-
-        $privateItemsCount = $this->getPrivateResourceCount(Item::class);
-        $publicItemsCount = $this->getPublicResourceCount(Item::class);
-        $itemsWithoutTemplateCount = $this->getWithoutTemplateResourceCount(Item::class);
-        $itemsWithoutClassCount = $this->getWithoutClassResourceCount(Item::class);
-        $itemsCount = $this->getResourceCount(Item::class);
-        $view->setVariables([
-            'privateItemsCount' => $privateItemsCount,
-            'publicItemsCount' => $publicItemsCount,
-            'itemsWithoutTemplateCount' => $itemsWithoutTemplateCount,
-            'itemsWithoutClassCount' => $itemsWithoutClassCount,
-            'itemsCount' => $itemsCount,
-        ]);
-
-        $privateMediaCount = $this->getPrivateResourceCount(Media::class);
-        $publicMediaCount = $this->getPublicResourceCount(Media::class);
-        $mediaWithoutTemplateCount = $this->getWithoutTemplateResourceCount(Media::class);
-        $mediaWithoutClassCount = $this->getWithoutClassResourceCount(Media::class);
-        $mediaCount = $this->getResourceCount(Media::class);
-        $view->setVariables([
-            'privateMediaCount' => $privateMediaCount,
-            'publicMediaCount' => $publicMediaCount,
-            'mediaWithoutTemplateCount' => $mediaWithoutTemplateCount,
-            'mediaWithoutClassCount' => $mediaWithoutClassCount,
-            'mediaCount' => $mediaCount,
-        ]);
-
-        $itemsWithMediaCount = $this->api()->search('items', ['has_media' => true, 'limit' => 0])->getTotalResults();
-        $itemsWithoutMediaCount = $itemsCount - $itemsWithMediaCount;
-        $view->setVariables([
-            'itemsWithMediaCount' => $itemsWithMediaCount,
-            'itemsWithoutMediaCount' => $itemsWithoutMediaCount,
-        ]);
-
-        $itemsWithoutItemSetCount = $conn->fetchOne(<<<SQL
-            select count(distinct item.id) from item left join item_item_set ON (item.id = item_item_set.item_id)
-            where item_item_set.item_set_id is null
-        SQL);
-        $itemsWithItemSetCount = $conn->fetchOne(<<<SQL
-            select count(distinct item.id) from item left join item_item_set ON (item.id = item_item_set.item_id)
-            where item_item_set.item_set_id is not null
-        SQL);
-        $view->setVariables([
-            'itemsWithoutItemSetCount' => $itemsWithoutItemSetCount,
-            'itemsWithItemSetCount' => $itemsWithItemSetCount,
-        ]);
-
-        [$mediaCountByItemMin, $mediaCountByItemMax, $mediaCountByItemAvg] = $conn->fetchNumeric(<<<SQL
-            select min(cnt), max(cnt), avg(cnt) from (
-                select media.item_id, count(*) cnt from media
-                group by media.item_id
-            ) s
-        SQL);
-        $view->setVariables([
-            'mediaCountByItemMin' => $mediaCountByItemMin,
-            'mediaCountByItemMax' => $mediaCountByItemMax,
-            'mediaCountByItemAvg' => $mediaCountByItemAvg,
-        ]);
-
-        $perFileTypeMediaCounts = $conn->fetchAllKeyValue(<<<SQL
-            select coalesce(media_type, ingester) file_type, count(*) cnt from media
-            group by media_type
-            order by cnt desc, file_type
-        SQL);
-        $view->setVariable('perFileTypeMediaCounts', $perFileTypeMediaCounts);
-
-        $resourceTemplates = $conn->fetchAllAssociative(<<<SQL
-            select
-                resource_template.label,
-                sum(if(resource.resource_type = ?, 1, 0)) itemSetCount,
-                sum(if(resource.resource_type = ?, 1, 0)) itemCount,
-                sum(if(resource.resource_type = ?, 1, 0)) mediaCount
-            from resource_template
-                left join resource on (resource.resource_template_id = resource_template.id)
-            group by label
-            order by label
-        SQL, [ItemSet::class, Item::class, Media::class]);
-        $view->setVariable('resourceTemplates', $resourceTemplates);
-
-        $vocabularies = $conn->fetchAllAssociative(<<<SQL
-            select
-                vocabulary.prefix,
-                count(distinct resource_class.id) classCount,
-                count(distinct property.id) propertyCount
-            from vocabulary
-                left join resource_class on (resource_class.vocabulary_id = vocabulary.id)
-                left join property on (property.vocabulary_id = vocabulary.id)
-            group by prefix
-            order by prefix
-        SQL);
-        $view->setVariable('vocabularies', $vocabularies);
-
-        return $view;
-    }
-
-    public function sitesAction()
-    {
-        $conn = $this->connection;
-
-        $view = new ViewModel;
-
-        $themes = $this->themeManager->getThemes();
-        $themesData = [];
-        foreach ($themes as $theme) {
-            $siteCount = $conn->fetchOne('select count(*) from site where theme = ?', [$theme->getId()]);
-            $themesData[] = [
-                'name' => $theme->getName(),
-                'version' => $theme->getIni('version'),
-                'siteCount' => $siteCount,
-            ];
-        }
-        $view->setVariable('themes', $themesData);
-
-        $sitesCounts = $conn->fetchAllAssociative(<<<SQL
-            select
-                site.title,
-                count(distinct item_site.item_id) itemCount,
-                count(distinct site_item_set.item_set_id) itemSetCount,
-                count(distinct site_page.id) pageCount,
-                count(distinct site_viewer.id) viewerCount,
-                count(distinct site_editor.id) editorCount,
-                count(distinct site_admin.id) adminCount,
-                coalesce(mediaSize, 0) mediaSize
-            from site
-            left join item_site on (site.id = item_site.site_id)
-            left join site_item_set on (site.id = site_item_set.site_id)
-            left join site_page on (site.id = site_page.site_id)
-            left join site_permission site_viewer on (site.id = site_viewer.site_id and site_viewer.role = 'viewer')
-            left join site_permission site_editor on (site.id = site_editor.site_id and site_editor.role = 'editor')
-            left join site_permission site_admin on (site.id = site_admin.site_id and site_admin.role = 'admin')
-            left join (
-                select
-                    t1.site_id as site_id,
-                    coalesce(sum(t1.media_size), 0) as mediaSize
-                from (
-                    select
-                        site.id as site_id,
-                        media.size as media_size
-                    from site
-                    left join item_site on (site.id = item_site.site_id)
-                    left join media on (media.item_id = item_site.item_id)
-                    group by media.id, site.id
-                ) as t1 group by t1.site_id
-            ) as t on t.site_id = site.id
-            group by site.id      
-        SQL);
-
-        $totalMediaInstallSize = 0;
-        foreach ($sitesCounts as $index => $site) {
-            $sitesCounts[$index]['mediaSize'] = $this->bytesToReadable($site['mediaSize']);
-        }
-
-        $view->setVariable('sitesCounts', $sitesCounts);
-
-        return $view;
-    }
-
-    public function usersAction()
-    {
-        $conn = $this->connection;
-
-        $view = new ViewModel;
-
-        $roles = $conn->fetchAllAssociative(<<<SQL
-            select
-                role.role,
-                sum(if(user.is_active, 0, 1)) inactiveCount,
-                sum(if(user.is_active, 1, 0)) activeCount
-            from (select distinct role from user) role
-                left join user on (user.role = role.role)
-            group by role.role
-            order by role.role
-        SQL);
-        $view->setVariable('roles', $roles);
-
-        return $view;
-    }
-
-    protected function getResourceCount(string $resourceType): int
-    {
-        $sql = 'select count(*) from resource where resource_type = ?';
-        return $this->connection->fetchOne($sql, [$resourceType]);
-    }
-
-    protected function getPublicResourceCount(string $resourceType): int
-    {
-        $sql = 'select count(*) from resource where resource_type = ? AND is_public = 1';
-        return $this->connection->fetchOne($sql, [$resourceType]);
-    }
-
-    protected function getPrivateResourceCount(string $resourceType): int
-    {
-        $sql = 'select count(*) from resource where resource_type = ? AND is_public = 0';
-        return $this->connection->fetchOne($sql, [$resourceType]);
-    }
-
-    protected function getWithoutTemplateResourceCount(string $resourceType): int
-    {
-        $sql = 'select count(*) from resource where resource_type = ? AND resource_template_id is null';
-        return $this->connection->fetchOne($sql, [$resourceType]);
-    }
-
-    protected function getWithoutClassResourceCount(string $resourceType): int
-    {
-        $sql = 'select count(*) from resource where resource_type = ? AND resource_class_id is null';
-        return $this->connection->fetchOne($sql, [$resourceType]);
+        return round($nBytes, 1) . ' ' . $this->translate($units[$i]);
     }
 }

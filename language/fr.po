@@ -46,14 +46,10 @@ msgstr "Taille totale des fichiers ingérés à distance"
 msgid "Total omeka install size"
 msgstr "Taille totale de l'installation Omeka"
 
-#: view/columbo/admin/index/disk.phtml:38
-msgid "Calculating..."
-msgstr "Calcul en cours..."
-
 #: view/columbo/admin/index/metadata.phtml:10
 #: view/columbo/admin/index/metadata.phtml:111
 msgid "Value resource types"
-msgstr "Types des ressources des valeurs"
+msgstr "Type de valeur - lien entre ressources"
 
 #: view/columbo/admin/index/metadata.phtml:24
 #: view/columbo/admin/index/metadata.phtml:35
@@ -214,32 +210,133 @@ msgstr "Nombre d'utilisateurs actifs"
 
 #: config/module.config.php:27
 msgid "Resource metadata"
-msgstr "Métadonnées de ressource"
+msgstr "Métadonnées des ressources"
 
 #: config/module.config.php:167
 msgid "Download CSV"
 msgstr "Téléchargement CSV"
 
-#: config/module.config.php:168
-msgid "Could not calculate bucket size."
-msgstr "Impossible de calculer la taille des fichiers distants."
-
 #: src/Controller/Admin/IndexController.php:73
 msgid "B"
-msgstr "O"
+msgstr "o"
 
 #: src/Controller/Admin/IndexController.php:81
 msgid "KB"
-msgstr "KO"
+msgstr "ko"
 
 #: src/Controller/Admin/IndexController.php:86
 msgid "MB"
-msgstr "MO"
+msgstr "Mo"
 
 #: src/Controller/Admin/IndexController.php:91
 msgid "GB"
-msgstr "GO"
+msgstr "Go"
 
 #: src/Controller/Admin/IndexController.php:96
 msgid "TB"
-msgstr "TO"
+msgstr "To"
+
+msgid "Storage information"
+msgstr "Informations stockage"
+
+msgid "Export all (CSV)"
+msgstr "Tout exporter (CSV)"
+
+msgid "JavaScript is required to display statistics."
+msgstr "JavaScript est nécessaire pour afficher les statistiques."
+
+msgid "Loading…"
+msgstr "Chargement…"
+
+msgid "Could not load this tab."
+msgstr "Impossible de charger cet onglet."
+
+msgid "Retry"
+msgstr "Réessayer"
+
+msgid "Refresh"
+msgstr "Actualiser"
+
+msgid "Could not calculate size."
+msgstr "Impossible de calculer la taille."
+
+msgid "Calculating…"
+msgstr "Calcul en cours…"
+
+msgid "Indicator"
+msgstr "Indicateur"
+
+msgid "Minimum number of media per item"
+msgstr "Nombre minimum de médias par contenu"
+
+msgid "Maximum number of media per item"
+msgstr "Nombre maximum de médias par contenu"
+
+msgid "Average number of media per item"
+msgstr "Nombre moyen de médias par contenu"
+
+msgid "Media per item statistics exclude items without media."
+msgstr "Les statistiques de médias par contenu excluent les contenus sans média."
+
+msgid "Number of media"
+msgstr "Nombre de médias"
+
+msgid "Number of sites"
+msgstr "Nombre de sites"
+
+msgid "Number of values that link to another resource, by type of the linked resource."
+msgstr "Nombre de valeurs pointant vers une autre ressource, par type de la ressource liée."
+
+msgid "Modules by state"
+msgstr "Modules par état"
+
+msgid "Number of modules"
+msgstr "Nombre de modules"
+
+msgid "State"
+msgstr "État"
+
+msgid "Installed version"
+msgstr "Version installée"
+
+msgid "Invalid ini file"
+msgstr "Fichier ini invalide"
+
+msgid "Size of the files/asset directory."
+msgstr "Taille du répertoire files/asset."
+
+msgid "Size of the files directory (original files, derivatives and assets)."
+msgstr "Taille du répertoire files (fichiers originaux, dérivés et assets)."
+
+msgid "Size of the remote storage (AnyCloud)."
+msgstr "Taille du stockage distant (AnyCloud)."
+
+msgid "Size of the whole Omeka S directory. May be inaccurate due to permissions."
+msgstr "Taille de tout le répertoire Omeka S. Peut être inexacte selon les permissions."
+
+msgid "Sum of the media sizes registered in the database."
+msgstr "Somme des tailles de médias enregistrées en base de données."
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Module"
+msgstr "Module"
+
+msgid "Modules"
+msgstr "Modules"
+
+msgid "Classes"
+msgstr "Classes"
+
+msgid "Site"
+msgstr "Site"
+
+msgid "Sites"
+msgstr "Sites"
+
+msgid "Public"
+msgstr "Public"
+
+msgid "Back to top"
+msgstr "Retour en haut"

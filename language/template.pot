@@ -42,10 +42,6 @@ msgstr ""
 msgid "Total omeka install size"
 msgstr ""
 
-#: view/columbo/admin/index/disk.phtml:38
-msgid "Calculating..."
-msgstr ""
-
 #: view/columbo/admin/index/metadata.phtml:10
 #: view/columbo/admin/index/metadata.phtml:111
 msgid "Value resource types"
@@ -213,10 +209,6 @@ msgstr ""
 msgid "Download CSV"
 msgstr ""
 
-#: config/module.config.php:168
-msgid "Could not calculate bucket size."
-msgstr ""
-
 #: src/Controller/Admin/IndexController.php:73
 msgid "B"
 msgstr ""
@@ -235,4 +227,109 @@ msgstr ""
 
 #: src/Controller/Admin/IndexController.php:96
 msgid "TB"
+msgstr ""
+
+msgid "Storage information"
+msgstr ""
+
+msgid "Export all (CSV)"
+msgstr ""
+
+msgid "JavaScript is required to display statistics."
+msgstr ""
+
+msgid "Loading…"
+msgstr ""
+
+msgid "Could not load this tab."
+msgstr ""
+
+msgid "Retry"
+msgstr ""
+
+msgid "Refresh"
+msgstr ""
+
+msgid "Could not calculate size."
+msgstr ""
+
+msgid "Calculating…"
+msgstr ""
+
+msgid "Indicator"
+msgstr ""
+
+msgid "Minimum number of media per item"
+msgstr ""
+
+msgid "Maximum number of media per item"
+msgstr ""
+
+msgid "Average number of media per item"
+msgstr ""
+
+msgid "Media per item statistics exclude items without media."
+msgstr ""
+
+msgid "Number of media"
+msgstr ""
+
+msgid "Number of sites"
+msgstr ""
+
+msgid "Number of values that link to another resource, by type of the linked resource."
+msgstr ""
+
+msgid "Modules by state"
+msgstr ""
+
+msgid "Number of modules"
+msgstr ""
+
+msgid "State"
+msgstr ""
+
+msgid "Installed version"
+msgstr ""
+
+msgid "Invalid ini file"
+msgstr ""
+
+msgid "Size of the files/asset directory."
+msgstr ""
+
+msgid "Size of the files directory (original files, derivatives and assets)."
+msgstr ""
+
+msgid "Size of the remote storage (AnyCloud)."
+msgstr ""
+
+msgid "Size of the whole Omeka S directory. May be inaccurate due to permissions."
+msgstr ""
+
+msgid "Sum of the media sizes registered in the database."
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Module"
+msgstr ""
+
+msgid "Modules"
+msgstr ""
+
+msgid "Classes"
+msgstr ""
+
+msgid "Site"
+msgstr ""
+
+msgid "Sites"
+msgstr ""
+
+msgid "Public"
+msgstr ""
+
+msgid "Back to top"
 msgstr ""

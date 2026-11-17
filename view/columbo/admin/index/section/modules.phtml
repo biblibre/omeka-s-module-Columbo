@@ -1,0 +1,75 @@
+<?php
+/**
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var array $modules
+ */
+use Omeka\Module\Manager as ModuleManager;
+
+$escape = $this->plugin('escapeHtml');
+$stateLabels = [
+    ModuleManager::STATE_ACTIVE => $this->translate('Active'),
+    ModuleManager::STATE_NOT_ACTIVE => $this->translate('Not active'),
+    ModuleManager::STATE_NOT_INSTALLED => $this->translate('Not installed'),
+    ModuleManager::STATE_NEEDS_UPGRADE => $this->translate('Needs upgrade'),
+    ModuleManager::STATE_NOT_FOUND => $this->translate('Not found'),
+    ModuleManager::STATE_INVALID_MODULE => $this->translate('Invalid module'),
+    ModuleManager::STATE_INVALID_INI => $this->translate('Invalid ini file'),
+    ModuleManager::STATE_INVALID_OMEKA_VERSION => $this->translate('Invalid Omeka S version'),
+];
+$stateCounts = array_count_values(array_column($modules, 'state'));
+?>
+<?= $this->partial('common/columbo-block-header', [
+    'id' => 'columbo-module-states',
+    'title' => $this->translate('Modules by state'),
+    'count' => count($stateCounts),
+]) ?>
+<table class="tablesaw tablesaw-stack columbo-table" data-tablesaw-mode="stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('State') ?></th>
+            <th><?= $this->translate('Number of modules') ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($stateCounts as $state => $count): ?>
+        <tr>
+            <td><?= $escape($stateLabels[$state] ?? $state) ?></td>
+            <td><?= (int) $count ?></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+</details>
+
+<?= $this->partial('common/columbo-block-header', [
+    'id' => 'columbo-modules',
+    'title' => $this->translate('Modules'),
+    'count' => count($modules),
+]) ?>
+<table class="tablesaw tablesaw-stack columbo-table" data-tablesaw-mode="stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Module') ?></th>
+            <th><?= $this->translate('Identifier') ?></th>
+            <th><?= $this->translate('Version') ?></th>
+            <th><?= $this->translate('Installed version') ?></th>
+            <th><?= $this->translate('State') ?></th>
+            <th><?= $this->translate('Author') ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($modules as $module): ?>
+        <tr class="columbo-module-<?= $escape($module['state']) ?>">
+            <td><?= $module['link']
+                ? $this->hyperlink($module['name'], $module['link'], ['target' => '_blank', 'rel' => 'noopener'])
+                : $escape($module['name']) ?></td>
+            <td><?= $escape($module['id']) ?></td>
+            <td><?= $escape($module['version']) ?></td>
+            <td><?= $escape($module['dbVersion']) ?></td>
+            <td><?= $escape($stateLabels[$module['state']] ?? $module['state']) ?></td>
+            <td><?= $escape($module['author']) ?></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+</details>

@@ -1,0 +1,93 @@
+<?php
+/**
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var array $properties
+ * @var array $classes
+ * @var array $valueResourceTypes
+ * @var int $valueAnnotationCount
+ */
+$escape = $this->plugin('escapeHtml');
+$usageHeaders = '<th>' . $this->translate('Number of item sets using it') . '</th>'
+    . '<th>' . $this->translate('Number of items using it') . '</th>'
+    . '<th>' . $this->translate('Number of media using it') . '</th>';
+?>
+<?php foreach ([
+    'columbo-properties' => [$this->translate('Properties'), $properties],
+    'columbo-classes' => [$this->translate('Classes'), $classes],
+] as $blockId => [$blockTitle, $rows]): ?>
+<?= $this->partial('common/columbo-block-header', [
+    'id' => $blockId,
+    'title' => $blockTitle,
+    'count' => count($rows),
+]) ?>
+<table class="tablesaw tablesaw-stack columbo-table" data-tablesaw-mode="stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Term') ?></th>
+            <th><?= $this->translate('Label') ?></th>
+            <?= $usageHeaders ?>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($rows as $row): ?>
+        <tr>
+            <td><?= $escape($row['term']) ?></td>
+            <td><?= $escape($this->translate($row['label'])) ?></td>
+            <td><?= (int) $row['itemSetCount'] ?></td>
+            <td><?= (int) $row['itemCount'] ?></td>
+            <td><?= (int) $row['mediaCount'] ?></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+</details>
+<?php endforeach; ?>
+
+<?= $this->partial('common/columbo-block-header', [
+    'id' => 'columbo-value-resource-types',
+    'title' => $this->translate('Value resource types'),
+    'count' => count($valueResourceTypes),
+    'help' => $this->translate('Number of values that link to another resource, by type of the linked resource.'),
+]) ?>
+<table class="tablesaw tablesaw-stack columbo-table" data-tablesaw-mode="stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Resource type') ?></th>
+            <th><?= $this->translate('Number of values linking to it') ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($valueResourceTypes as $valueResourceType):
+            $type = match ($valueResourceType['resource_type']) {
+                'Omeka\Entity\ItemSet' => $this->translate('Item set'),
+                'Omeka\Entity\Item' => $this->translate('Item'),
+                'Omeka\Entity\Media' => $this->translate('Media'),
+                default => $valueResourceType['resource_type'],
+            }; ?>
+        <tr>
+            <td><?= $escape($type) ?></td>
+            <td><?= (int) $valueResourceType['count'] ?></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+</details>
+
+<?= $this->partial('common/columbo-block-header', [
+    'id' => 'columbo-value-annotations',
+    'title' => $this->translate('Value annotations'),
+    'sortable' => false,
+]) ?>
+<table class="tablesaw tablesaw-stack columbo-table" data-tablesaw-mode="stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Number of value annotations') ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><?= (int) $valueAnnotationCount ?></td>
+        </tr>
+    </tbody>
+</table>
+</details>

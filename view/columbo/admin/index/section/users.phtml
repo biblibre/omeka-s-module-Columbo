@@ -1,0 +1,33 @@
+<?php
+/**
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var array $roles
+ * @var array $roleLabels
+ */
+?>
+<?= $this->partial('common/columbo-block-header', [
+    'id' => 'columbo-roles',
+    'title' => $this->translate('Roles'),
+    'count' => count($roles),
+]) ?>
+<table class="tablesaw tablesaw-stack columbo-table" data-tablesaw-mode="stack">
+    <thead>
+        <tr>
+            <th><?= $this->translate('Role') ?></th>
+            <th><?= $this->translate('Number of active users') ?></th>
+            <th><?= $this->translate('Number of inactive users') ?></th>
+            <th><?= $this->translate('Total') ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($roles as $role): ?>
+        <tr>
+            <td><?= $this->escapeHtml($this->translate($roleLabels[$role['role']] ?? $role['role'])) ?></td>
+            <td><?= (int) $role['activeCount'] ?></td>
+            <td><?= (int) $role['inactiveCount'] ?></td>
+            <td><?= (int) $role['total'] ?></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+</details>
