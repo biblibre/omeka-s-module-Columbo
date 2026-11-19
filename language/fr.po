@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-17 13:39+0100\n"
-"PO-Revision-Date: 2026-11-17 13:39+0100\n"
+"POT-Creation-Date: 2026-11-19 16:50+0100\n"
+"PO-Revision-Date: 2026-11-19 16:50+0100\n"
 "Last-Translator: Abel Boilevin, 2026\n"
 "Language-Team: French (https://app.transifex.com/biblibre-/teams/298658/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -34,8 +34,8 @@ msgid "Retry"
 msgstr "Réessayer"
 
 #: config/module.config.php:115
-msgid "Refresh"
-msgstr "Actualiser"
+msgid "Refresh this tab"
+msgstr "Actualiser les données de l'onglet"
 
 #: config/module.config.php:116
 msgid "Download CSV"
@@ -154,12 +154,12 @@ msgid "Sum of the storage directories."
 msgstr "Somme des répertoires du stockage."
 
 #: view/columbo/admin/index/section/disk.phtml:64
-msgid "Total media size"
-msgstr "Taille totale des médias"
+msgid "Total original files size"
+msgstr "Taille totale des fichiers originaux"
 
 #: view/columbo/admin/index/section/disk.phtml:66
-msgid "Sum of the media sizes registered in the database. Compare it with the size of the original files."
-msgstr "Somme des tailles des médias enregistrées dans la base de données. À comparer avec la taille des fichiers originaux."
+msgid "Sum of the original file sizes registered in the database at import, without thumbnails and assets. Should be close to the size of the original directory."
+msgstr "Somme des tailles des fichiers originaux enregistrées dans la base de données lors de l'import, sans les vignettes ni les assets. Doit être proche de la taille du répertoire original."
 
 #: view/columbo/admin/index/section/disk.phtml:69
 msgid "Total omeka install size"
@@ -382,8 +382,8 @@ msgid "Number of media"
 msgstr "Nombre de médias"
 
 #: view/columbo/admin/index/section/resources.phtml:111 view/columbo/admin/index/section/resources.phtml:144 view/columbo/admin/index/section/sites.phtml:24
-msgid "Size of media"
-msgstr "Taille des médias"
+msgid "Size of original files"
+msgstr "Taille des fichiers originaux"
 
 #: view/columbo/admin/index/section/resources.phtml:112
 msgid "Number of sites"

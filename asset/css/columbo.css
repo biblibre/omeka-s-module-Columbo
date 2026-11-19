@@ -40,7 +40,7 @@
 
 .columbo-panel-bar {
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
     margin-bottom: 1.5rem;
 }
 
@@ -120,7 +120,18 @@
 }
 
 .columbo-controls .columbo-csv {
-    margin-left: auto;
+    margin: 0 0 0 auto;
+}
+
+/* Omeka core centers the cells of table.tablesaw. */
+.columbo-table.tablesaw th,
+.columbo-table.tablesaw td {
+    vertical-align: top;
+}
+
+/* Tablesaw sets "display: table-row", which overrides the hidden attribute. */
+.columbo-table tbody tr[hidden] {
+    display: none;
 }
 
 .columbo-table th.columbo-sortable {

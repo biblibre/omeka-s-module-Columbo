@@ -112,7 +112,7 @@ return [
         'Loading…', // @translate
         'Could not load this tab.', // @translate
         'Retry', // @translate
-        'Refresh', // @translate
+        'Refresh this tab', // @translate
         'Download CSV', // @translate
         'Could not calculate size.', // @translate
         'Back to top', // @translate

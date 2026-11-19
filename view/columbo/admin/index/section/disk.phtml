@@ -61,9 +61,9 @@ $sizeCell = function (string $target, bool $inTotal = false) {
         </tr>
         <?php endif; ?>
         <tr>
-            <td><?= $this->translate('Total media size') ?></td>
+            <td><?= $this->translate('Total original files size') ?></td>
             <td data-sort-value="<?= (int) $mediaSize ?>"><?= $this->escapeHtml($mediaSizeReadable) ?></td>
-            <td><?= $this->translate('Sum of the media sizes registered in the database. Compare it with the size of the original files.') ?></td>
+            <td><?= $this->translate('Sum of the original file sizes registered in the database at import, without thumbnails and assets. Should be close to the size of the original directory.') ?></td>
         </tr>
         <tr>
             <td><?= $this->translate('Total omeka install size') ?></td>

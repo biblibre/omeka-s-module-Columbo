@@ -152,7 +152,7 @@
 
         const refresh = document.createElement('button');
         refresh.type = 'button';
-        refresh.textContent = t('Refresh');
+        refresh.textContent = t('Refresh this tab');
         refresh.addEventListener('click', () => load(tab, true));
         bar.append(refresh);
 

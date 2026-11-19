@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-17 13:39+0100\n"
+"POT-Creation-Date: 2026-11-19 16:50+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,7 +30,7 @@ msgid "Retry"
 msgstr ""
 
 #: config/module.config.php:115
-msgid "Refresh"
+msgid "Refresh this tab"
 msgstr ""
 
 #: config/module.config.php:116
@@ -150,11 +150,11 @@ msgid "Sum of the storage directories."
 msgstr ""
 
 #: view/columbo/admin/index/section/disk.phtml:64
-msgid "Total media size"
+msgid "Total original files size"
 msgstr ""
 
 #: view/columbo/admin/index/section/disk.phtml:66
-msgid "Sum of the media sizes registered in the database. Compare it with the size of the original files."
+msgid "Sum of the original file sizes registered in the database at import, without thumbnails and assets. Should be close to the size of the original directory."
 msgstr ""
 
 #: view/columbo/admin/index/section/disk.phtml:69
@@ -378,7 +378,7 @@ msgid "Number of media"
 msgstr ""
 
 #: view/columbo/admin/index/section/resources.phtml:111 view/columbo/admin/index/section/resources.phtml:144 view/columbo/admin/index/section/sites.phtml:24
-msgid "Size of media"
+msgid "Size of original files"
 msgstr ""
 
 #: view/columbo/admin/index/section/resources.phtml:112
