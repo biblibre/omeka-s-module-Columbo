@@ -2,8 +2,8 @@
 
 namespace Columbo\Service\Controller\Admin;
 
-use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 use Columbo\Controller\Admin\IndexController;
 
 class IndexControllerFactory implements FactoryInterface

@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add size of original files per site, item set and file type
 - Add item sets table and modules tab
 - Make sites and resource count queries faster
+- Require Omeka S 4 (Omeka S 3 was declared but not supported)
+- Fix PHP 7.4 compatibility and deprecation notices on PHP 8.4
 
 ## [0.1.4] - 2025-06-24
 
