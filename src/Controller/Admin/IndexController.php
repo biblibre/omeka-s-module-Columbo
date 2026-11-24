@@ -79,14 +79,8 @@ class IndexController extends AbstractActionController
             return $this->notFoundAction();
         }
 
-        $data = match ($section) {
-            'sites' => $this->getSitesData(),
-            'resources' => $this->getResourcesData(),
-            'metadata' => $this->getMetadataData(),
-            'users' => $this->getUsersData(),
-            'modules' => $this->getModulesData(),
-            'disk' => $this->getDiskData(),
-        };
+        // getSitesData(), getResourcesData()…
+        $data = $this->{'get' . ucfirst($section) . 'Data'}();
 
         $view = new ViewModel($data);
         $view->setTemplate('columbo/admin/index/section/' . $section);
@@ -495,6 +489,9 @@ class IndexController extends AbstractActionController
         return [
             'mediaSize' => $mediaSize,
             'mediaSizeReadable' => $this->bytesToReadable($mediaSize),
+            // Media ingested before Omeka S 1.1 (no size column yet) or by
+            // ingesters that do not set it.
+            'mediaWithoutSizeCount' => (int) $this->connection->fetchOne('SELECT COUNT(*) FROM media WHERE has_original = 1 AND size IS NULL'),
             'storage' => [
                 'type' => $this->storage['type'],
                 'name' => $this->storage['name'],
@@ -510,11 +507,14 @@ class IndexController extends AbstractActionController
      */
     protected function getStorageSize(string $directory): ?int
     {
-        return match ($this->storage['type']) {
-            'local' => $this->getDirectorySize($this->storage['path'] . '/' . $directory),
-            'anycloud' => $this->getBucketSize($this->storage['fileSystem'], $directory),
-            default => null,
-        };
+        switch ($this->storage['type']) {
+            case 'local':
+                return $this->getDirectorySize($this->storage['path'] . '/' . $directory);
+            case 'anycloud':
+                return $this->getBucketSize($this->storage['fileSystem'], $directory);
+            default:
+                return null;
+        }
     }
 
     protected function getResourceCount(string $resourceType): int

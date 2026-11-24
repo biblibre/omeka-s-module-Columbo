@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-19 16:50+0100\n"
+"POT-Creation-Date: 2026-11-20 16:53+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,24 +49,28 @@ msgstr ""
 msgid "Session expired: reload the page."
 msgstr ""
 
-#: config/module.config.php:120 src/Controller/Admin/IndexController.php:608
+#: config/module.config.php:120 src/Controller/Admin/IndexController.php:611
 msgid "B"
 msgstr ""
 
-#: config/module.config.php:121 src/Controller/Admin/IndexController.php:609
+#: config/module.config.php:121 src/Controller/Admin/IndexController.php:612
 msgid "KB"
 msgstr ""
 
-#: config/module.config.php:122 src/Controller/Admin/IndexController.php:610
+#: config/module.config.php:122 src/Controller/Admin/IndexController.php:613
 msgid "MB"
 msgstr ""
 
-#: config/module.config.php:123 src/Controller/Admin/IndexController.php:611
+#: config/module.config.php:123 src/Controller/Admin/IndexController.php:614
 msgid "GB"
 msgstr ""
 
-#: config/module.config.php:124 src/Controller/Admin/IndexController.php:612
+#: config/module.config.php:124 src/Controller/Admin/IndexController.php:615
 msgid "TB"
+msgstr ""
+
+#: config/module.config.php:125
+msgid "bytes"
 msgstr ""
 
 #: view/columbo/admin/index/index.phtml:12 view/columbo/admin/index/section/sites.phtml:11
@@ -101,67 +105,79 @@ msgstr ""
 msgid "JavaScript is required to display statistics."
 msgstr ""
 
-#: view/columbo/admin/index/section/disk.phtml:14
+#: view/columbo/admin/index/section/disk.phtml:15
 msgid "Original files of the media."
 msgstr ""
 
-#: view/columbo/admin/index/section/disk.phtml:15
+#: view/columbo/admin/index/section/disk.phtml:16
 msgid "Assets (thumbnails of resources, logos and images of sites)."
 msgstr ""
 
-#: view/columbo/admin/index/section/disk.phtml:22 view/columbo/admin/index/section/disk.phtml:59
+#: view/columbo/admin/index/section/disk.phtml:22
 msgid "Calculating…"
 msgstr ""
 
-#: view/columbo/admin/index/section/disk.phtml:28
+#: view/columbo/admin/index/section/disk.phtml:36
 msgid "Disk usage"
 msgstr ""
 
-#: view/columbo/admin/index/section/disk.phtml:31
+#: view/columbo/admin/index/section/disk.phtml:39
 msgid "File storage:"
 msgstr ""
 
-#: view/columbo/admin/index/section/disk.phtml:38
+#: view/columbo/admin/index/section/disk.phtml:46
 msgid "The size of this file storage cannot be calculated."
 msgstr ""
 
-#: view/columbo/admin/index/section/disk.phtml:43 view/columbo/admin/index/section/resources.phtml:61
+#: view/columbo/admin/index/section/disk.phtml:51 view/columbo/admin/index/section/resources.phtml:61
 msgid "Indicator"
 msgstr ""
 
-#: view/columbo/admin/index/section/disk.phtml:44
+#: view/columbo/admin/index/section/disk.phtml:52
 msgid "Size"
 msgstr ""
 
-#: view/columbo/admin/index/section/disk.phtml:45
+#: view/columbo/admin/index/section/disk.phtml:53
 msgid "Description"
 msgstr ""
 
-#: view/columbo/admin/index/section/disk.phtml:54
+#: view/columbo/admin/index/section/disk.phtml:62
 msgid "Thumbnails \"%s\"."
 msgstr ""
 
-#: view/columbo/admin/index/section/disk.phtml:58
+#: view/columbo/admin/index/section/disk.phtml:66
 msgid "Total file storage"
 msgstr ""
 
-#: view/columbo/admin/index/section/disk.phtml:60
+#: view/columbo/admin/index/section/disk.phtml:68
 msgid "Sum of the storage directories."
 msgstr ""
 
-#: view/columbo/admin/index/section/disk.phtml:64
+#: view/columbo/admin/index/section/disk.phtml:72
 msgid "Total original files size"
 msgstr ""
 
-#: view/columbo/admin/index/section/disk.phtml:66
+#: view/columbo/admin/index/section/disk.phtml:74
 msgid "Sum of the original file sizes registered in the database at import, without thumbnails and assets. Should be close to the size of the original directory."
 msgstr ""
 
-#: view/columbo/admin/index/section/disk.phtml:69
+#: view/columbo/admin/index/section/disk.phtml:78
+msgid "Difference between disk and database"
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:81
+msgid "Size of the original directory minus the size registered in the database. Positive: files not registered (orphan files) or media without registered size; negative: missing files."
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:82
+msgid "Media without registered size: %d."
+msgstr ""
+
+#: view/columbo/admin/index/section/disk.phtml:87
 msgid "Total omeka install size"
 msgstr ""
 
-#: view/columbo/admin/index/section/disk.phtml:71
+#: view/columbo/admin/index/section/disk.phtml:89
 msgid "Size of the whole Omeka S directory. May be inaccurate due to permissions."
 msgstr ""
 

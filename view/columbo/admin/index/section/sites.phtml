@@ -34,7 +34,7 @@ $escape = $this->plugin('escapeHtml');
             <td><?= (int) $site['viewerCount'] ?></td>
             <td><?= (int) $site['editorCount'] ?></td>
             <td><?= (int) $site['adminCount'] ?></td>
-            <td data-sort-value="<?= (int) $site['mediaSize'] ?>"><?= $escape($site['mediaSizeReadable']) ?></td>
+            <td class="columbo-bytes" data-sort-value="<?= (int) $site['mediaSize'] ?>"><?= $escape($site['mediaSizeReadable']) ?></td>
         </tr>
         <?php endforeach; ?>
     </tbody>

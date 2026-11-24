@@ -122,5 +122,6 @@ return [
         'MB', // @translate
         'GB', // @translate
         'TB', // @translate
+        'bytes', // @translate
     ],
 ];

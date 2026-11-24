@@ -30,13 +30,14 @@ Each tab can be opened directly from its URL, for example
 * Every column can be sorted, with the sort box or by clicking the column
   header. Sizes are sorted by their value in bytes.
 * Rows can be filtered by text.
+* Sizes show the exact number of bytes on hover.
 * "Download CSV" exports a table as displayed (sorted and filtered rows).
 * "Export all (CSV)" exports every statistic in a single CSV row.
 
 ## Performance
 
 * A tab is loaded only when it is first displayed, and prefetched when the
-  pointer hovers it. A loaded tab is kept in memory until "Refresh" is used.
+  pointer hovers it. A loaded tab is kept in memory until "Refresh this tab" is used.
 * Directory and remote storage sizes, the slowest calculations, are computed
   after the "Storage information" tab is displayed, one after another.
 
@@ -55,8 +56,12 @@ Each top directory of the store is measured separately: `original`, one per
 thumbnail type (`large`, `medium`, `square` by default) and `asset`, then
 summed. Other file stores are reported as not supported.
 
-* Total media size is the sum of the media sizes registered in the database:
-  compare it with the size of the `original` directory.
+* Total original files size is the sum of the sizes registered in the
+  database when files are ingested, without thumbnails and assets.
+* The difference between disk and database is the size of the `original`
+  directory minus this sum. A positive difference comes from files that are not
+  registered (orphan files) or from media without registered size (ingested
+  before Omeka S 1.1, counted in the tab); a negative one from missing files.
 * Total Omeka install size is the size of the directory where Omeka S is
   installed. It may be inaccurate due to permission issues.
 

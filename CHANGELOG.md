@@ -7,13 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- Merge all pages into a single page with lazy-loaded tabs (fixes overlapping tabs)
-- Allow sorting and filtering on every column of every table
+- Split statistics into tabs, loaded on demand: Sites, Resources, Resource
+  metadata, Users, Modules, Storage information
+- Add sorting, text filter and CSV download to every table, and an "Export all
+  (CSV)" button
+- Add storage information: size of each directory of the file store in use
+  (local or AnyCloud), difference with the sizes registered in the database,
+  size of the Omeka S directory
+- Add size of original files per site, item set and file type
 - Add item sets table and modules tab
-- Add "Export all (CSV)" button
 - Make sites and resource count queries faster
-- Measure the file store in use (local base path or AnyCloud), per directory
-- Fix CSV export, bucket size URL and size of a symlinked files directory
 
 ## [0.1.4] - 2025-06-24
 
@@ -36,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Initial release
 
+[Unreleased]: https://github.com/biblibre/omeka-s-module-Columbo/compare/v0.1.4...HEAD
 [0.1.4]: https://github.com/biblibre/omeka-s-module-Columbo/releases/tag/v0.1.4
 [0.1.3]: https://github.com/biblibre/omeka-s-module-Columbo/releases/tag/v0.1.3
 [0.1.2]: https://github.com/biblibre/omeka-s-module-Columbo/releases/tag/v0.1.2

@@ -58,12 +58,11 @@ $usageHeaders = '<th>' . $this->translate('Number of item sets using it') . '</t
     </thead>
     <tbody>
         <?php foreach ($valueResourceTypes as $valueResourceType):
-            $type = match ($valueResourceType['resource_type']) {
+            $type = [
                 'Omeka\Entity\ItemSet' => $this->translate('Item set'),
                 'Omeka\Entity\Item' => $this->translate('Item'),
                 'Omeka\Entity\Media' => $this->translate('Media'),
-                default => $valueResourceType['resource_type'],
-            }; ?>
+            ][$valueResourceType['resource_type']] ?? $valueResourceType['resource_type']; ?>
         <tr>
             <td><?= $escape($type) ?></td>
             <td><?= (int) $valueResourceType['count'] ?></td>

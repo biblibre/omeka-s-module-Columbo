@@ -123,7 +123,7 @@ $typeLabels = [
             <td><?= $itemSet['is_open'] ? $this->translate('Yes') : $this->translate('No') ?></td>
             <td><?= (int) $itemSet['itemCount'] ?></td>
             <td><?= (int) $itemSet['mediaCount'] ?></td>
-            <td data-sort-value="<?= (int) $itemSet['mediaSize'] ?>"><?= $escape($itemSet['mediaSizeReadable']) ?></td>
+            <td class="columbo-bytes" data-sort-value="<?= (int) $itemSet['mediaSize'] ?>"><?= $escape($itemSet['mediaSizeReadable']) ?></td>
             <td><?= (int) $itemSet['siteCount'] ?></td>
         </tr>
         <?php endforeach; ?>
@@ -149,7 +149,7 @@ $typeLabels = [
         <tr>
             <td><?= $escape($fileType['fileType']) ?></td>
             <td><?= (int) $fileType['total'] ?></td>
-            <td data-sort-value="<?= (int) $fileType['size'] ?>"><?= $escape($fileType['sizeReadable']) ?></td>
+            <td class="columbo-bytes" data-sort-value="<?= (int) $fileType['size'] ?>"><?= $escape($fileType['sizeReadable']) ?></td>
         </tr>
         <?php endforeach; ?>
     </tbody>

@@ -3,6 +3,7 @@
 
     const t = (text) => (window.Omeka && typeof Omeka.jsTranslate === 'function' ? Omeka.jsTranslate(text) : text);
     const collator = new Intl.Collator(document.documentElement.lang || undefined, { numeric: true, sensitivity: 'base' });
+    const numberFormat = new Intl.NumberFormat(document.documentElement.lang || undefined);
     const PREFETCH_DELAY = 150;
 
     const loads = new Map();
@@ -311,40 +312,55 @@
         }
     }
 
+    /** Displays a size, with the exact number of bytes on hover. */
+    function setBytes(cell, bytes, readable = bytesToReadable(Math.abs(bytes))) {
+        cell.textContent = (bytes < 0 ? '−' : '') + readable;
+        cell.dataset.sortValue = bytes;
+        cell.title = numberFormat.format(bytes) + ' ' + t('bytes');
+    }
+
     function loadSizes(panel) {
+        panel.querySelectorAll('.columbo-bytes:not([aria-busy])').forEach((cell) => {
+            cell.title = numberFormat.format(Number(cell.dataset.sortValue)) + ' ' + t('bytes');
+        });
+
         const cells = Array.from(panel.querySelectorAll('[data-columbo-size]'));
         const totalCell = panel.querySelector('[data-columbo-total]');
-        let sum = 0;
-        let totalError = null;
+        const diffCell = panel.querySelector('[data-columbo-diff]');
+        const sizes = new Map();
+        const errors = new Map();
+
+        const finish = (cell, inputs, compute) => {
+            if (!cell) {
+                return;
+            }
+            const error = inputs.map((input) => errors.get(input)).find(Boolean);
+            if (error || inputs.some((input) => !sizes.has(input))) {
+                setSizeError(cell, error);
+            } else {
+                setBytes(cell, compute(inputs.map((input) => sizes.get(input))));
+            }
+            cell.removeAttribute('aria-busy');
+        };
 
         // One request at a time, to avoid running several "du" or bucket listings at once.
         cells.reduce((previous, cell) => previous.then(() => fetchSize(cell.dataset.columboSize)
             .then((data) => {
-                cell.textContent = data.readable;
-                cell.dataset.sortValue = data.bytes;
-                if (cell.hasAttribute('data-columbo-in-total')) {
-                    sum += data.bytes;
-                }
+                sizes.set(cell, data.bytes);
+                setBytes(cell, data.bytes, data.readable);
             })
             .catch((error) => {
                 console.error('Columbo:', error);
+                errors.set(cell, error);
                 setSizeError(cell, error);
-                if (cell.hasAttribute('data-columbo-in-total')) {
-                    totalError = totalError || error;
-                }
             })
             .finally(() => cell.removeAttribute('aria-busy'))), Promise.resolve())
             .then(() => {
-                if (!totalCell) {
-                    return;
+                finish(totalCell, cells.filter((cell) => cell.hasAttribute('data-columbo-in-total')), (values) => values.reduce((a, b) => a + b, 0));
+                const original = panel.querySelector('[data-columbo-original]');
+                if (diffCell && original) {
+                    finish(diffCell, [original], ([bytes]) => bytes - Number(diffCell.dataset.columboDiff));
                 }
-                if (totalError) {
-                    setSizeError(totalCell, totalError);
-                } else {
-                    totalCell.textContent = bytesToReadable(sum);
-                    totalCell.dataset.sortValue = sum;
-                }
-                totalCell.removeAttribute('aria-busy');
             });
     }
 

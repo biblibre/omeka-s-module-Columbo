@@ -6,6 +6,7 @@
  * @var \Laminas\View\Renderer\PhpRenderer $this
  * @var int $mediaSize
  * @var string $mediaSizeReadable
+ * @var int $mediaWithoutSizeCount
  * @var array $storage
  * @var string[] $storageDirectories
  */
@@ -14,13 +15,20 @@ $descriptions = [
     'original' => $this->translate('Original files of the media.'),
     'asset' => $this->translate('Assets (thumbnails of resources, logos and images of sites).'),
 ];
-$sizeCell = function (string $target, bool $inTotal = false) {
+$pendingCell = function (string $attributes) {
     return sprintf(
-        '<td data-sort-value="-1" data-columbo-size="%s"%s aria-busy="true"><span class="columbo-spinner" aria-hidden="true"></span> %s</td>',
-        $this->escapeHtmlAttr($this->url('admin/columbo/size', ['target' => $target])),
-        $inTotal ? ' data-columbo-in-total' : '',
+        '<td class="columbo-bytes" data-sort-value="-1" %s aria-busy="true"><span class="columbo-spinner" aria-hidden="true"></span> %s</td>',
+        $attributes,
         $this->translate('Calculating…')
     );
+};
+$sizeCell = function (string $target, bool $inTotal = false) use ($pendingCell) {
+    return $pendingCell(sprintf(
+        'data-columbo-size="%s"%s%s',
+        $this->escapeHtmlAttr($this->url('admin/columbo/size', ['target' => $target])),
+        $inTotal ? ' data-columbo-in-total' : '',
+        $target === 'original' ? ' data-columbo-original' : ''
+    ));
 };
 ?>
 <?= $this->partial('common/columbo-block-header', [
@@ -56,15 +64,25 @@ $sizeCell = function (string $target, bool $inTotal = false) {
         <?php endforeach; ?>
         <tr>
             <td><?= $this->translate('Total file storage') ?></td>
-            <td data-sort-value="-1" data-columbo-total aria-busy="true"><span class="columbo-spinner" aria-hidden="true"></span> <?= $this->translate('Calculating…') ?></td>
+            <?= $pendingCell('data-columbo-total') ?>
             <td><?= $this->translate('Sum of the storage directories.') ?></td>
         </tr>
         <?php endif; ?>
         <tr>
             <td><?= $this->translate('Total original files size') ?></td>
-            <td data-sort-value="<?= (int) $mediaSize ?>"><?= $this->escapeHtml($mediaSizeReadable) ?></td>
+            <td class="columbo-bytes" data-sort-value="<?= (int) $mediaSize ?>"><?= $this->escapeHtml($mediaSizeReadable) ?></td>
             <td><?= $this->translate('Sum of the original file sizes registered in the database at import, without thumbnails and assets. Should be close to the size of the original directory.') ?></td>
         </tr>
+        <?php if ($supported): ?>
+        <tr>
+            <td><?= $this->translate('Difference between disk and database') ?></td>
+            <?= $pendingCell(sprintf('data-columbo-diff="%d"', $mediaSize)) ?>
+            <td>
+                <?= $this->translate('Size of the original directory minus the size registered in the database. Positive: files not registered (orphan files) or media without registered size; negative: missing files.') ?>
+                <?= sprintf($this->translate('Media without registered size: %d.'), $mediaWithoutSizeCount) ?>
+            </td>
+        </tr>
+        <?php endif; ?>
         <tr>
             <td><?= $this->translate('Total omeka install size') ?></td>
             <?= $sizeCell('omeka') ?>
