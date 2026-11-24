@@ -241,12 +241,11 @@
         <?php foreach ($valueResourceTypes as $valueResourceType): ?>
             <?php
             $resource_type = $valueResourceType['resource_type'];
-            $type = match($resource_type) {
+            $type = [
                 'Omeka\Entity\ItemSet' => $this->translate('Item set'),
                 'Omeka\Entity\Item' => $this->translate('Item'),
                 'Omeka\Entity\Media' => $this->translate('Media'),
-                default => $resource_type,
-            };
+            ][$resource_type] ?? $resource_type;
             ?>
             <tr>
                 <td><?= $this->escapeHtml($type) ?></td>
